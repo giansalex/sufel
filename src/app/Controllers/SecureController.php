@@ -6,7 +6,7 @@
  * Time: 14:11
  */
 
-namespace FeConsult\App\Controllers;
+namespace Sufel\App\Controllers;
 
 use Firebase\JWT\JWT;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,7 +14,7 @@ use Slim\Http\Response;
 
 /**
  * Class SecureController
- * @package FeConsult\App\Controllers
+ * @package Sufel\App\Controllers
  */
 class SecureController
 {

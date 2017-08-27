@@ -1,8 +1,8 @@
 <?php
 // Routes
 
-use FeConsult\App\Controllers\HomeController;
-use FeConsult\App\Controllers\SecureController;
+use Sufel\App\Controllers\HomeController;
+use Sufel\App\Controllers\SecureController;
 
 $app->group('/api/company', function () {
     /**@var $this \Slim\App*/

@@ -6,14 +6,14 @@
  * Time: 18:25
  */
 
-namespace FeConsult\App\Controllers;
+namespace Sufel\App\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class HomeController
- * @package FeConsult\App\Controllers
+ * @package Sufel\App\Controllers
  */
 class HomeController
 {

@@ -1,7 +1,7 @@
 <?php
 // DIC configuration
 
-use FeConsult\App\Controllers\SecureController;
+use Sufel\App\Controllers\SecureController;
 
 $container = $app->getContainer();
 

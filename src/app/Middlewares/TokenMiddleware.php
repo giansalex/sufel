@@ -6,7 +6,7 @@
  * Time: 18:05
  */
 
-namespace FeConsult\App\Middlewares;
+namespace Sufel\App\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,7 +14,7 @@ use Slim\Http\Response;
 
 /**
  * Class TokenMiddleware
- * @package Acme\app\Middlewares
+ * @package Sufel\App\Middlewares
  */
 class TokenMiddleware
 {

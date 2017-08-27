@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FeConsult\\App\\": "src/App/"
+            "Sufel\\App\\": "src/app/"
         }
     },
     "autoload-dev": {

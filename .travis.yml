@@ -8,7 +8,6 @@ php:
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
-  - composer dump-autoload
 
 script: 
   - vendor/bin/phpunit --configuration phpunit.xml
