@@ -15,5 +15,9 @@ return [
             'path' => __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+
+        'jwt' => [
+            'secret' => 'yYa3Nmalk1a56fhA'
+        ]
     ],
 ];

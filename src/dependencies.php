@@ -1,13 +1,9 @@
 <?php
 // DIC configuration
 
-$container = $app->getContainer();
+use FeConsult\App\Controllers\SecureController;
 
-// view renderer
-$container['renderer'] = function ($c) {
-    $settings = $c->get('settings')['renderer'];
-    return new Slim\Views\PhpRenderer($settings['template_path']);
-};
+$container = $app->getContainer();
 
 // monolog
 $container['logger'] = function ($c) {
@@ -18,8 +14,6 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-// Only need dependencies in constructor.
-
-//$container['HomeController'] = function($c) {
-//    return new HomeController();
-//};
+$container[SecureController::class] = function($c) {
+    return new SecureController($c['settings']['jwt']['secret']);
+};
