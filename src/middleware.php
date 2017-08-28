@@ -5,6 +5,7 @@
 $container = $app->getContainer();
 
 $app->add(new \Slim\Middleware\JwtAuthentication([
+    "secure" => false,
     "attribute" => "jwt",
     "path" => '/api',
     "passthrough" => ["/api/client/auth", "/api/company/auth"],
