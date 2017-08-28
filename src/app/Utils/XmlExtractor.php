@@ -65,6 +65,7 @@ class XmlExtractor
         ->setSerie($arr[0])
         ->setCorrelativo($arr[1])
         ->setFecha($this->getFirst('cbc:IssueDate'))
+        ->setTotal(floatval($this->getFirst('cac:LegalMonetaryTotal/cbc:PayableAmount')))
         ->setEmisor($this->getFirst('cac:AccountingSupplierParty/cbc:CustomerAssignedAccountID'))
         ->setClientTipo($this->getFirst('cac:AccountingCustomerParty/cbc:AdditionalAccountID'))
         ->setClientDoc($this->getFirst('cac:AccountingCustomerParty/cbc:CustomerAssignedAccountID'))

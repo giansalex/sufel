@@ -27,6 +27,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertStringStartsWith('F', $inv->getSerie());
         $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
         $this->assertTrue((new \DateTime($inv->getFecha()))->getTimestamp() < time());
+        $this->assertTrue(is_float($inv->getTotal()));
         $this->assertEquals('6', $inv->getClientTipo());
         $this->assertEquals(11, strlen($inv->getClientDoc()));
         $this->assertEquals(11, strlen($inv->getEmisor()));
@@ -42,6 +43,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('03', $inv->getTipo());
         $this->assertStringStartsWith('B', $inv->getSerie());
         $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
+        $this->assertTrue(is_float($inv->getTotal()));
         $this->assertEquals('1', $inv->getClientTipo());
         $this->assertEquals(8, strlen($inv->getClientDoc()));
         $this->assertEquals(11, strlen($inv->getEmisor()));
@@ -57,6 +59,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('07', $inv->getTipo());
         $this->assertLessThanOrEqual(4, strlen($inv->getSerie()));
         $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
+        $this->assertTrue(is_float($inv->getTotal()));
         $this->assertNotEmpty($inv->getClientTipo());
         $this->assertNotEmpty($inv->getClientDoc());
         $this->assertEquals(11, strlen($inv->getEmisor()));
@@ -72,6 +75,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('08', $inv->getTipo());
         $this->assertLessThanOrEqual(4, strlen($inv->getSerie()));
         $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
+        $this->assertTrue(is_float($inv->getTotal()));
         $this->assertNotEmpty($inv->getClientTipo());
         $this->assertNotEmpty($inv->getClientDoc());
         $this->assertEquals(11, strlen($inv->getEmisor()));

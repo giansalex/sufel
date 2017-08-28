@@ -39,6 +39,11 @@ class Invoice
     private $fecha;
 
     /**
+     * @var float
+     */
+    private $total;
+
+    /**
      * Ruc del Emisor.
      *
      * @var string
@@ -131,6 +136,24 @@ class Invoice
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * @param float $total
+     * @return Invoice
+     */
+    public function setTotal($total)
+    {
+        $this->total = $total;
         return $this;
     }
 
