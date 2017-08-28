@@ -24,7 +24,7 @@ class HomeController
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function home($request, $response, $args) {
-        $response->getBody()->write('Welcome to Factesol Consult Api');
+        $response->getBody()->write('<h1>Welcome to SUFEL API</h1>');
 
         return $response;
     }
