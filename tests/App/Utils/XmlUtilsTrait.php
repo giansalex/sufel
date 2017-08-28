@@ -10,7 +10,7 @@ namespace Tests\App\Utils;
 
 /**
  * Trait XmlUtilsTrait
- * @package Tests\Sufel\App\Utils
+ * @package Tests\App\Utils
  */
 trait XmlUtilsTrait
 {
