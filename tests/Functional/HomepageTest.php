@@ -9,7 +9,7 @@ class HomepageTest extends BaseTestCase
         $response = $this->runApp('GET', '/');
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Factesol', (string)$response->getBody());
+        $this->assertContains('SUFEL API', (string)$response->getBody());
         $this->assertNotContains('Hello', (string)$response->getBody());
     }
 
