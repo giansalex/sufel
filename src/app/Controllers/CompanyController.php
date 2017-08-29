@@ -103,8 +103,10 @@ class CompanyController
             return $response->withStatus(500);
         }
 
-        $rootDir = $this->container->get('settings')['upload_dir'];
-        $path = $rootDir . DIRECTORY_SEPARATOR . $inv->getEmisor() . DIRECTORY_SEPARATOR . $name;
+        $rootDir = $this->container->get('settings')['upload_dir'] . DIRECTORY_SEPARATOR . $inv->getEmisor();
+        is_dir($rootDir) || mkdir($rootDir);
+
+        $path = $rootDir . DIRECTORY_SEPARATOR . $name;
         file_put_contents($path.'.xml', $xml);
         file_put_contents($path.'.pdf', $pdf);
 
@@ -140,7 +142,7 @@ class CompanyController
     private function getInvoice($xml)
     {
         $doc = new \DOMDocument();
-        @$doc->load($xml);
+        @$doc->loadXML($xml);
         $ext = new XmlExtractor();
 
         return $ext->toInvoice($doc);

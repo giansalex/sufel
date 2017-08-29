@@ -61,4 +61,19 @@ class CompanyControllerTest extends BaseTestCase
 
         $this->assertEquals(401, $response->getStatusCode());
     }
+
+    public function testAddDocument()
+    {
+        $xml = file_get_contents(__DIR__ . '/../Resources/20600055519-01-F001-00000001.xml');
+        $pdf = file_get_contents(__DIR__ . '/../Resources/impreso.pdf');
+        $body = [
+            'xml' => base64_encode($xml),
+            'pdf' => base64_encode($pdf),
+        ];
+        $headers = ['Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJjb21wYW55Il0sInJ1YyI6IjIwNjAwMDU1NTE5IiwiZXhwIjoxNTA0MjEyMDg3fQ.Rk84GjxABpDQ97LfZeCik573HkIu3s_udYL8kOkln8A'];
+        $response = $this->runApp('POST', '/api/company/add-document', $body, $headers);
+
+        //file_put_contents('result.html', (string)$response->getBody());
+        //$this->assertEquals(200, $response->getStatusCode());
+    }
 }
