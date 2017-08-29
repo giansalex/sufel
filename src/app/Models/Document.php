@@ -22,12 +22,7 @@ class Document
     /**
      * @var string
      */
-    private $xml;
-
-    /**
-     * @var string
-     */
-    private $pdf;
+    private $filename;
 
     /**
      * @var \DateTime
@@ -55,36 +50,18 @@ class Document
     /**
      * @return string
      */
-    public function getXml()
+    public function getFilename()
     {
-        return $this->xml;
+        return $this->filename;
     }
 
     /**
-     * @param string $xml
+     * @param string $filename
      * @return Document
      */
-    public function setXml($xml)
+    public function setFilename($filename)
     {
-        $this->xml = $xml;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPdf()
-    {
-        return $this->pdf;
-    }
-
-    /**
-     * @param string $pdf
-     * @return Document
-     */
-    public function setPdf($pdf)
-    {
-        $this->pdf = $pdf;
+        $this->filename = $filename;
         return $this;
     }
 

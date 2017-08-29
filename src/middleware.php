@@ -4,6 +4,7 @@
 
 $container = $app->getContainer();
 
+// JWT
 $app->add(new \Slim\Middleware\JwtAuthentication([
     "secure" => false,
     "attribute" => "jwt",
@@ -21,7 +22,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     }
 ]));
 
-
+// CORS
 $app->add(new \Tuupola\Middleware\Cors([
     "origin" => ["*"],
     "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE"],

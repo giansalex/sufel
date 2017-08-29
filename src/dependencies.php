@@ -2,6 +2,9 @@
 // DIC configuration
 
 use Sufel\App\Controllers\SecureController;
+use Sufel\App\Repository\CompanyRepository;
+use Sufel\App\Repository\DbConnection;
+use Sufel\App\Repository\DocumentRepository;
 
 $container = $app->getContainer();
 
@@ -14,6 +17,18 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-$container[SecureController::class] = function($c) {
-    return new SecureController($c['settings']['jwt']['secret']);
+$container[DbConnection::class] = function ($c) {
+    return new DbConnection($c->get('settings')['db']);
 };
+
+$container[CompanyRepository::class] = function ($c) {
+    return new CompanyRepository($c->get(DbConnection::class));
+};
+
+$container[DocumentRepository::class] = function ($c) {
+    return new DocumentRepository($c->get(DbConnection::class));
+};
+
+//$container[SecureController::class] = function($c) {
+//    return new SecureController($c['settings']['jwt']['secret']);
+//};

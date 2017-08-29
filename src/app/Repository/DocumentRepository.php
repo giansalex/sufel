@@ -8,6 +8,7 @@
 
 namespace Sufel\App\Repository;
 use Sufel\App\Models\Document;
+use Sufel\App\Models\Invoice;
 
 /**
  * Class DocumentRepository
@@ -30,24 +31,56 @@ class DocumentRepository
     }
 
     /**
-     * Retorna el identificador del documento o FALSE si no existe.
+     * Return document's id or FALSE on failure.
      *
      * @param array $info
-     * @return bool|mixed
+     * @return bool|int
      */
     public function isAuthorized($info)
     {
+        $args = [
+          $info['emisor'],
+          $info['tipo'],
+          $info['serie'],
+          $info['correlativo'],
+          $info['fecha'],
+          $info['total'],
+        ];
         $con = $this->db->getConnection();
-        $stm = $con->prepare('SELECT id FROM document WHERE tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?');
-        $stm->execute($info);
+        $stm = $con->prepare('SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?');
+        $stm->execute($args);
         $id = $stm->fetchColumn();
+        $stm = null;
 
         // FALSE if not found.
         return $id;
     }
 
     /**
-     * Añade un nuevo documento.
+     * Return true if document exist.
+     *
+     * @param Invoice $invoice
+     * @return bool
+     */
+    public function exist(Invoice $invoice)
+    {
+        $params = [
+            $invoice->getEmisor(),
+            $invoice->getTipo(),
+            $invoice->getSerie(),
+            $invoice->getCorrelativo()
+        ];
+        $con = $this->db->getConnection();
+        $stm = $con->prepare('SELECT COUNT(id) FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?');
+        $stm->execute($params);
+        $count = $stm->fetchColumn();
+        $stm = null;
+
+        return $count > 0;
+    }
+
+    /**
+     * Add a new document.
      *
      * @param Document $document
      * @return bool
@@ -56,12 +89,49 @@ class DocumentRepository
     {
         $inv = $document->getInvoice();
         $arguments = [
-            'ruc' => $inv->getEmisor(),
+            $inv->getEmisor(),
+            $inv->getTipo(),
+            $inv->getSerie(),
+            $inv->getCorrelativo(),
+            $inv->getFecha(),
+            $inv->getTotal(),
+            $inv->getClientTipo(),
+            $inv->getClientDoc(),
+            $inv->getClientName(),
         ];
         $con = $this->db->getConnection();
-        $stm = $con->prepare('INSERT INTO document VALUES(?,?,?)');
+        $stm = $con->prepare('INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,client_tipo,client_doc,client_nombre) VALUES(?,?,?)');
         $res = $stm->execute($arguments);
+        $stm = null;
 
         return $res;
+    }
+
+    /**
+     * Get Document By id.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function get($id)
+    {
+        $rows = $this->db->fetchAll('SELECT * FROM document WHERE id = ? LIMIT 1', [$id]);
+
+        if (empty($rows)) {
+            return null;
+        }
+
+        return $rows[0];
+    }
+
+    /**
+     * Get All documents by company's ruc.
+     *
+     * @param string $ruc
+     * @return array
+     */
+    public function getByRuc($ruc)
+    {
+        return $this->db->fetchAll('SELECT * FROM document WHERE emisor = ?', [$ruc]);
     }
 }

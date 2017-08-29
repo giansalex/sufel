@@ -8,7 +8,10 @@
 
 namespace Sufel\App\Repository;
 
-
+/**
+ * Class DbConnection
+ * @package Sufel\App\Repository
+ */
 class DbConnection
 {
     /**
@@ -54,5 +57,24 @@ class DbConnection
         }
 
         return $this->con;
+    }
+
+    /**
+     * Fetch all rows.
+     *
+     * @param string $query
+     * @param array|null $params
+     * @param int|null $fetch_style
+     * @return array
+     */
+    public function fetchAll($query, $params = null, $fetch_style = \PDO::FETCH_ASSOC)
+    {
+        $con = $this->getConnection();
+        $stm = $con->prepare($query);
+        $stm->execute($params);
+        $all = $stm->fetchAll($fetch_style);
+        $stm = null;
+
+        return $all;
     }
 }

@@ -43,7 +43,7 @@ class CompanyRepository
 
         $obj = $stm->fetchObject();
         if ($obj === FALSE) {
-            return false;
+            return FALSE;
         }
 
         return password_verify($password, $obj->password) && $obj->enable;
