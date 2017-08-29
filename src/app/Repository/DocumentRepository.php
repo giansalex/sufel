@@ -46,8 +46,11 @@ class DocumentRepository
           $info['fecha'],
           $info['total'],
         ];
+        $sql = <<<SQL
+SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?
+SQL;
         $con = $this->db->getConnection();
-        $stm = $con->prepare('SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?');
+        $stm = $con->prepare($sql);
         $stm->execute($args);
         $id = $stm->fetchColumn();
         $stm = null;
@@ -70,8 +73,12 @@ class DocumentRepository
             $invoice->getSerie(),
             $invoice->getCorrelativo()
         ];
+        $sql = <<<SQL
+SELECT COUNT(id) FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
+SQL;
+
         $con = $this->db->getConnection();
-        $stm = $con->prepare('SELECT COUNT(id) FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?');
+        $stm = $con->prepare($sql);
         $stm->execute($params);
         $count = $stm->fetchColumn();
         $stm = null;
@@ -98,13 +105,14 @@ class DocumentRepository
             $inv->getClientTipo(),
             $inv->getClientDoc(),
             $inv->getClientName(),
+            $document->getFilename(),
         ];
-        $con = $this->db->getConnection();
-        $stm = $con->prepare('INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,client_tipo,client_doc,client_nombre) VALUES(?,?,?)');
-        $res = $stm->execute($arguments);
-        $stm = null;
+        $sql = <<<SQL
+INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename)
+VALUES(?,?,?,?,?,?,?,?,?,?)
+SQL;
 
-        return $res;
+        return $this->db->exec($sql, $arguments);
     }
 
     /**
@@ -115,11 +123,21 @@ class DocumentRepository
      */
     public function get($id)
     {
-        $rows = $this->db->fetchAll('SELECT * FROM document WHERE id = ? LIMIT 1', [$id]);
+        $sql = <<<SQL
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename 
+FROM document WHERE id = ? LIMIT 1
+SQL;
+        $rows = $this->db
+            ->fetchAll($sql, [$id]);
 
         if (empty($rows)) {
             return null;
         }
+
+        // Update last access.
+        $now = (new \DateTime())
+                ->format('Y-m-d H:i:s');
+        $this->db->getConnection()->exec("UPDATE document SET `last` = '$now'");
 
         return $rows[0];
     }

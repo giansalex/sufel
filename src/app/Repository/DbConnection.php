@@ -77,4 +77,19 @@ class DbConnection
 
         return $all;
     }
+
+    /**
+     * @param $query
+     * @param array|null $params
+     * @return bool
+     */
+    public function exec($query, $params = null)
+    {
+        $con = $this->getConnection();
+        $stm = $con->prepare($query);
+        $state = $stm->execute($params);
+        $stm = null;
+
+        return $state;
+    }
 }

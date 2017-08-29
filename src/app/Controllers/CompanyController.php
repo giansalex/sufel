@@ -11,7 +11,9 @@ namespace Sufel\App\Controllers;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
+use Sufel\App\Models\Company;
 use Sufel\App\Models\Document;
+use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Utils\Validator;
 use Sufel\App\Utils\XmlExtractor;
@@ -23,22 +25,49 @@ use Sufel\App\Utils\XmlExtractor;
 class CompanyController
 {
     /**
-     * @var DocumentRepository
+     * @var ContainerInterface
      */
-    private $repository;
-
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private $container;
 
     /**
      * CompanyController constructor.
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container) {
-        $this->repository = $container->get(DocumentRepository::class);
-        $this->rootDir = $container->get('settings')['upload_dir'];
+        $this->container = $container;
+    }
+
+    /**
+     * @param ServerRequestInterface    $request
+     * @param Response                  $response
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function createCompany($request, $response, $args)
+    {
+        $queryParams = $request->getQueryParams();
+        if (!isset($queryParams['token'])) {
+            return $response->withStatus(400);
+        }
+
+        $adminToken = $this->container->get('settings')['token_admin'];
+        if ($adminToken != $queryParams['token']) {
+            return $response->withJson(['message' => 'invalid token'],401);
+        }
+
+        $params = $request->getParsedBody();
+        if (!Validator::existFields($params, ['ruc', 'nombre', 'password'])) {
+            return $response->withJson(['message' => 'parametros incompletos'],400);
+        }
+
+        $repo =  $this->container->get(CompanyRepository::class);
+        $cp = new Company();
+        $cp->setRuc($params['ruc'])
+            ->setName($params['nombre'])
+            ->setPassword($params['password'])
+            ->setEnable(true);
+
+        return $response->withStatus($repo->create($cp) ? 200 : 500);
     }
 
     /**
@@ -56,7 +85,8 @@ class CompanyController
 
         $xml = base64_decode($params['xml']);
         $inv = $this->getInvoice($xml);
-        if ($this->repository->exist($inv)) {
+        $repo =  $this->container->get(DocumentRepository::class);
+        if ($repo->exist($inv)) {
             return $response->withJson(['message' => 'documento ya existe'], 400);
         }
 
@@ -68,14 +98,37 @@ class CompanyController
         $doc = new Document();
         $doc->setInvoice($inv)
             ->setFilename($name);
-        $save = $this->repository->add($doc);
+        $save = $repo->add($doc);
         if (!$save) {
             return $response->withStatus(500);
         }
 
-        $path = $this->rootDir . DIRECTORY_SEPARATOR . $inv->getEmisor() . DIRECTORY_SEPARATOR . $name;
+        $rootDir = $this->container->get('settings')['upload_dir'];
+        $path = $rootDir . DIRECTORY_SEPARATOR . $inv->getEmisor() . DIRECTORY_SEPARATOR . $name;
         file_put_contents($path.'.xml', $xml);
         file_put_contents($path.'.pdf', $pdf);
+
+        return $response;
+    }
+
+    /**
+     * @param ServerRequestInterface    $request
+     * @param Response                  $response
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function changePassword($request, $response, $args)
+    {
+        $params = $request->getParsedBody();
+        if (!Validator::existFields($params, ['old', 'new'])) {
+            return $response->withStatus(400);
+        }
+        $jwt = $request->getAttribute('jwt');
+        $repo = $this->container->get(CompanyRepository::class);
+        $result = $repo->changePassword($jwt->ruc, $params['new'], $params['old']);
+        if (!$result) {
+            return $response->withJson(['message' => 'No se pudo cambiar la contraseña'], 400);
+        }
 
         return $response;
     }

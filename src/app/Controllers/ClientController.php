@@ -46,6 +46,7 @@ class ClientController
      */
     public function getDocument($request, $response, $args)
     {
+        $tipo = $args['tipo'];
         $jwt = $request->getAttribute('jwt');
         $id = $jwt->doc;
 
@@ -57,8 +58,17 @@ class ClientController
         $name = $doc['name'];
         $path = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name;
 
-        $doc['xml'] = file_get_contents($path . '.xml');
-        $doc['pdf'] = file_get_contents($path . '.pdf');
+        if ($tipo == 'pdf' || $tipo  == 'xml') {
+            $doc = [];
+        }
+
+        if ($tipo == 'xml' || $tipo == 'all') {
+            $doc['xml'] = file_get_contents($path . '.xml');
+        }
+
+        if ($tipo == 'pdf' || $tipo == 'all') {
+            $doc['pdf'] = file_get_contents($path . '.pdf');
+        }
 
         return $response->withJson($doc);
     }

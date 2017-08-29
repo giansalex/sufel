@@ -1,25 +1,23 @@
 <?php
 // Routes
 
+use Sufel\App\Controllers\ClientController;
+use Sufel\App\Controllers\CompanyController;
 use Sufel\App\Controllers\HomeController;
 use Sufel\App\Controllers\SecureController;
 
 $app->group('/api/company', function () {
     /**@var $this \Slim\App*/
     $this->post('/auth', SecureController::class . ':company');
-    $this->get('/list', function ($request, $response, $args) {
-        $response->getBody()->write('You company are authorized');
-        return $response;
-    });
+    $this->post('/add-document', CompanyController::class . ':addDocument');
+    $this->post('/create', CompanyController::class . ':createCompany');
+    $this->post('/change-password', CompanyController::class . ':changePassword');
 });
 
 $app->group('/api/client', function () {
     /**@var $this \Slim\App*/
     $this->post('/auth', SecureController::class . ':client');
-    $this->get('/list', function ($request, $response, $args) {
-        $response->getBody()->write('You are client authorized');
-        return $response;
-    });
+    $this->get('/document/{tipo}', ClientController::class . ':getDocument');
 });
 
 $app->get('/', HomeController::class . ':home');

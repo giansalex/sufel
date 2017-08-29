@@ -13,13 +13,17 @@ return [
 
         // Db Settings
         'db' => [
-            'dsn' => 'mysql:host=localhost;dbname=sufel',
+            'dsn' => 'mysql:host=127.0.0.1;dbname=sufel',
             'user' => 'root',
             'password' => '',
         ],
         // Jwt settings
         'jwt' => [
             'secret' => 'yYa3Nmalk1a56fhA',
-        ]
+        ],
+
+        // other settings
+        'token_admin' => 'jsAkl34Oa2Tyu',
+        'upload_dir' => __DIR__ . '/../logs',
     ],
 ];
