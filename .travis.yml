@@ -13,6 +13,7 @@ before_install:
 
 before_script:
   - mysql -u root sufel < data/schema.sql
+  - mysql -u root -p sufel -e "INSERT INTO company VALUES ('20000000001', 'COMPANY', '$2y$10$RtEbbUZPVkJPOLdV8i1vBOACAz30Drt/riIEoYdKjzBD8EPIhXf4.', 1)";
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
