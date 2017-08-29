@@ -24,7 +24,8 @@ class SecureControllerTest extends BaseTestCase
 
     public function testCompanyAuth()
     {
-        $data = ['ruc' => '20000000001', 'password' => '123456'];
+        $this->createCompany();
+        $data = ['ruc' => '20000000003', 'password' => '654321'];
         $response = $this->runApp('POST', '/api/company/auth', $data);
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -50,5 +51,16 @@ class SecureControllerTest extends BaseTestCase
         $this->assertTrue($jwt->exp > time());
 
         return $jwt->token;*/
+    }
+
+    private function createCompany()
+    {
+        $body = [
+            'ruc' => '20000000003',
+            'password' => '654321',
+            'nombre' => 'COMPANY 1'
+        ];
+        $response = $this->runApp('POST', '/api/company/create?token=jsAkl34Oa2Tyu', $body);
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
