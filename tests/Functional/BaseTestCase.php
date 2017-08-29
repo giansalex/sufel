@@ -28,9 +28,10 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      * @param string $requestMethod the request method (e.g. GET, POST, etc.)
      * @param string $requestUri the request URI
      * @param array|object|null $requestData the request data
+     * @param array $requestHeaders
      * @return \Psr\Http\Message\ResponseInterface|Response
      */
-    public function runApp($requestMethod, $requestUri, $requestData = null)
+    public function runApp($requestMethod, $requestUri, $requestData = null, $requestHeaders = null)
     {
         // Create a mock environment for testing with
         $environment = Environment::mock(
@@ -46,6 +47,12 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         // Add request data, if it exists
         if (isset($requestData)) {
             $request = $request->withParsedBody($requestData);
+        }
+
+        if (isset($requestHeaders)) {
+            foreach ($requestHeaders as $header => $value) {
+                $request = $request->withAddedHeader($header, $value);
+            }
         }
 
         // Set up a response object

@@ -52,4 +52,13 @@ class CompanyControllerTest extends BaseTestCase
         $response = $this->runApp('POST', '/api/company/create?token=jsAkl34Oa2Tyu', $body);
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function testAddDocumentNotAuth()
+    {
+        $body = ['xml' => '111'];
+
+        $response = $this->runApp('POST', '/api/company/add-document', $body);
+
+        $this->assertEquals(401, $response->getStatusCode());
+    }
 }

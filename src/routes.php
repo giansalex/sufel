@@ -17,7 +17,7 @@ $app->group('/api/company', function () {
 $app->group('/api/client', function () {
     /**@var $this \Slim\App*/
     $this->post('/auth', SecureController::class . ':client');
-    $this->get('/document/{tipo}', ClientController::class . ':getDocument');
+    $this->get('/document', ClientController::class . ':getDocument');
 });
 
 $app->get('/', HomeController::class . ':home');
