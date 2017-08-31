@@ -59,7 +59,7 @@ class SecureController
         $repo = $this->container->get(DocumentRepository::class);
         $id = $repo->isAuthorized($params);
         if ($id === FALSE) {
-            return $response->withStatus(401);
+            return $response->withJson(['message' => 'documento no encontrado'], 404);
         }
 
         $exp = strtotime('+5 hours');

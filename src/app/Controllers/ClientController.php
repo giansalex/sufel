@@ -47,7 +47,7 @@ class ClientController
     public function getDocument($request, $response, $args)
     {
         $params = $request->getQueryParams();
-        if (isset($params['query'])) {
+        if (!isset($params['query'])) {
             return $response->withStatus(404);
         }
         $reqs = explode(',', (string)$params['query']);
@@ -60,7 +60,7 @@ class ClientController
             return $response->withStatus(404);
         }
 
-        $name = $doc['name'];
+        $name = $doc['filename'];
         $path = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name;
 
         if (!in_array('info', $reqs)) {
@@ -68,11 +68,11 @@ class ClientController
         }
 
         if (in_array('xml', $reqs)) {
-            $doc['xml'] = file_get_contents($path . '.xml');
+            $doc['xml'] = base64_encode(file_get_contents($path . '.xml'));
         }
 
         if (in_array('pdf', $reqs)) {
-            $doc['pdf'] = file_get_contents($path . '.pdf');
+            $doc['pdf'] = base64_encode(file_get_contents($path . '.pdf'));
         }
 
         return $response->withJson($doc);
