@@ -45,8 +45,8 @@ class CompanyControllerTest extends BaseTestCase
     public function testCreateCompany()
     {
         $body = [
-            'ruc' => '20000000002',
-            'password' => '654321',
+            'ruc' => '20600055519',
+            'password' => '123456',
             'nombre' => 'COMPANY 1'
         ];
         $response = $this->runApp('POST', '/api/company/create?token=jsAkl34Oa2Tyu', $body);
@@ -70,7 +70,9 @@ class CompanyControllerTest extends BaseTestCase
             'xml' => base64_encode($xml),
             'pdf' => base64_encode($pdf),
         ];
-        $headers = ['Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJjb21wYW55Il0sInJ1YyI6IjIwNjAwMDU1NTE5IiwiZXhwIjoxNTA0MjEyMDg3fQ.Rk84GjxABpDQ97LfZeCik573HkIu3s_udYL8kOkln8A'];
+//        file_put_contents('xml.txt', $body['xml']);
+//        file_put_contents('pdf.txt', $body['pdf']);
+        $headers = ['Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJjb21wYW55Il0sInJ1YyI6IjIwNjAwMDU1NTE5IiwiZXhwIjoxNTA0NTQzMzYxfQ.T5A6TW64qZQHbLKZnK299DzjQq-2uIovCBjMmpBKjP4'];
         $response = $this->runApp('POST', '/api/company/add-document', $body, $headers);
 
         //file_put_contents('result.html', (string)$response->getBody());

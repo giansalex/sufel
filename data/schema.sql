@@ -29,3 +29,5 @@ CREATE TABLE document
   PRIMARY KEY (id),
   FOREIGN KEY (emisor) REFERENCES company(ruc)
 )ENGINE = INNODB;
+
+SET @@global.sql_mode= '';
