@@ -46,14 +46,20 @@ class SecureController
      */
     public function client($request, $response, $args) {
         $params = $request->getParsedBody();
-        if (!Validator::existFields($params, ['emisor', 'tipo', 'serie', 'correlativo', 'fecha', 'total'])) {
+        if (!Validator::existFields($params, ['emisor', 'tipo', 'documento', 'fecha', 'total'])) {
             return $response->withStatus(400);
         }
+        $arr = explode('-', $params['documento']);
+        if (count($arr) != 2) {
+            return $response->withJson(['message' => 'documento inválido'],400);
+        }
+        $params['serie'] = $arr[0];
+        $params['correlativo'] = $arr[1];
 
         $repo = $this->container->get(DocumentRepository::class);
         $id = $repo->isAuthorized($params);
         if ($id === FALSE) {
-            return $response->withStatus(401);
+            return $response->withJson(['message' => 'documento no encontrado'], 404);
         }
 
         $exp = strtotime('+5 hours');

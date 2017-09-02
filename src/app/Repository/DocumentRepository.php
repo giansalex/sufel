@@ -43,7 +43,7 @@ class DocumentRepository
           $info['tipo'],
           $info['serie'],
           $info['correlativo'],
-          $info['fecha'],
+          (new \DateTime($info['fecha']))->format('Y-m-d'),
           $info['total'],
         ];
         $sql = <<<SQL
