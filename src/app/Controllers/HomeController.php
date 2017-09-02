@@ -25,8 +25,32 @@ class HomeController
      */
     public function home($request, $response, $args)
     {
-        $response->getBody()->write('<h1>Welcome to SUFEL API</h1>');
+        $swaggerUrl = $request->getUri() . 'swagger';
+        $body = <<<HTML
+<h1>Welcome to SUFEL API</h1>
+<a href="http://petstore.swagger.io/?url=$swaggerUrl">Swagger API documentacion</a>
+HTML;
+
+        $response->getBody()->write($body);
 
         return $response;
+    }
+
+    /**
+     * @param ServerRequestInterface    $request
+     * @param ResponseInterface         $response
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function swagger($request, $response, $args)
+    {
+        $filename = __DIR__ . '/../../data/swagger.json';
+        if (!file_exists($filename)) {
+            return $response->withStatus(404);
+        }
+        $jsonContent = file_get_contents($filename);
+        $response->getBody()->write($jsonContent);
+
+        return $response->withHeader('Content-Type', 'application/json; charset=utf8');
     }
 }

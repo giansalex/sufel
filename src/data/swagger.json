@@ -1,0 +1,391 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Sufel API.",
+    "version": "1.0.0",
+    "title": "SUFEL",
+    "contact": {
+      "email": "giansalex@gmail.com"
+    }
+  },
+  "host": "sufel-api.net",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "client",
+      "description": "Acceso para clientes"
+    },
+    {
+      "name": "company",
+      "description": "Acceso para empresas"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/client/auth": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Autentificacion por documento",
+        "description": "Retorna el token si la informacion del documento es correcta",
+        "operationId": "authClient",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Informacion del documento.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClientCredential"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          }
+        }
+      }
+    },
+    "/client/document": {
+      "get": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Informacion del documento.",
+        "description": "Retorna la informacion solicitada del documento asociado al token",
+        "operationId": "getDocument",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Filtro de la informacion requerida",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "info",
+                "xml",
+                "pdf"
+              ]
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/Document"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/company/auth": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Autentificacion de Empresa",
+        "description": "Retorna el token si la empresa esta autorizada",
+        "operationId": "authCompany",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Credenciales de la empresa.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CompanyCredential"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          },
+          "401": {
+            "description": "Empresa no autorizada"
+          }
+        }
+      }
+    },
+    "/company/create": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Crea nueva Empresa",
+        "description": "Autorización de nueva empresa.",
+        "operationId": "creteCompany",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Datos de la empresa.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Company"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          },
+          "401": {
+            "description": "Token Inválido"
+          }
+        },
+        "security": [
+          {
+            "AdminToken": []
+          }
+        ]
+      }
+    },
+    "/company/add-document": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Agrega nuevo documento.",
+        "description": "Registra nuevo documento para consulta del cliente.",
+        "operationId": "addDocument",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Archivos del documento electrónico.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FilesDocument"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "AdminToken": {
+      "type": "apiKey",
+      "in": "query",
+      "name": "token",
+      "description": "Admin Token"
+    },
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "User Token"
+    }
+  },
+  "definitions": {
+    "AuthToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "expire": {
+          "type": "integer",
+          "description": "Unix timestamp"
+        }
+      }
+    },
+    "ClientCredential": {
+      "type": "object",
+      "required": [
+        "emisor",
+        "tipo",
+        "documento",
+        "fecha",
+        "total"
+      ],
+      "properties": {
+        "emisor": {
+          "type": "string"
+        },
+        "tipo": {
+          "type": "string",
+          "example": "01"
+        },
+        "documento": {
+          "type": "string"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date"
+        },
+        "total": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "CompanyCredential": {
+      "type": "object",
+      "required": [
+        "ruc",
+        "password"
+      ],
+      "properties": {
+        "ruc": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Company": {
+      "type": "object",
+      "required": [
+        "ruc",
+        "nombre",
+        "password"
+      ],
+      "properties": {
+        "ruc": {
+          "type": "string"
+        },
+        "nombre": {
+          "type": "string",
+          "example": "Company S.A.C"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Document": {
+      "type": "object",
+      "properties": {
+        "emisor": {
+          "type": "string"
+        },
+        "tipo": {
+          "type": "string",
+          "example": "01"
+        },
+        "serie": {
+          "type": "string"
+        },
+        "correlativo": {
+          "type": "string"
+        },
+        "fecha": {
+          "type": "string",
+          "format": "date"
+        },
+        "total": {
+          "type": "number",
+          "format": "float"
+        },
+        "cliente_tipo": {
+          "type": "string"
+        },
+        "cliente_doc": {
+          "type": "string"
+        },
+        "cliente_nombre": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "xml": {
+          "type": "string",
+          "description": "Archivo Xml en base64"
+        },
+        "pdf": {
+          "type": "string",
+          "description": "Archivo Pdf en base64"
+        }
+      }
+    },
+    "FilesDocument": {
+      "type": "object",
+      "required": [
+        "xml",
+        "pdf"
+      ],
+      "properties": {
+        "xml": {
+          "type": "string",
+          "description": "Xml en base64"
+        },
+        "pdf": {
+          "type": "string",
+          "description": "Xml en base64"
+        }
+      }
+    }
+  }
+}

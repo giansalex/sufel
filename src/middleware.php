@@ -16,7 +16,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
         /**@var $request \Slim\Http\Request*/
         $scopes = $arguments["decoded"]->scope;
         $path = $request->getUri()->getPath();
-        $require = strpos($path, '/api/client') !== FALSE ? 'client' : 'company';
+        $require = strpos($path, 'api/client') !== FALSE ? 'client' : 'company';
 
         return in_array($require, $scopes);
     }

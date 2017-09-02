@@ -21,3 +21,4 @@ $app->group('/api/client', function () {
 });
 
 $app->get('/', HomeController::class . ':home');
+$app->get('/swagger', HomeController::class . ':swagger');
