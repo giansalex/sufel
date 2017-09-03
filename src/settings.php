@@ -24,6 +24,6 @@ return [
 
         // other settings
         'token_admin' => 'jsAkl34Oa2Tyu',
-        'upload_dir' => __DIR__ . '/../logs',
+        'upload_dir' => 'upload',
     ],
 ];
