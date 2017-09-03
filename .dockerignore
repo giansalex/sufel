@@ -1,0 +1,8 @@
+vendor
+tests
+.git
+.gitignore
+.gitattributes
+*.md
+.travis.yml
+phpunit.xml
