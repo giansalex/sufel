@@ -53,7 +53,7 @@ class DbConnection
     public function getConnection()
     {
         if (!$this->con) {
-            $this->con = new \PDO($this->dsn, $this->user, $this->password, $options);
+            $this->con = new \PDO($this->dsn, $this->user, $this->password);
         }
 
         return $this->con;
