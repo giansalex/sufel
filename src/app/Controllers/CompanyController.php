@@ -104,7 +104,11 @@ class CompanyController
         }
 
         $rootDir = $this->container->get('settings')['upload_dir'] . DIRECTORY_SEPARATOR . $inv->getEmisor();
-        is_dir($rootDir) || mkdir($rootDir);
+        if (!is_dir($rootDir)) {
+            $oldmask = umask(0);
+            mkdir($rootDir, 0777);
+            umask($oldmask);
+        }
 
         $path = $rootDir . DIRECTORY_SEPARATOR . $name;
         file_put_contents($path.'.xml', $xml);
