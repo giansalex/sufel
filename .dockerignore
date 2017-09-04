@@ -1,8 +1,8 @@
-vendor
-tests
-.git
-.gitignore
+vendor/
+tests/
+build.bat
 .gitattributes
+.gitignore
 *.md
 .travis.yml
 phpunit.xml
