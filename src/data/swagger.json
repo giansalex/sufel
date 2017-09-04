@@ -78,18 +78,9 @@
           {
             "name": "query",
             "in": "query",
-            "description": "Filtro de la informacion requerida",
+            "description": "Filtro (combinacion de estas opciones: info,xml,pdf)\n ejemplo: xml,pdf",
             "required": true,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "info",
-                "xml",
-                "pdf"
-              ]
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "responses": {
