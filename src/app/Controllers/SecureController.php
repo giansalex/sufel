@@ -70,7 +70,7 @@ class SecureController
         ];
 
         $token = JWT::encode($data, $this->secret);
-        return $response->withJson(['token' => $token, 'exp' => $exp]);
+        return $response->withJson(['token' => $token, 'expire' => $exp]);
     }
 
     /**
@@ -99,6 +99,6 @@ class SecureController
         ];
 
         $token = JWT::encode($data, $this->secret);
-        return $response->withJson(['token' => $token, 'exp' => $exp]);
+        return $response->withJson(['token' => $token, 'expire' => $exp]);
     }
 }

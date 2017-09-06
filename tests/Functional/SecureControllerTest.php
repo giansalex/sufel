@@ -33,7 +33,7 @@ class SecureControllerTest extends BaseTestCase
 
         $this->assertNotNull($jwt);
         $this->assertNotEmpty($jwt->token);
-        $this->assertTrue($jwt->exp > time());
+        $this->assertTrue($jwt->expire > time());
 
         return $jwt->token;
     }
