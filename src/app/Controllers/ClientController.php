@@ -61,18 +61,23 @@ class ClientController
         }
 
         $name = $doc['filename'];
-        $path = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name;
-
         if (!in_array('info', $reqs)) {
             $doc = [];
         }
 
-        if (in_array('xml', $reqs)) {
-            $doc['xml'] = base64_encode(file_get_contents($path . '.xml'));
-        }
+        if (in_array('xml', $reqs) || in_array('pdf', $reqs)) {
+            $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . 'zip';
+            $zip = new \ZipArchive();
+            $zip->open($pathZip);
 
-        if (in_array('pdf', $reqs)) {
-            $doc['pdf'] = base64_encode(file_get_contents($path . '.pdf'));
+            if (in_array('xml', $reqs)) {
+                $doc['xml'] = base64_encode($zip->getFromName($name . '.xml'));
+            }
+
+            if (in_array('pdf', $reqs)) {
+                $doc['pdf'] = base64_encode($zip->getFromName($name . '.pdf'));
+            }
+            $zip->close();
         }
 
         return $response->withJson($doc);

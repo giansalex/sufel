@@ -106,13 +106,16 @@ class CompanyController
         $rootDir = $this->container->get('settings')['upload_dir'] . DIRECTORY_SEPARATOR . $inv->getEmisor();
         if (!is_dir($rootDir)) {
             $oldmask = umask(0);
-            mkdir($rootDir, 0777);
+            mkdir($rootDir, 0777, true);
             umask($oldmask);
         }
 
-        $path = $rootDir . DIRECTORY_SEPARATOR . $name;
-        file_put_contents($path.'.xml', $xml);
-        file_put_contents($path.'.pdf', $pdf);
+        $path = $rootDir . DIRECTORY_SEPARATOR . $name . '.zip';
+        $zip = new \ZipArchive();
+        $zip->open($path, \ZipArchive::CREATE);
+        $zip->addFromString($name.'.xml', $xml);
+        $zip->addFromString($name.'.pdf', $pdf);
+        $zip->close();
 
         return $response;
     }
