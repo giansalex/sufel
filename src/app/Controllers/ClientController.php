@@ -66,7 +66,7 @@ class ClientController
         }
 
         if (in_array('xml', $reqs) || in_array('pdf', $reqs)) {
-            $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . 'zip';
+            $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
             $zip = new \ZipArchive();
             $zip->open($pathZip);
 
