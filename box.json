@@ -9,6 +9,7 @@
             "in": "vendor"
         }
     ],
+    "compression" : "GZ",
     "main" : "public/index.php",
     "output": "sufel.phar",
     "stub": true,
