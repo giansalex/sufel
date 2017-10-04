@@ -1,0 +1,18 @@
+{
+    "alias": "composer.phar",
+    "chmod": "0755",
+    "directories": ["src"],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["tests"],
+            "in": "vendor"
+        }
+    ],
+    "main" : "public/index.php",
+    "output": "sufel.phar",
+    "stub": true,
+    "web": false,
+    "banner": "Sufel Application",
+    "shebang": false
+}
