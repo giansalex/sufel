@@ -44,11 +44,15 @@ class XmlExtractor
         $this->xpath->registerNamespace(self::ROOT_PREFIX, $doc->documentElement->namespaceURI);
 
         $inv = $this->getInvoice();
+
+        $totalNodeName = 'cac:LegalMonetaryTotal';
         if ($docName == 'CreditNote') {
             $inv->setTipo('07');
         } elseif ($docName == 'DebitNote') {
             $inv->setTipo('08');
+            $totalNodeName = 'cac:RequestedMonetaryTotal';
         }
+        $inv->setTotal(floatval($this->getFirst($totalNodeName . '/cbc:PayableAmount')));
 
         return $inv;
     }
@@ -65,7 +69,6 @@ class XmlExtractor
         ->setSerie($arr[0])
         ->setCorrelativo($arr[1])
         ->setFecha($this->getFirst('cbc:IssueDate'))
-        ->setTotal(floatval($this->getFirst('cac:LegalMonetaryTotal/cbc:PayableAmount')))
         ->setEmisor($this->getFirst('cac:AccountingSupplierParty/cbc:CustomerAssignedAccountID'))
         ->setClientTipo($this->getFirst('cac:AccountingCustomerParty/cbc:AdditionalAccountID'))
         ->setClientDoc($this->getFirst('cac:AccountingCustomerParty/cbc:CustomerAssignedAccountID'))
