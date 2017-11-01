@@ -6,7 +6,7 @@ Sufel
 Api de consultas para receptores de Facturación Electrónica en Perú acargo de la Superintendencia Nacional de Aduanas y de Administración Tributaria - SUNAT.
 
 ## UI Client
-Una implementación basada en Angular 4 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  
+Una implementación basada en Angular 5 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  
 
 ## Docs
 [Swagger Docs](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.json)  
