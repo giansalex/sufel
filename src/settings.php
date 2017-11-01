@@ -24,6 +24,6 @@ return [
 
         // other settings
         'token_admin' => 'jsAkl34Oa2Tyu',
-        'upload_dir' => 'upload',
+        'upload_dir' => __DIR__.'/../public/upload',
     ],
 ];

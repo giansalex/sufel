@@ -46,11 +46,10 @@ class ClientController
      */
     public function getDocument($request, $response, $args)
     {
-        $params = $request->getQueryParams();
-        if (!isset($params['query'])) {
+        $type = $args['type'];
+        if (!in_array($type, ['info', 'xml', 'pdf'])) {
             return $response->withStatus(404);
         }
-        $reqs = explode(',', (string)$params['query']);
 
         $jwt = $request->getAttribute('jwt');
         $id = $jwt->doc;
@@ -59,28 +58,32 @@ class ClientController
         if ($doc === null) {
             return $response->withStatus(404);
         }
+        if ($type == 'info') {
+            return $response->withJson($doc);
+        }
+
+        $name = $doc['filename'];
+        $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
+        $zip = new \ZipArchive();
+        $zip->open($pathZip);
 
         $result = [];
-        if (in_array('info', $reqs)) {
-            $result = $doc;
+        if ($type == 'xml') {
+            $result['file'] = $zip->getFromName($name . '.xml');
+            $result['type'] = 'text/xml';
+        } else {
+            $result['file'] = $zip->getFromName($name . '.pdf');
+            $result['type'] = 'application/pdf';
         }
+        $zip->close();
 
-        if (in_array('xml', $reqs) || in_array('pdf', $reqs)) {
-            $name = $doc['filename'];
-            $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
-            $zip = new \ZipArchive();
-            $zip->open($pathZip);
-
-            if (in_array('xml', $reqs)) {
-                $result['xml'] = base64_encode($zip->getFromName($name . '.xml'));
-            }
-
-            if (in_array('pdf', $reqs)) {
-                $result['pdf'] = base64_encode($zip->getFromName($name . '.pdf'));
-            }
-            $zip->close();
-        }
-
-        return $response->withJson($result);
+        $response->getBody()->write($result['file']);
+        return $response
+            ->withHeader('Content-Type', $result['type'])
+            ->withHeader('Content-Disposition', 'attachment')
+            ->withHeader('Content-Length', strlen($result['file']))
+            ->withoutHeader('Pragma')
+            ->withoutHeader('Expires')
+            ->withoutHeader('Cache-Control');
     }
 }
