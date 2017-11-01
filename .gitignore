@@ -4,3 +4,4 @@
 /.idea
 /box.phar
 /composer.lock
+!/public/upload/.htaccess
