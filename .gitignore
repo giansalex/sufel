@@ -3,3 +3,4 @@
 !/logs/README.md
 /.idea
 /box.phar
+/composer.lock
