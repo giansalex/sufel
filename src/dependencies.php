@@ -21,9 +21,9 @@ $container[DbConnection::class] = function ($c) {
     return new DbConnection($c->get('settings')['db']);
 };
 
-//$container[CompanyRepository::class] = function ($c) {
-//    return new CompanyRepository($c->get(DbConnection::class));
-//};
+$container[CompanyRepository::class] = function ($c) {
+    return new CompanyRepository($c);
+};
 
 $container[DocumentRepository::class] = function ($c) {
     return new DocumentRepository($c->get(DbConnection::class));
