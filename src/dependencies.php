@@ -1,7 +1,6 @@
 <?php
 // DIC configuration
 
-use Sufel\App\Controllers\SecureController;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
@@ -14,6 +13,7 @@ $container['logger'] = function ($c) {
     $logger = new Monolog\Logger($settings['name']);
     $logger->pushProcessor(new Monolog\Processor\UidProcessor());
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+
     return $logger;
 };
 
@@ -21,14 +21,10 @@ $container[DbConnection::class] = function ($c) {
     return new DbConnection($c->get('settings')['db']);
 };
 
-$container[CompanyRepository::class] = function ($c) {
-    return new CompanyRepository($c->get(DbConnection::class));
-};
+//$container[CompanyRepository::class] = function ($c) {
+//    return new CompanyRepository($c->get(DbConnection::class));
+//};
 
 $container[DocumentRepository::class] = function ($c) {
     return new DocumentRepository($c->get(DbConnection::class));
 };
-
-//$container[SecureController::class] = function($c) {
-//    return new SecureController($c['settings']['jwt']['secret']);
-//};

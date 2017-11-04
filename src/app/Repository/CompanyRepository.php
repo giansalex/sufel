@@ -7,6 +7,7 @@
  */
 
 namespace Sufel\App\Repository;
+use Psr\Container\ContainerInterface;
 use Sufel\App\Models\Company;
 
 /**
@@ -19,14 +20,19 @@ class CompanyRepository
      * @var DbConnection
      */
     private $db;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * CompanyRepository constructor.
-     * @param DbConnection $dbConnection
+     * @param ContainerInterface $container
      */
-    public function __construct(DbConnection $dbConnection)
+    public function __construct(ContainerInterface $container)
     {
-        $this->db = $dbConnection;
+        $this->db = $container->get(DbConnection::class);
+        $this->container = $container;
     }
 
     /**
@@ -41,6 +47,11 @@ class CompanyRepository
         $con = $this->db->getConnection();
         $stm = $con->prepare('SELECT password, enable FROM company WHERE ruc = ? LIMIT 1');
         $stm->execute([$ruc]);
+
+        if ($stm->errorCode() !== '00000') {
+           $this->writeError($stm);
+           return FALSE;
+        }
 
         $obj = $stm->fetchObject();
         if ($obj === FALSE) {
@@ -84,8 +95,9 @@ class CompanyRepository
         $sql = <<<SQL
 INSERT INTO company VALUES(?,?,?,?)
 SQL;
+        $res = $this->db->exec($sql, $params);
 
-        return $this->db->exec($sql, $params);
+        return $res;
     }
 
     /**
@@ -103,11 +115,23 @@ SQL;
         $stm->execute([$ruc]);
         $pass = $stm->fetchColumn();
 
+        if ($stm->errorCode() !== '00000') {
+            $this->writeError($stm);
+            return FALSE;
+        }
+
         if (!password_verify($old, $pass)) {
             return false;
         }
         $cp = (new Company())->setPassword($new);
 
         return $this->db->exec('UPDATE company SET password = ? WHERE ruc = ?', [$cp->getPassword(), $ruc]);
+    }
+
+    private function writeError(\PDOStatement $statement)
+    {
+        $this->container->get('logger')
+            ->err(sprintf('Error Code: %s, data: ', $statement->errorCode(),
+                json_encode($statement->errorInfo())));
     }
 }
