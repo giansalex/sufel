@@ -51,6 +51,23 @@ class CompanyRepository
     }
 
     /**
+     * Exist company.
+     *
+     * @param string $ruc
+     * @return bool
+     */
+    public function exist($ruc)
+    {
+        $con = $this->db->getConnection();
+        $stm = $con->prepare('SELECT COUNT(*) FROM company WHERE ruc = ? LIMIT 1');
+        $stm->execute([$ruc]);
+
+        $count = intval($stm->fetchColumn());
+
+        return $count > 0;
+    }
+
+    /**
      * Create new company.
      *
      * @param Company $company

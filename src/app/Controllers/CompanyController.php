@@ -61,6 +61,10 @@ class CompanyController
         }
 
         $repo =  $this->container->get(CompanyRepository::class);
+        if ($repo->exist($params['ruc'])) {
+            return $response->withJson(['message' => 'Esta empresa ya esta registrada'],400);
+        }
+
         $cp = new Company();
         $cp->setRuc($params['ruc'])
             ->setName($params['nombre'])
