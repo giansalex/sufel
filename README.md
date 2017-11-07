@@ -10,7 +10,6 @@ Una implementación basada en Angular 5 [SUFEL Angular](https://github.com/gians
 
 ## Docs
 [Swagger Docs](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.json)  
-[OpenShift Deploy](http://sufel-quertium.1d35.starter-us-east-1.openshiftapps.com/public/)
 
 ## Docker
 
