@@ -49,8 +49,25 @@ HTML;
             return $response->withStatus(404);
         }
         $jsonContent = file_get_contents($filename);
-        $response->getBody()->write($jsonContent);
+        $response->getBody()->write(str_replace('sufel.net', $this->getBaseUri($request), $jsonContent));
 
         return $response->withHeader('Content-Type', 'application/json; charset=utf8');
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return string
+     */
+    private function getBaseUri($request)
+    {
+        $uri = $request->getUri();
+        $url = $uri->getHost();
+        if ($uri->getPort() && $uri->getPort() !== 80) {
+            $url .= ':' . $uri->getPort();
+        }
+        /**@var $uri \Slim\Http\Uri */
+        $url .= $uri->getBasePath();
+
+        return $url;
     }
 }
