@@ -8,6 +8,9 @@
 
 namespace Sufel\App\Repository;
 
+use Psr\Container\ContainerInterface;
+use Sufel\App\Utils\PdoErrorLogger;
+
 /**
  * Class DbConnection
  * @package Sufel\App\Repository
@@ -33,27 +36,40 @@ class DbConnection
      * @var string
      */
     private $password;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
-     * Connection constructor.
-     * @param array $params
+     * DbConnection constructor.
+     * @param ContainerInterface $container
      */
-    public function __construct($params)
+    public function __construct(ContainerInterface $container)
     {
+        $params = $container->get('settings')['db'];
         $this->dsn = $params['dsn'];
         $this->user = $params['user'];
         $this->password = $params['password'];
+
+        $this->container = $container;
     }
 
     /**
      * Return connection.
-     *
      * @return \PDO
+     * @throws \Exception
      */
     public function getConnection()
     {
         if (!$this->con) {
-            $this->con = new \PDO($this->dsn, $this->user, $this->password);
+            try {
+                $this->con = new \PDO($this->dsn, $this->user, $this->password);
+            } catch (\PDOException $e) {
+                $this->container->get('logger')
+                    ->error($e->getMessage());
+                throw new \Exception('No se pudo conectar');
+            }
         }
 
         return $this->con;
@@ -72,6 +88,10 @@ class DbConnection
         $con = $this->getConnection();
         $stm = $con->prepare($query);
         $stm->execute($params);
+        if ($stm->errorCode() !== '0000') {
+            $this->writeError($stm);
+            return [];
+        }
         $all = $stm->fetchAll($fetch_style);
         $stm = null;
 
@@ -88,8 +108,19 @@ class DbConnection
         $con = $this->getConnection();
         $stm = $con->prepare($query);
         $state = $stm->execute($params);
+        if ($stm->errorCode() !== '0000') {
+            $this->writeError($stm);
+            return false;
+        }
         $stm = null;
 
         return $state;
+    }
+
+    private function writeError(\PDOStatement $statement)
+    {
+        $this->container
+            ->get(PdoErrorLogger::class)
+            ->err($statement);
     }
 }

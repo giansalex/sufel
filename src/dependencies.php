@@ -4,6 +4,7 @@
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Utils\PdoErrorLogger;
 
 $container = $app->getContainer();
 
@@ -17,8 +18,12 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+$container[PdoErrorLogger::class] = function ($c) {
+    return new PdoErrorLogger($c->get('logger'));
+};
+
 $container[DbConnection::class] = function ($c) {
-    return new DbConnection($c->get('settings')['db']);
+    return new DbConnection($c);
 };
 
 $container[CompanyRepository::class] = function ($c) {

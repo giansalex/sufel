@@ -9,6 +9,7 @@
 namespace Sufel\App\Repository;
 use Psr\Container\ContainerInterface;
 use Sufel\App\Models\Company;
+use Sufel\App\Utils\PdoErrorLogger;
 
 /**
  * Class CompanyRepository
@@ -130,8 +131,8 @@ SQL;
 
     private function writeError(\PDOStatement $statement)
     {
-        $this->container->get('logger')
-            ->err(sprintf('Error Code: %s, data: ', $statement->errorCode(),
-                json_encode($statement->errorInfo())));
+        $this->container
+            ->get(PdoErrorLogger::class)
+            ->err($statement);
     }
 }
