@@ -1,1 +1,1 @@
-php box.php
+php bin/box.php

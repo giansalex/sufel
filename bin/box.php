@@ -1,4 +1,5 @@
 <?php
+chdir(__DIR__.'/../');
 $file = 'box.phar';
 if (!file_exists($file)) {
     $options  = array('http' => array('user_agent'=> 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'));
@@ -26,7 +27,7 @@ if (!file_exists($file)) {
 }
 
 // MOVE SETTINGS
-copy(__DIR__.'/docker/settings.php', __DIR__.'/src/settings.php');
+copy(__DIR__.'/../docker/settings.php', __DIR__.'/../src/settings.php');
 
 // RUN COMPOSER
 exec('composer install --no-interaction --no-dev --optimize-autoloader 2>&1', $output);
