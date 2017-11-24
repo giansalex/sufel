@@ -88,7 +88,7 @@ class SecureController
         $repo = $this->container->get(CompanyRepository::class);
         $valid = $repo->isAuthorized($params['ruc'], $params['password']);
         if (!$valid) {
-            return $response->withStatus(401);
+            return $response->withJson(['message' => 'credenciales inválidas'], 401);
         }
 
         $exp = strtotime('+2 days');

@@ -11,6 +11,7 @@ $app->group('/api/company', function () {
     $this->post('/auth', SecureController::class . ':company');
     $this->post('/add-document', CompanyController::class . ':addDocument');
     $this->post('/create', CompanyController::class . ':createCompany');
+    $this->post('/cancel-document', CompanyController::class . ':anularDocument');
     $this->post('/change-password', CompanyController::class . ':changePassword');
 });
 

@@ -38,7 +38,7 @@ class DocumentRepository
      */
     public function isAuthorized($info)
     {
-        $args = [
+        $params = [
           $info['emisor'],
           $info['tipo'],
           $info['serie'],
@@ -51,7 +51,7 @@ SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlat
 SQL;
         $con = $this->db->getConnection();
         $stm = $con->prepare($sql);
-        $stm->execute($args);
+        $stm->execute($params);
         $id = $stm->fetchColumn();
         $stm = null;
 
@@ -124,7 +124,7 @@ SQL;
     public function get($id)
     {
         $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename 
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja 
 FROM document WHERE id = ? LIMIT 1
 SQL;
         $rows = $this->db
@@ -140,6 +140,25 @@ SQL;
         $this->db->getConnection()->exec("UPDATE document SET `last` = '$now'");
 
         return $rows[0];
+    }
+
+    /**
+     * Marca un documento como anulado.
+     * @param Invoice $invoice
+     * @return bool
+     */
+    public function anular(Invoice $invoice)
+    {
+        $params = [
+            $invoice->getEmisor(),
+            $invoice->getTipo(),
+            $invoice->getSerie(),
+            $invoice->getCorrelativo(),
+        ];
+        $sql = <<<SQL
+UPDATE document SET baja = 1 WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
+SQL;
+        return $this->db->exec($sql, $params);
     }
 
     /**

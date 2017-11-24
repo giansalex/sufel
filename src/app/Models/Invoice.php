@@ -68,6 +68,11 @@ class Invoice
     private $clientName;
 
     /**
+     * @var bool
+     */
+    private $baja;
+
+    /**
      * @return string
      */
     public function getTipo()
@@ -226,6 +231,24 @@ class Invoice
     public function setClientName($clientName)
     {
         $this->clientName = $clientName;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBaja()
+    {
+        return $this->baja;
+    }
+
+    /**
+     * @param bool $baja
+     * @return Invoice
+     */
+    public function setBaja($baja)
+    {
+        $this->baja = $baja;
         return $this;
     }
 }

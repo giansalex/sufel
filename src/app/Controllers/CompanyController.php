@@ -13,6 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
 use Sufel\App\Models\Company;
 use Sufel\App\Models\Document;
+use Sufel\App\Models\Invoice;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Utils\Validator;
@@ -141,6 +142,34 @@ class CompanyController
         $result = $repo->changePassword($jwt->ruc, $params['new'], $params['old']);
         if (!$result) {
             return $response->withJson(['message' => 'No se pudo cambiar la contraseña'], 400);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param ServerRequestInterface    $request
+     * @param Response                  $response
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function anularDocument($request, $response, $args)
+    {
+        $params = $request->getParsedBody();
+        if (!Validator::existFields($params, ['tipo', 'serie', 'correlativo'])) {
+            return $response->withStatus(400);
+        }
+        $jwt = $request->getAttribute('jwt');
+        $inv = new Invoice();
+        $inv->setEmisor($jwt->ruc)
+            ->setTipo($params['tipo'])
+            ->setSerie($params['serie'])
+            ->setCorrelativo($params['correlativo']);
+
+        $repo = $this->container->get(DocumentRepository::class);
+        $result = $repo->anular($inv);
+        if (!$result) {
+            return $response->withJson(['message' => 'No se pudo anular el documento'], 400);
         }
 
         return $response;

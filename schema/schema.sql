@@ -26,6 +26,7 @@ CREATE TABLE document
   cliente_nombre VARCHAR(100) NULL,
   last DATETIME NULL,
   filename VARCHAR(40) NOT NULL,
+  baja BIT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (emisor) REFERENCES company(ruc)
 )ENGINE = INNODB;

@@ -8,7 +8,7 @@
       "email": "giansalex@gmail.com"
     }
   },
-  "host": "sufel-api.net",
+  "host": "sufel.net",
   "basePath": "/api",
   "tags": [
     {
@@ -63,7 +63,7 @@
         }
       }
     },
-    "/client/document": {
+    "/client/document/{type}": {
       "get": {
         "tags": [
           "client"
@@ -76,9 +76,9 @@
         ],
         "parameters": [
           {
-            "name": "query",
-            "in": "query",
-            "description": "Filtro (combinacion de estas opciones: info,xml,pdf)\n ejemplo: xml,pdf",
+            "name": "type",
+            "in": "path",
+            "description": "Filtro (posibles  opciones: info, xml, pdf)",
             "required": true,
             "type": "string"
           }
@@ -221,6 +221,43 @@
           }
         ]
       }
+    },
+    "/company/cancel-document": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Da de baja documento.",
+        "description": "Marca como anulado un documento.",
+        "operationId": "darBajaDocument",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Información del documento electrónico.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DocumentInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "No se pudo anular"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -351,6 +388,9 @@
         "filename": {
           "type": "string"
         },
+        "baja": {
+          "type": "string"
+        },
         "xml": {
           "type": "string",
           "description": "Archivo Xml en base64"
@@ -358,6 +398,25 @@
         "pdf": {
           "type": "string",
           "description": "Archivo Pdf en base64"
+        }
+      }
+    },
+    "DocumentInfo": {
+      "type": "object",
+      "required": [
+        "tipo",
+        "serie",
+        "correlativo"
+      ],
+      "properties": {
+        "tipo": {
+          "type": "string"
+        },
+        "serie": {
+          "type": "string"
+        },
+        "correlativo": {
+          "type": "string"
         }
       }
     },
