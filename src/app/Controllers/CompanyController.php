@@ -90,6 +90,11 @@ class CompanyController
 
         $xml = base64_decode($params['xml']);
         $inv = $this->getInvoice($xml);
+        $jwt = $request->getAttribute('jwt');
+        if (empty($inv->getEmisor()) || $jwt->ruc != trim($inv->getEmisor())) {
+            return $response->withJson(['message' => 'el ruc del emisor no coincide con el XML'], 400);
+        }
+
         $repo =  $this->container->get(DocumentRepository::class);
         if ($repo->exist($inv)) {
             return $response->withJson(['message' => 'documento ya existe'], 400);
@@ -97,9 +102,7 @@ class CompanyController
 
         $name = join('-', [$inv->getEmisor(), $inv->getTipo(), $inv->getSerie(), $inv->getCorrelativo()]);
         $pdf = base64_decode($params['pdf']);
-        $jwt = $request->getAttribute('jwt');
 
-        $inv->setEmisor($jwt->ruc);
         $doc = new Document();
         $doc->setInvoice($inv)
             ->setFilename($name);

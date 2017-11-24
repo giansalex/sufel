@@ -74,7 +74,7 @@ class CompanyControllerTest extends BaseTestCase
 
     public function testAddDocument()
     {
-        $xml = file_get_contents(__DIR__ . '/../Resources/20600055519-01-F001-00000001.xml');
+        $xml = file_get_contents(__DIR__ . '/../Resources/20000000001-01-F001-00000001.xml');
         $pdf = file_get_contents(__DIR__ . '/../Resources/impreso.pdf');
         $body = [
             'xml' => base64_encode($xml),

@@ -20,7 +20,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInvoiceFac()
     {
-        $path = __DIR__ . '/../../Resources/20600055519-01-F001-00000001.xml';
+        $path = __DIR__ . '/../../Resources/20000000001-01-F001-00000001.xml';
         $inv = (new XmlExtractor())->toInvoice($this->loadFromFile($path));
 
         $this->assertEquals('01', $inv->getTipo());
