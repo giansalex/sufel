@@ -12,7 +12,7 @@ before_install:
   - mysql -e 'CREATE DATABASE sufel DEFAULT CHARACTER SET utf8;'
 
 before_script:
-  - mysql -u root sufel < src/data/schema.sql
+  - mysql -u root sufel < schema/schema.sql
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 
