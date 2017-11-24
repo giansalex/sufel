@@ -80,4 +80,15 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($inv->getClientDoc());
         $this->assertEquals(11, strlen($inv->getEmisor()));
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidXml()
+    {
+        $doc = new \DOMDocument();
+        @$doc->loadXML('zdfSFggg');
+        $ext = new XmlExtractor();
+        $ext->toInvoice($doc);
+    }
 }

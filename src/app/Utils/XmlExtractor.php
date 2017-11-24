@@ -37,6 +37,9 @@ class XmlExtractor
      */
     public function toInvoice(\DOMDocument $doc)
     {
+        if (!$doc->documentElement) {
+            throw new \InvalidArgumentException('No se pudo cargar el xml');
+        }
         $docName = $doc->documentElement->nodeName;
 
         $this->rootNs = '/'. self::ROOT_PREFIX . ':' . $docName;
