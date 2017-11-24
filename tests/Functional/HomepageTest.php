@@ -13,11 +13,11 @@ class HomepageTest extends BaseTestCase
         $this->assertNotContains('Hello', (string)$response->getBody());
     }
 
-    public function testGetApiNotAuthorize()
+    public function testGetApiNotFound()
     {
         $response = $this->runApp('GET', '/api');
 
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testPostHomepageNotAllowed()

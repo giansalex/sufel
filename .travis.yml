@@ -13,6 +13,7 @@ before_install:
 
 before_script:
   - mysql -u root sufel < schema/schema.sql
+  - php bin/travis-ci.php
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
 

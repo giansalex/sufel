@@ -16,6 +16,12 @@ use Slim\Http\Environment;
 class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
+     * API TOKEN.
+     * @var string
+     */
+    protected static $token = '';
+
+    /**
      * Use middleware when running application?
      *
      * @var bool
@@ -28,10 +34,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      * @param string $requestMethod the request method (e.g. GET, POST, etc.)
      * @param string $requestUri the request URI
      * @param array|object|null $requestData the request data
-     * @param array $requestHeaders
      * @return \Psr\Http\Message\ResponseInterface|Response
      */
-    public function runApp($requestMethod, $requestUri, $requestData = null, $requestHeaders = null)
+    public function runApp($requestMethod, $requestUri, $requestData = null)
     {
         // Create a mock environment for testing with
         $environment = Environment::mock(
@@ -49,10 +54,9 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             $request = $request->withParsedBody($requestData);
         }
 
-        if (isset($requestHeaders)) {
-            foreach ($requestHeaders as $header => $value) {
-                $request = $request->withAddedHeader($header, $value);
-            }
+        if (!empty(self::$token)) {
+
+            $request = $request->withAddedHeader('Authorization', 'Bearer ' . self::$token);
         }
 
         // Set up a response object

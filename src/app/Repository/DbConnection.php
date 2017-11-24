@@ -88,8 +88,9 @@ class DbConnection
         $con = $this->getConnection();
         $stm = $con->prepare($query);
         $stm->execute($params);
-        if ($stm->errorCode() !== '0000') {
+        if ($stm->errorCode() !== '00000') {
             $this->writeError($stm);
+            $stm = null;
             return [];
         }
         $all = $stm->fetchAll($fetch_style);
@@ -108,9 +109,10 @@ class DbConnection
         $con = $this->getConnection();
         $stm = $con->prepare($query);
         $state = $stm->execute($params);
-        if ($stm->errorCode() !== '0000') {
+
+        if ($stm->errorCode() !== '00000') {
             $this->writeError($stm);
-            return false;
+            $state = false;
         }
         $stm = null;
 

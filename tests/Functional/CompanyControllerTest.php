@@ -14,6 +14,16 @@ namespace Tests\Functional;
  */
 class CompanyControllerTest extends BaseTestCase
 {
+    public function setUp()
+    {
+        $data = ['ruc' => '20000000001', 'password' => '123456'];
+        $response = $this->runApp('POST', '/api/company/auth', $data);
+
+        $jwt = $this->getObject($response->getBody());
+
+        self::$token = $jwt->token;
+    }
+
     public function testWithoutTokenCreateCompany()
     {
         $response = $this->runApp('POST', '/api/company/create');
@@ -53,13 +63,13 @@ class CompanyControllerTest extends BaseTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testAddDocumentNotAuth()
+    public function testAddDocumentNotValid()
     {
         $body = ['xml' => '111'];
 
         $response = $this->runApp('POST', '/api/company/add-document', $body);
 
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testAddDocument()
@@ -70,12 +80,9 @@ class CompanyControllerTest extends BaseTestCase
             'xml' => base64_encode($xml),
             'pdf' => base64_encode($pdf),
         ];
-//        file_put_contents('xml.txt', $body['xml']);
-//        file_put_contents('pdf.txt', $body['pdf']);
-        $headers = ['Authorization' => 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJjb21wYW55Il0sInJ1YyI6IjIwNjAwMDU1NTE5IiwiZXhwIjoxNTA0NTQzMzYxfQ.T5A6TW64qZQHbLKZnK299DzjQq-2uIovCBjMmpBKjP4'];
-        $response = $this->runApp('POST', '/api/company/add-document', $body, $headers);
 
-        //file_put_contents('result.html', (string)$response->getBody());
-        //$this->assertEquals(200, $response->getStatusCode());
+        $response = $this->runApp('POST', '/api/company/add-document', $body);
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
