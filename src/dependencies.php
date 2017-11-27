@@ -4,6 +4,7 @@
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Service\CryptoService;
 use Sufel\App\Utils\PdoErrorLogger;
 
 $container = $app->getContainer();
@@ -16,6 +17,10 @@ $container['logger'] = function ($c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
 
     return $logger;
+};
+
+$container[CryptoService::class] = function ($c) {
+    return new CryptoService($c->get($c->get('settings')['jwt']['secret']));
 };
 
 $container[PdoErrorLogger::class] = function ($c) {
