@@ -179,6 +179,28 @@ class CompanyController
     }
 
     /**
+     * @param ServerRequestInterface    $request
+     * @param Response                  $response
+     * @param array $args
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function getInvoices($request, $response, $args)
+    {
+        $params = $request->getParsedBody();
+        if (!Validator::existFields($params, ['init', 'end'])) {
+            return $response->withStatus(400);
+        }
+        $init = new \DateTime($params['init']);
+        $end = new \DateTime($params['end']);
+
+        $jwt = $request->getAttribute('jwt');
+        $repo = $this->container->get(DocumentRepository::class);
+        $result = $repo->getList($jwt->ruc, $init, $end);
+
+        return $response->withJson($result);
+    }
+
+    /**
      * @param $xml
      * @return \Sufel\App\Models\Invoice
      */
