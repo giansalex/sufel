@@ -258,6 +258,43 @@
           }
         ]
       }
+    },
+    "/company/list-document": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Lista los documentos del emisor",
+        "description": "Retorna lista de documentos segun el rando de fecha.",
+        "operationId": "getListDoc",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Rango de Fecha.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DateFilter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/Document"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
     }
   },
   "securityDefinitions": {
@@ -363,10 +400,12 @@
           "example": "01"
         },
         "serie": {
-          "type": "string"
+          "type": "string",
+          "example": "F001"
         },
         "correlativo": {
-          "type": "string"
+          "type": "string",
+          "example": "123"
         },
         "fecha": {
           "type": "string",
@@ -434,6 +473,19 @@
         "pdf": {
           "type": "string",
           "description": "Xml en base64"
+        }
+      }
+    },
+    "DateFilter": {
+      "type": "object",
+      "properties": {
+        "init": {
+          "type": "string",
+          "format": "date"
+        },
+        "end": {
+          "type": "string",
+          "format": "date"
         }
       }
     }

@@ -175,7 +175,7 @@ SQL;
             $end->format('Y-m-d'),
         ];
         $sql = <<<SQL
-SELECT * FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
 SQL;
         $rows = $this->db
             ->fetchAll($sql, $params);
