@@ -46,6 +46,8 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
             ]
         );
 
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['SERVER_PORT'] = '8090';
         // Set up a request object based on the environment
         $request = Request::createFromEnvironment($environment);
 

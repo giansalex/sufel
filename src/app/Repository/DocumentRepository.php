@@ -90,7 +90,7 @@ SQL;
      * Add a new document.
      *
      * @param Document $document
-     * @return bool
+     * @return bool|string
      */
     public function add(Document $document)
     {
@@ -111,8 +111,14 @@ SQL;
 INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename)
 VALUES(?,?,?,?,?,?,?,?,?,?)
 SQL;
+        $con = $this->db->getConnection();
+        $stm = $con->prepare($sql);
+        $success = $stm->execute($arguments);
+        if (!$success) {
+            return FALSE;
+        }
 
-        return $this->db->exec($sql, $arguments);
+        return $con->lastInsertId();
     }
 
     /**

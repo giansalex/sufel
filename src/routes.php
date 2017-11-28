@@ -3,6 +3,7 @@
 
 use Sufel\App\Controllers\ClientController;
 use Sufel\App\Controllers\CompanyController;
+use Sufel\App\Controllers\DocumentController;
 use Sufel\App\Controllers\HomeController;
 use Sufel\App\Controllers\SecureController;
 
@@ -23,4 +24,5 @@ $app->group('/api/client', function () {
 });
 
 $app->get('/', HomeController::class . ':home');
-$app->get('/swagger', HomeController::class . ':swagger');
+$app->get('/swagger', HomeController::class . ':swagger')->setName('swagger');
+$app->get('/file/{hash}/{type}',DocumentController::class . ':download')->setName('file_download');

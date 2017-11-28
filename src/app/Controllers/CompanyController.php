@@ -16,6 +16,7 @@ use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Service\LinkGenerator;
 use Sufel\App\Utils\Validator;
 use Sufel\App\Utils\XmlExtractor;
 
@@ -106,8 +107,9 @@ class CompanyController
         $doc = new Document();
         $doc->setInvoice($inv)
             ->setFilename($name);
-        $save = $repo->add($doc);
-        if (!$save) {
+        $idSave = $repo->add($doc);
+
+        if ($idSave === FALSE) {
             return $response->withStatus(500);
         }
 
@@ -125,7 +127,11 @@ class CompanyController
         $zip->addFromString($name.'.pdf', $pdf);
         $zip->close();
 
-        return $response;
+        $gen = $this->container->get(LinkGenerator::class);
+        $links = $gen->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
+        $this->container->get('logger')->info('links: ' . json_encode($links));
+
+        return $response->withJson($links);
     }
 
     /**

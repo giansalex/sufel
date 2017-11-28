@@ -209,7 +209,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Operación exitosa"
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/FilesDocument",
+              "description": "Links de los archivos"
+            }
           },
           "400": {
             "description": "Parametros de entrada inválidos"
@@ -467,12 +471,10 @@
       ],
       "properties": {
         "xml": {
-          "type": "string",
-          "description": "Xml en base64"
+          "type": "string"
         },
         "pdf": {
-          "type": "string",
-          "description": "Xml en base64"
+          "type": "string"
         }
       }
     },

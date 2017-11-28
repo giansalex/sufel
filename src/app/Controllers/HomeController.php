@@ -8,8 +8,11 @@
 
 namespace Sufel\App\Controllers;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Router;
+use Sufel\App\Service\LinkGenerator;
 
 /**
  * Class HomeController
@@ -18,6 +21,20 @@ use Psr\Http\Message\ServerRequestInterface;
 class HomeController
 {
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * HomeController constructor.
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * @param ServerRequestInterface    $request
      * @param ResponseInterface         $response
      * @param array $args
@@ -25,7 +42,10 @@ class HomeController
      */
     public function home($request, $response, $args)
     {
-        $swaggerUrl = $request->getUri() . 'swagger';
+        $gen = $this->container->get(LinkGenerator::class);
+        /**@var $router Router */
+        $router = $this->container->get('router');
+        $swaggerUrl = $gen->getFullBasePath(true) . $router->pathFor('swagger');
         $body = <<<HTML
 <h1>Welcome to SUFEL API</h1>
 <a href="http://petstore.swagger.io/?url=$swaggerUrl">Swagger API documentacion</a>
@@ -49,25 +69,9 @@ HTML;
             return $response->withStatus(404);
         }
         $jsonContent = file_get_contents($filename);
-        $response->getBody()->write(str_replace('sufel.net', $this->getBaseUri($request), $jsonContent));
+        $gen = $this->container->get(LinkGenerator::class);
+        $response->getBody()->write(str_replace('sufel.net', $gen->getFullBasePath(), $jsonContent));
 
         return $response->withHeader('Content-Type', 'application/json; charset=utf8');
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @return string
-     */
-    private function getBaseUri($request)
-    {
-        $uri = $request->getUri();
-        $url = $uri->getHost();
-        if ($uri->getPort() && $uri->getPort() !== 80) {
-            $url .= ':' . $uri->getPort();
-        }
-        /**@var $uri \Slim\Http\Uri */
-        $url .= $uri->getBasePath();
-
-        return $url;
     }
 }

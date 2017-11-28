@@ -82,7 +82,12 @@ class CompanyControllerTest extends BaseTestCase
         ];
 
         $response = $this->runApp('POST', '/api/company/add-document', $body);
-
+        echo (string)$response->getBody();
         $this->assertEquals(200, $response->getStatusCode());
+
+        $obj = $this->getObject($response->getBody());
+        var_dump($obj);
+        $this->assertNotEmpty($obj->xml);
+        $this->assertNotEmpty($obj->pdf);
     }
 }

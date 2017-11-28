@@ -5,6 +5,7 @@ use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Service\CryptoService;
+use Sufel\App\Service\LinkGenerator;
 use Sufel\App\Utils\PdoErrorLogger;
 
 $container = $app->getContainer();
@@ -20,7 +21,11 @@ $container['logger'] = function ($c) {
 };
 
 $container[CryptoService::class] = function ($c) {
-    return new CryptoService($c->get($c->get('settings')['jwt']['secret']));
+    return new CryptoService($c->get('settings')['jwt']['secret']);
+};
+
+$container[LinkGenerator::class] = function ($c) {
+    return new LinkGenerator($c);
 };
 
 $container[PdoErrorLogger::class] = function ($c) {
