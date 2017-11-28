@@ -69,7 +69,7 @@ class DocumentController
         $result = [];
         if ($type == 'xml') {
             $result['file'] = $zip->getFromName($name . '.xml');
-            $result['type'] = 'text/xml';
+            $result['type'] = 'application/xml';
         } else {
             $result['file'] = $zip->getFromName($name . '.pdf');
             $result['type'] = 'application/pdf';
@@ -79,7 +79,7 @@ class DocumentController
         $response->getBody()->write($result['file']);
         return $response
             ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', "attachment; filename=$name.$type;")
+            ->withHeader('Content-Disposition', "attachment; filename=\"$name.$type\";")
             ->withHeader('Content-Length', strlen($result['file']))
             ->withoutHeader('Pragma')
             ->withoutHeader('Expires')
