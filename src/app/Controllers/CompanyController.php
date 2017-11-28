@@ -129,7 +129,6 @@ class CompanyController
 
         $gen = $this->container->get(LinkGenerator::class);
         $links = $gen->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
-        $this->container->get('logger')->info('links: ' . json_encode($links));
 
         return $response->withJson($links);
     }

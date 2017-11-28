@@ -1,8 +1,12 @@
-vendor/
-tests/
-build.bat
+/bin/
+/vendor/
+/tests/
+!/public/upload/.htaccess
+/build_prod.bat
+/box.json
+/box.bat
 .gitattributes
 .gitignore
 *.md
-.travis.yml
-phpunit.xml
+/.travis.yml
+/phpunit.xml
