@@ -162,6 +162,28 @@ SQL;
     }
 
     /**
+     * @param $ruc
+     * @param \DateTime $init
+     * @param \DateTime $end
+     * @return array
+     */
+    public function getList($ruc, \DateTime $init, \DateTime $end)
+    {
+        $params = [
+            $ruc,
+            $init->format('Y-m-d'),
+            $end->format('Y-m-d'),
+        ];
+        $sql = <<<SQL
+SELECT * FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
+SQL;
+        $rows = $this->db
+            ->fetchAll($sql, $params);
+
+        return $rows;
+    }
+
+    /**
      * Get All documents by company's ruc.
      *
      * @param string $ruc
