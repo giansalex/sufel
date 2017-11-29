@@ -8,7 +8,7 @@
 
 namespace Sufel\App\Utils;
 
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class PdoErrorLogger
@@ -17,25 +17,22 @@ use Monolog\Logger;
 class PdoErrorLogger
 {
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     private $logger;
 
     /**
      * PdoErrorLogger constructor.
-     * @param Logger $logger
+     * @param LoggerInterface $logger
      */
-    public function __construct(Logger $logger)
+    public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
     public function err(\PDOStatement $statement)
     {
-        $message = sprintf('PDO code: %s | data: %s',
-            $statement->errorCode(),
-            json_encode($statement->errorInfo()));
-
-        $this->logger->err($message);
+        $this->logger
+            ->error('PDO code:' . $statement->errorCode(), $statement->errorInfo());
     }
 }

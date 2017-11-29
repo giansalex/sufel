@@ -4,11 +4,11 @@ return [
         'displayErrorDetails' => true, // set to false in production
         'addContentLengthHeader' => false, // Allow the web server to send the content-length header
 
-        // Monolog settings
+        // Logger settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::DEBUG,
+            'path' => __DIR__ . '/../logs',
+            'level' => Psr\Log\LogLevel::DEBUG,
         ],
 
         // Db Settings

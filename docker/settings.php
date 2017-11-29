@@ -7,8 +7,8 @@ return [
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => __DIR__ . '/../logs/app.log',
-            'level' => \Monolog\Logger::INFO,
+            'path' => __DIR__ . '/../logs',
+            'level' => Psr\Log\LogLevel::INFO,
         ],
 
         // Db Settings
