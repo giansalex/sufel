@@ -13,5 +13,8 @@ Una implementación basada en Angular 5 [SUFEL Angular](https://github.com/gians
 
 ## Docker
 
-[Docker Hub](https://hub.docker.com/r/giansalex/sufel/)
+Deploy from [Docker Hub](https://hub.docker.com/r/giansalex/sufel/)
 
+```bash
+docker pull giansalex/sufel
+```
