@@ -6,7 +6,9 @@ rm -rf vendor
 composer install --no-dev --optimize-autoloader
 box build
 mkdir dist
-mv sufel.phar sufel/.phar
+mkdrid dist/upload
+mv sufel.phar dist/sufel.phar
 cp public/.htaccess dist/.htaccess
 cp bin/index.php dist/index.php
+cp bin/.htaccess dist/upload/.htaccess
 git checkout .

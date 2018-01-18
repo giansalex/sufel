@@ -19,11 +19,11 @@ return [
         ],
         // Jwt settings
         'jwt' => [
-            'secret' => 'yYa3Nmalk1a56fhA',
+            'secret' => getenv('SUFEL_JWT_KEY'),
         ],
 
         // other settings
-        'token_admin' => 'jsAkl34Oa2Tyu',
+        'token_admin' => getenv('SUFEL_ADMIN'),
         'upload_dir' => 'upload',
     ],
 ];
