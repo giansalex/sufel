@@ -7,7 +7,7 @@ return [
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',
-            'path' => 'php://stdout',
+            'path' => 'logs',
             'level' => Psr\Log\LogLevel::INFO,
         ],
 

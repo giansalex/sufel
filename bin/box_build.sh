@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd ..
 rm -rf dist
-cp docker/settings.php src/settings.php
+cp bin/settings.php src/settings.php
 rm -rf vendor
 composer install --no-dev --optimize-autoloader
 box build
