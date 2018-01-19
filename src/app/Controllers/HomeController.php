@@ -35,17 +35,20 @@ class HomeController
     }
 
     /**
-     * @param ServerRequestInterface    $request
-     * @param ResponseInterface         $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param array $args
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function home($request, $response, $args)
     {
         $gen = $this->container->get(LinkGenerator::class);
         /**@var $router Router */
         $router = $this->container->get('router');
-        $swaggerUrl = $gen->getFullBasePath(true) . $router->pathFor('swagger');
+
+        $swaggerUrl = $gen->getBasePath() . $router->pathFor('swagger');
         $body = <<<HTML
 <h1>Welcome to SUFEL API</h1>
 <a href="http://petstore.swagger.io/?url=$swaggerUrl">Swagger API documentacion</a>
@@ -57,10 +60,12 @@ HTML;
     }
 
     /**
-     * @param ServerRequestInterface    $request
-     * @param ResponseInterface         $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param array $args
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function swagger($request, $response, $args)
     {

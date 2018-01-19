@@ -35,6 +35,8 @@ class LinkGenerator
     /**
      * @param array $data
      * @return array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getLinks(array $data)
     {
@@ -57,12 +59,12 @@ class LinkGenerator
     /**
      * @param bool $schema
      * @return string
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getFullBasePath($schema = false)
     {
-        /**@var $request Request */
-        $request = $this->container->get('request');
-        $uri = $request->getUri();
+        $uri = $this->getUri();
         $url = $uri->getHost();
         if ($uri->getPort() && $uri->getPort() !== 80) {
             $url .= ':' . $uri->getPort();
@@ -75,5 +77,33 @@ class LinkGenerator
         }
 
         return $url;
+    }
+
+    /**
+     * @return string Port with domain
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function getBasePath()
+    {
+        $uri = $this->getUri();
+        $url = $uri->getScheme().'://'.$uri->getHost();
+        if ($uri->getPort() && $uri->getPort() !== 80) {
+            $url .= ':' . $uri->getPort();
+        }
+
+        return $url;
+    }
+
+    /**
+     * @return \Psr\Http\Message\UriInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    private function getUri()
+    {
+        /**@var $request Request */
+        $request = $this->container->get('request');
+        return $request->getUri();
     }
 }
