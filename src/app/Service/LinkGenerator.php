@@ -45,7 +45,7 @@ class LinkGenerator
         $cryp = $this->container->get(CryptoService::class);
         $hash = urlencode($cryp->encrypt(json_encode($data)));
 
-        $basePath = $this->getFullBasePath(true);
+        $basePath = $this->getBasePath();
 
         $xmlLink = $router->pathFor('file_download', ['hash' => $hash, 'type' => 'xml']);
         $pdfLink = $router->pathFor('file_download', ['hash' => $hash, 'type' => 'pdf']);
@@ -57,12 +57,11 @@ class LinkGenerator
     }
 
     /**
-     * @param bool $schema
      * @return string
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function getFullBasePath($schema = false)
+    public function getFullBasePath()
     {
         $uri = $this->getUri();
         $url = $uri->getHost();
@@ -71,10 +70,6 @@ class LinkGenerator
         }
         /**@var $uri \Slim\Http\Uri */
         $url .= $uri->getBasePath();
-
-        if ($schema) {
-            $url = $uri->getScheme() . '://' . $url;
-        }
 
         return $url;
     }
