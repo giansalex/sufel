@@ -17,7 +17,7 @@ class SecureControllerTest extends BaseTestCase
     public function testCompanyInvalidAuth()
     {
         $data = ['ruc' => '20000000001'];
-        $response = $this->runApp('POST', '/api/client/auth', $data);
+        $response = $this->runApp('POST', '/api/document/auth', $data);
 
         $this->assertEquals(400, $response->getStatusCode());
     }
@@ -38,7 +38,7 @@ class SecureControllerTest extends BaseTestCase
     public function testClientAuthNotValid()
     {
         $data = ['emisor' => '20000000001'];
-        $response = $this->runApp('POST', '/api/client/auth', $data);
+        $response = $this->runApp('POST', '/api/document/auth', $data);
 
         $this->assertEquals(400, $response->getStatusCode());
     }
