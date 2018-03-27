@@ -9,7 +9,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "secure" => false,
     "attribute" => "jwt",
     "path" => '/api',
-    "passthrough" => ["/api/client/auth", "/api/company/auth", "/api/company/create"],
+    "passthrough" => ["/api/client/auth", "/api/company/auth", "/api/company/"],
     "secret" => $container['settings']['jwt']['secret'],
     "algorithm" => ["HS256"],
     "callback" => function ($request, $response, $arguments) {
