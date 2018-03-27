@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Sufel API.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "title": "SUFEL",
     "contact": {
       "email": "giansalex@gmail.com"
@@ -13,7 +13,11 @@
   "tags": [
     {
       "name": "client",
-      "description": "Acceso para clientes"
+      "description": "Acceso para consulta por credenciales"
+    },
+    {
+      "name": "document",
+      "description": "Acceso para consulta por comprobante"
     },
     {
       "name": "company",
@@ -25,14 +29,14 @@
     "https"
   ],
   "paths": {
-    "/client/auth": {
+    "/document/auth": {
       "post": {
         "tags": [
-          "client"
+          "document"
         ],
-        "summary": "Autentificacion por documento",
-        "description": "Retorna el token si la informacion del documento es correcta",
-        "operationId": "authClient",
+        "summary": "Autentificacion por comprobante",
+        "description": "Retorna el token si la información del documento es válida",
+        "operationId": "authByDocument",
         "consumes": [
           "application/json"
         ],
@@ -63,13 +67,13 @@
         }
       }
     },
-    "/client/document/{type}": {
+    "/document/resource/{type}": {
       "get": {
         "tags": [
-          "client"
+          "document"
         ],
-        "summary": "Informacion del documento.",
-        "description": "Retorna la informacion solicitada del documento asociado al token",
+        "summary": "Información del documento.",
+        "description": "Retorna la información solicitada del documento asociado al token",
         "operationId": "getDocument",
         "produces": [
           "application/json"
@@ -94,6 +98,131 @@
         "security": [
           {
             "Bearer": []
+          }
+        ]
+      }
+    },
+    "/client/auth": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Autentificacion por credenciales",
+        "description": "Retorna el token si las credenciales son correctas",
+        "operationId": "authByClient",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Informacion del documento.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClientCredential"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/AuthToken"
+            }
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          }
+        }
+      }
+    },
+    "/client/documents": {
+      "get": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Información de los comprobantes.",
+        "description": "Retorna la lista de comprobantes del cliente",
+        "operationId": "getClientDocuments",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Inicio de Búsqueda",
+            "type": "string",
+            "format": "date",
+            "required": true
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "Fin de Búsqueda",
+            "type": "string",
+            "format": "date",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/Document"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/company": {
+      "post": {
+        "tags": [
+          "company"
+        ],
+        "summary": "Crea nueva Empresa",
+        "description": "Autorización de nueva empresa.",
+        "operationId": "creteCompany",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Datos de la empresa.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Company"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos"
+          },
+          "401": {
+            "description": "Token Inválido"
+          }
+        },
+        "security": [
+          {
+            "AdminToken": []
           }
         ]
       }
@@ -139,50 +268,51 @@
         }
       }
     },
-    "/company/create": {
-      "post": {
+    "/company/documents": {
+      "get": {
         "tags": [
           "company"
         ],
-        "summary": "Crea nueva Empresa",
-        "description": "Autorización de nueva empresa.",
-        "operationId": "creteCompany",
+        "summary": "Lista los documentos del emisor",
+        "description": "Retorna lista de documentos segun el rando de fecha.",
+        "operationId": "getDocuments",
         "consumes": [
-          "application/json"
-        ],
-        "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "Datos de la empresa.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Company"
-            }
+            "name": "start",
+            "in": "query",
+            "description": "Inicio Rango de Fecha.",
+            "type": "string",
+            "format": "date",
+            "required": true
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "Fin Rango de Fecha.",
+            "type": "string",
+            "format": "date",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Operación exitosa"
-          },
-          "400": {
-            "description": "Parametros de entrada inválidos"
-          },
-          "401": {
-            "description": "Token Inválido"
+            "description": "Operación exitosa",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Document"
+              }
+            }
           }
         },
         "security": [
           {
-            "AdminToken": []
+            "Bearer": []
           }
         ]
-      }
-    },
-    "/company/add-document": {
+      },
       "post": {
         "tags": [
           "company"
@@ -211,8 +341,7 @@
           "200": {
             "description": "Operación exitosa",
             "schema": {
-              "$ref": "#/definitions/FilesDocument",
-              "description": "Links de los archivos"
+              "$ref": "#/definitions/FilesDocument"
             }
           },
           "400": {
@@ -224,10 +353,8 @@
             "Bearer": []
           }
         ]
-      }
-    },
-    "/company/cancel-document": {
-      "post": {
+      },
+      "patch": {
         "tags": [
           "company"
         ],
@@ -254,43 +381,6 @@
           },
           "400": {
             "description": "No se pudo anular"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      }
-    },
-    "/company/list-document": {
-      "post": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Lista los documentos del emisor",
-        "description": "Retorna lista de documentos segun el rando de fecha.",
-        "operationId": "getListDoc",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Rango de Fecha.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DateFilter"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa",
-            "schema": {
-              "$ref": "#/definitions/Document"
-            }
           }
         },
         "security": [
@@ -475,19 +565,6 @@
         },
         "pdf": {
           "type": "string"
-        }
-      }
-    },
-    "DateFilter": {
-      "type": "object",
-      "properties": {
-        "init": {
-          "type": "string",
-          "format": "date"
-        },
-        "end": {
-          "type": "string",
-          "format": "date"
         }
       }
     }
