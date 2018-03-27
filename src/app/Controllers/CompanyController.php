@@ -191,11 +191,11 @@ class CompanyController
      */
     public function getInvoices($request, $response, $args)
     {
-        $params = $request->getParsedBody();
-        if (!Validator::existFields($params, ['init', 'end'])) {
+        $params = $request->getQueryParams();
+        if (!Validator::existFields($params, ['start', 'end'])) {
             return $response->withStatus(400);
         }
-        $init = new \DateTime($params['init']);
+        $init = new \DateTime($params['start']);
         $end = new \DateTime($params['end']);
 
         $jwt = $request->getAttribute('jwt');

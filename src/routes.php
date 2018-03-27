@@ -9,18 +9,18 @@ use Sufel\App\Controllers\SecureController;
 
 $app->group('/api/company', function () {
     /**@var $this \Slim\App*/
+    $this->post('/', CompanyController::class . ':createCompany');
     $this->post('/auth', SecureController::class . ':company');
-    $this->post('/add-document', CompanyController::class . ':addDocument');
-    $this->post('/create', CompanyController::class . ':createCompany');
-    $this->post('/cancel-document', CompanyController::class . ':anularDocument');
-    $this->post('/list-document', CompanyController::class . ':getInvoices');
+    $this->get('/documents', CompanyController::class . ':getInvoices');
+    $this->post('/documents', CompanyController::class . ':addDocument');
+    $this->patch('/documents', CompanyController::class . ':anularDocument');
     $this->post('/change-password', CompanyController::class . ':changePassword');
 });
 
-$app->group('/api/client', function () {
+$app->group('/api/document', function () {
     /**@var $this \Slim\App*/
     $this->post('/auth', SecureController::class . ':client');
-    $this->get('/document/{type}', ClientController::class . ':getDocument');
+    $this->get('/resource/{type}', ClientController::class . ':getDocument');
 });
 
 $app->get('/', HomeController::class . ':home');
