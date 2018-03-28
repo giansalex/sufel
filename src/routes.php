@@ -7,9 +7,10 @@ use Sufel\App\Controllers\DocumentController;
 use Sufel\App\Controllers\HomeController;
 use Sufel\App\Controllers\SecureController;
 
+$app->post('/api/companies', CompanyController::class . ':createCompany');
+
 $app->group('/api/company', function () {
     /**@var $this \Slim\App*/
-    $this->post('/', CompanyController::class . ':createCompany');
     $this->post('/auth', SecureController::class . ':company');
     $this->get('/documents', CompanyController::class . ':getInvoices');
     $this->post('/documents', CompanyController::class . ':addDocument');

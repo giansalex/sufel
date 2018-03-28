@@ -26,14 +26,14 @@ class CompanyControllerTest extends BaseTestCase
 
     public function testWithoutTokenCreateCompany()
     {
-        $response = $this->runApp('POST', '/api/company/');
+        $response = $this->runApp('POST', '/api/companies');
 
         $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testInvalidTokenCreateCompany()
     {
-        $response = $this->runApp('POST', '/api/company/?token=xyz');
+        $response = $this->runApp('POST', '/api/companies?token=xyz');
 
         $this->assertEquals(401, $response->getStatusCode());
         $obj = $this->getObject($response->getBody());
@@ -45,7 +45,7 @@ class CompanyControllerTest extends BaseTestCase
         $body = [
             'ruc' => '20000000002',
         ];
-        $response = $this->runApp('POST', '/api/company/?token=jsAkl34Oa2Tyu', $body);
+        $response = $this->runApp('POST', '/api/companies?token=jsAkl34Oa2Tyu', $body);
 
         $this->assertEquals(400, $response->getStatusCode());
         $obj = $this->getObject($response->getBody());
@@ -59,7 +59,7 @@ class CompanyControllerTest extends BaseTestCase
             'password' => '123456',
             'nombre' => 'COMPANY 1'
         ];
-        $response = $this->runApp('POST', '/api/company/?token=jsAkl34Oa2Tyu', $body);
+        $response = $this->runApp('POST', '/api/companies?token=jsAkl34Oa2Tyu', $body);
         $this->assertEquals(200, $response->getStatusCode());
     }
 
