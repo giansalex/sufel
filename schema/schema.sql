@@ -4,6 +4,7 @@
 --
 -- USE sufel;
 
+-- Empresas autorizadas a enviar sus comprobantes para consulta de sus clientes
 CREATE TABLE company
 (
   ruc CHAR(11) PRIMARY KEY,
@@ -12,6 +13,7 @@ CREATE TABLE company
   enable BIT NOT NULL
 )ENGINE = INNODB;
 
+-- Comprobantes electronicos enviados por las empresas autorizadas
 CREATE TABLE document
 (
   id INTEGER AUTO_INCREMENT NOT NULL,
@@ -28,6 +30,20 @@ CREATE TABLE document
   filename VARCHAR(40) NOT NULL,
   baja BIT NULL,
   PRIMARY KEY (id),
+  FOREIGN KEY (emisor) REFERENCES company(ruc)
+)ENGINE = INNODB;
+
+-- Clientes Receptores habilitados a consutar todos sus comprobantes empleando credenciales
+-- otorgadas por la empresa emisora
+CREATE TABLE client
+(
+  tipo VARCHAR(2) NOT NULL,
+  documento VARCHAR(15) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  last_access DATETIME NOT NULL,
+  emisor CHAR(11) NOT NULL,
+  PRIMARY KEY (tipo, documento),
   FOREIGN KEY (emisor) REFERENCES company(ruc)
 )ENGINE = INNODB;
 
