@@ -71,7 +71,7 @@ class CompanyRepository
     public function exist($ruc)
     {
         $con = $this->db->getConnection();
-        $stm = $con->prepare('SELECT COUNT(*) FROM company WHERE ruc = ? LIMIT 1');
+        $stm = $con->prepare('SELECT COUNT(1) FROM company WHERE ruc = ?');
         $stm->execute([$ruc]);
 
         $count = intval($stm->fetchColumn());
