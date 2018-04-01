@@ -16,12 +16,12 @@ class Client
     /**
      * @var string
      */
-    private $tipo;
+    private $documento;
 
     /**
      * @var string
      */
-    private $documento;
+    private $names;
 
     /**
      * @var string
@@ -39,31 +39,6 @@ class Client
      * @var \DateTimeInterface
      */
     private $last;
-
-    /**
-     * @var string
-     */
-    private $emisor;
-
-    /**
-     * @return string
-     */
-    public function getTipo()
-    {
-        return $this->tipo;
-    }
-
-    /**
-     * @param string $tipo
-     *
-     * @return Client
-     */
-    public function setTipo($tipo)
-    {
-        $this->tipo = $tipo;
-
-        return $this;
-    }
 
     /**
      * @return string
@@ -88,6 +63,26 @@ class Client
     /**
      * @return string
      */
+    public function getNames()
+    {
+        return $this->names;
+    }
+
+    /**
+     * @param string $names
+     *
+     * @return Client
+     */
+    public function setNames($names)
+    {
+        $this->names = $names;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getPassword()
     {
         return $this->password;
@@ -99,6 +94,17 @@ class Client
      * @return Client
      */
     public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @param string $password
+     * @return Client
+     */
+    public function setPlainPassword($password)
     {
         $this->password = password_hash($password, PASSWORD_BCRYPT);
 
@@ -141,26 +147,6 @@ class Client
     public function setLast($last)
     {
         $this->last = $last;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmisor()
-    {
-        return $this->emisor;
-    }
-
-    /**
-     * @param string $emisor
-     *
-     * @return Client
-     */
-    public function setEmisor($emisor)
-    {
-        $this->emisor = $emisor;
 
         return $this;
     }
