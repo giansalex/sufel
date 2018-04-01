@@ -16,7 +16,7 @@ class Client
     /**
      * @var string
      */
-    private $documento;
+    private $document;
 
     /**
      * @var string
@@ -43,19 +43,19 @@ class Client
     /**
      * @return string
      */
-    public function getDocumento()
+    public function getDocument()
     {
-        return $this->documento;
+        return $this->document;
     }
 
     /**
-     * @param string $documento
+     * @param string $document
      *
      * @return Client
      */
-    public function setDocumento($documento)
+    public function setDocument($document)
     {
-        $this->documento = $documento;
+        $this->document = $document;
 
         return $this;
     }
