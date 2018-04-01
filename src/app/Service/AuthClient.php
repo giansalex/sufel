@@ -10,6 +10,7 @@ namespace Sufel\App\Service;
 
 use Sufel\App\Models\Client;
 use Sufel\App\Repository\ClienteRepository;
+use Sufel\App\Repository\ClientProfileRepository;
 use Sufel\App\ViewModels\ClientRegister;
 
 /**
@@ -21,15 +22,21 @@ class AuthClient
      * @var ClienteRepository
      */
     private $repository;
+    /**
+     * @var ClientProfileRepository
+     */
+    private $profile;
 
     /**
      * AuthClient constructor.
      *
      * @param ClienteRepository $repository
+     * @param ClientProfileRepository $profile
      */
-    public function __construct(ClienteRepository $repository)
+    public function __construct(ClienteRepository $repository, ClientProfileRepository $profile)
     {
         $this->repository = $repository;
+        $this->profile = $profile;
     }
 
     /**
@@ -77,6 +84,12 @@ class AuthClient
             return [false, 'Cliente no se encuentra registrado'];
         }
 
-        return [password_verify($password, $exist->getPassword()), ''];
+        $success = password_verify($password, $exist->getPassword());
+        if ($success === false) {
+            return [false, 'Credenciales inválidas'];
+        }
+        $this->profile->updateAccess($document);
+
+        return [$success, ''];
     }
 }

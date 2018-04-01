@@ -3,6 +3,7 @@
 
 use Sufel\App\Controllers\ClientProfileController;
 use Sufel\App\Repository\ClienteRepository;
+use Sufel\App\Repository\ClientProfileRepository;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
@@ -47,11 +48,11 @@ $container[DocumentRepository::class] = function ($c) {
 };
 
 $container[AuthClient::class] = function ($c) {
-    return new AuthClient($c->get(ClienteRepository::class));
+    return new AuthClient($c->get(ClienteRepository::class), $c->get(ClientProfileRepository::class));
 };
 
 $container[ClientProfile::class] = function ($c) {
-    return new ClientProfile($c->get(ClienteRepository::class), $c->get(\Sufel\App\Repository\ClientProfileRepository::class));
+    return new ClientProfile($c->get(ClienteRepository::class), $c->get(ClientProfileRepository::class));
 };
 
 $container[ClientProfileController::class] = function ($c) {
