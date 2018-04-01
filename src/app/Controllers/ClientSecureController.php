@@ -104,6 +104,6 @@ class ClientSecureController
             return $response->withJson(['message' => empty($message) ? 'No se pudo registrar' : $message], 400);
         }
 
-        return $response->withJson(['message' => 'registrado exitosamente']);
+        return $response;
     }
 }
