@@ -3,6 +3,7 @@
 // Routes
 
 use Sufel\App\Controllers\ClientController;
+use Sufel\App\Controllers\ClientSecureController;
 use Sufel\App\Controllers\CompanyController;
 use Sufel\App\Controllers\DocumentController;
 use Sufel\App\Controllers\ExternalFileController;
@@ -24,6 +25,8 @@ $app->group('/api/client', function () {
     /** @var $this \Slim\App */
     $this->get('/documents', ClientController::class.':getList');
     $this->get('/documents/{id}/resource/{type}', ClientController::class.':getDocument');
+    $this->post('/login', ClientSecureController::class . 'login');
+    $this->post('/register', ClientSecureController::class . 'register');
 });
 
 $app->group('/api/document', function () {
