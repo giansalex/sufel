@@ -57,4 +57,17 @@ class ClientProfileRepository
 
         return $this->db->exec('UPDATE client SET password = ? WHERE documento = ?', $params);
     }
+
+    /**
+     * Update client last access.
+     *
+     * @param string $document
+     * @return bool
+     */
+    public function updateAccess($document)
+    {
+        $query = 'UPDATE client SET last_access = ? WHERE documento = ?';
+
+        return $this->db->exec($query, [new \DateTime(), $document]);
+    }
 }
