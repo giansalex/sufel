@@ -12,6 +12,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Utils\Validator;
 
 /**
  * Class ClientController
@@ -44,46 +45,20 @@ class ClientController
      * @param array $args
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function getDocument($request, $response, $args)
+    public function getList($request, $response, $args)
     {
-        $type = $args['type'];
-        if (!in_array($type, ['info', 'xml', 'pdf'])) {
-            return $response->withStatus(404);
+        $params = $request->getQueryParams();
+        if (!Validator::existFields($params, ['start', 'end'])) {
+            return $response->withStatus(400);
         }
+        $init = new \DateTime($params['start']);
+        $end = new \DateTime($params['end']);
 
         $jwt = $request->getAttribute('jwt');
-        $id = $jwt->doc;
+        $document = $jwt->document;
 
-        $doc = $this->repository->get($id);
-        if ($doc === null) {
-            return $response->withStatus(404);
-        }
-        if ($type == 'info') {
-            return $response->withJson($doc);
-        }
+        $docs = $this->repository->getListByClient($document, $init, $end);
 
-        $name = $doc['filename'];
-        $pathZip = $this->rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
-        $zip = new \ZipArchive();
-        $zip->open($pathZip);
-
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $zip->getFromName($name . '.xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $zip->getFromName($name . '.pdf');
-            $result['type'] = 'application/pdf';
-        }
-        $zip->close();
-
-        $response->getBody()->write($result['file']);
-        return $response
-            ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', 'attachment')
-            ->withHeader('Content-Length', strlen($result['file']))
-            ->withoutHeader('Pragma')
-            ->withoutHeader('Expires')
-            ->withoutHeader('Cache-Control');
+        return $response->withJson($docs);
     }
 }

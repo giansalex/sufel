@@ -1,9 +1,9 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Administrador
- * Date: 28/11/2017
- * Time: 12:42 PM.
+ * User: Giansalex
+ * Date: 31/03/2018
+ * Time: 22:40.
  */
 
 namespace Sufel\App\Controllers;
@@ -12,34 +12,26 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Service\CryptoService;
 
 /**
- * Class DocumentController.
+ * Class ExternalFileController.
  */
-class DocumentController
+class ExternalFileController
 {
     /**
-     * @var DocumentRepository
+     * @var ContainerInterface
      */
-    private $repository;
-
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private $container;
 
     /**
      * CompanyController constructor.
      *
      * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->repository = $container->get(DocumentRepository::class);
-        $this->rootDir = $container->get('settings')['upload_dir'];
+        $this->container = $container;
     }
 
     /**
@@ -48,34 +40,41 @@ class DocumentController
      * @param array                  $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function getDocument($request, $response, $args)
+    public function download($request, $response, $args)
     {
+        $hash = $args['hash'];
         $type = $args['type'];
-        if (!in_array($type, ['info', 'xml', 'pdf'])) {
+        if (!in_array($type, ['xml', 'pdf'])) {
             return $response->withStatus(404);
         }
 
-        $jwt = $request->getAttribute('jwt');
-        $id = $jwt->doc;
-
-        $doc = $this->repository->get($id);
+        $cryp = $this->container->get(CryptoService::class);
+        $res = $cryp->decrypt($hash);
+        if ($res === false) {
+            return $response->withStatus(404);
+        }
+        $obj = json_decode($res);
+        $repo = $this->container->get(DocumentRepository::class);
+        $doc = $repo->get($obj->id);
         if ($doc === null) {
             return $response->withStatus(404);
         }
-        if ($type == 'info') {
-            return $response->withJson($doc);
-        }
 
         $name = $doc['filename'];
-        $pathZip = $this->rootDir.DIRECTORY_SEPARATOR.$doc['emisor'].DIRECTORY_SEPARATOR.$name.'.zip';
+        $uploadDir = $this->container->get('settings')['upload_dir'];
+
+        $pathZip = $uploadDir.DIRECTORY_SEPARATOR.$doc['emisor'].DIRECTORY_SEPARATOR.$name.'.zip';
         $zip = new \ZipArchive();
         $zip->open($pathZip);
 
         $result = [];
         if ($type == 'xml') {
             $result['file'] = $zip->getFromName($name.'.xml');
-            $result['type'] = 'text/xml';
+            $result['type'] = 'application/xml';
         } else {
             $result['file'] = $zip->getFromName($name.'.pdf');
             $result['type'] = 'application/pdf';
@@ -86,7 +85,7 @@ class DocumentController
 
         return $response
             ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', 'attachment')
+            ->withHeader('Content-Disposition', "attachment; filename=\"$name.$type\";")
             ->withHeader('Content-Length', strlen($result['file']))
             ->withoutHeader('Pragma')
             ->withoutHeader('Expires')
