@@ -1,10 +1,13 @@
 <?php
 // DIC configuration
 
+use Sufel\App\Controllers\ClientProfileController;
+use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Service\AuthClient;
+use Sufel\App\Service\ClientProfile;
 use Sufel\App\Service\CryptoService;
 use Sufel\App\Service\LinkGenerator;
 use Sufel\App\Utils\PdoErrorLogger;
@@ -44,5 +47,13 @@ $container[DocumentRepository::class] = function ($c) {
 };
 
 $container[AuthClient::class] = function ($c) {
-    return new AuthClient($c->get(\Sufel\App\Repository\ClienteRepository::class));
+    return new AuthClient($c->get(ClienteRepository::class));
+};
+
+$container[ClientProfile::class] = function ($c) {
+    return new ClientProfile($c->get(ClienteRepository::class), $c->get(\Sufel\App\Repository\ClientProfileRepository::class));
+};
+
+$container[ClientProfileController::class] = function ($c) {
+    return new ClientProfileController($c->get(ClientProfile::class));
 };
