@@ -41,6 +41,10 @@ class AuthClient
      */
     public function register(ClientRegister $client)
     {
+        if ($client->getPassword() !== $client->getRepeatPassword()) {
+            return [false, 'Las contraseñas no coinciden'];
+        }
+
         $exist = $this->repository->get($client->getDocumento());
 
         if ($exist) {
