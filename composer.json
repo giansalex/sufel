@@ -1,14 +1,16 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
-    "keywords": ["microframework", "rest", "router", "psr7"],
-    "homepage": "http://github.com/slimphp/Slim-Skeleton",
+  "name": "giansalex/sufel",
+  "description": "A REST API para consulta de comprobantes electronicos",
+  "keywords": [
+    "rest",
+    "facturacion-electronica"
+  ],
+  "homepage": "http://github.com/giansalex/sufel",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
+          "name": "Giancarlos Salas",
+          "email": "giansalex@gmail.com"
         }
     ],
     "require": {
@@ -39,5 +41,4 @@
         "test": "phpunit",
         "lint": "./vendor/bin/psalm"
 	}
-
 }
