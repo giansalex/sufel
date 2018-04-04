@@ -42,8 +42,7 @@ class AuthClient
         ClienteRepository $repository,
         ClientProfileRepository $profile,
         UserValidateInterface $validator
-    )
-    {
+    ) {
         $this->repository = $repository;
         $this->profile = $profile;
         $this->validator = $validator;

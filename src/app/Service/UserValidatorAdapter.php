@@ -7,6 +7,7 @@
  */
 
 namespace Sufel\App\Service;
+
 use Peru\Sunat\UserValidator;
 
 /**
@@ -34,7 +35,7 @@ class UserValidatorAdapter implements UserValidateInterface
      * @param string $user
      * @return bool
      */
-    function isValid($document, $user)
+    public function isValid($document, $user)
     {
         $user = strtoupper($user);
 
