@@ -59,6 +59,25 @@ class ClienteRepository
     }
 
     /**
+     * Update existing client.
+     *
+     * @param Client $client
+     *
+     * @return bool
+     */
+    public function update(Client $client)
+    {
+        $params = [
+            $client->getNames(),
+            $client->getPassword(),
+            $client->getDocument(),
+        ];
+        $query = 'UPDATE client SET nombres=?, password=? WHERE documento=?';
+
+        return $this->db->exec($query, $params);
+    }
+
+    /**
      * @param string $document
      *
      * @return Client

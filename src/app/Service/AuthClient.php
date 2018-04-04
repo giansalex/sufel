@@ -54,16 +54,14 @@ class AuthClient
 
         $exist = $this->repository->get($client->getDocumento());
 
-        if ($exist) {
-            return [false, 'El cliente ya esta registrado'];
-        }
-
         $newClient = new Client();
         $newClient->setDocument($client->getDocumento())
             ->setNames($client->getNombres())
             ->setPlainPassword($client->getPassword());
 
-        $success = $this->repository->add($newClient);
+        $success = $exist
+            ? $this->repository->update($newClient)
+            : $this->repository->add($newClient);
 
         return [$success, ''];
     }
