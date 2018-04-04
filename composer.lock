@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad3b66a281ab63be7b8ab1d61bf55f1a",
+    "content-hash": "316ae852992961e605faf257c497846a",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -82,6 +82,56 @@
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
             "time": "2017-06-27T22:17:23+00:00"
+        },
+        {
+            "name": "giansalex/peru-consult",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giansalex/peru-consult.git",
+                "reference": "4110f4182bc5f6e41161946d03fafedb7d2f7dcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giansalex/peru-consult/zipball/4110f4182bc5f6e41161946d03fafedb7d2f7dcd",
+                "reference": "4110f4182bc5f6e41161946d03fafedb7d2f7dcd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "behat/behat": "^3.4",
+                "phpunit/phpunit": ">=4.8 < 6.0"
+            },
+            "suggest": {
+                "ext-dom": "Needed to use class Ruc",
+                "ext-gd": "Needed to use class Dni",
+                "ext-openssl": "Needed to connect to Reniec"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Peru\\": "src/Peru/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giancarlos Salas",
+                    "email": "giansalex@gmail.com"
+                }
+            ],
+            "description": "Consulta Perú",
+            "homepage": "https://github.com/giansalex/peru-consult",
+            "keywords": [
+                "reniec",
+                "sunat"
+            ],
+            "time": "2018-04-03T23:28:14+00:00"
         },
         {
             "name": "katzgrau/klogger",

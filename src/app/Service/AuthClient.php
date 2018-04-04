@@ -26,17 +26,27 @@ class AuthClient
      * @var ClientProfileRepository
      */
     private $profile;
+    /**
+     * @var UserValidateInterface
+     */
+    private $validator;
 
     /**
      * AuthClient constructor.
      *
      * @param ClienteRepository $repository
      * @param ClientProfileRepository $profile
+     * @param UserValidateInterface $validator
      */
-    public function __construct(ClienteRepository $repository, ClientProfileRepository $profile)
+    public function __construct(
+        ClienteRepository $repository,
+        ClientProfileRepository $profile,
+        UserValidateInterface $validator
+    )
     {
         $this->repository = $repository;
         $this->profile = $profile;
+        $this->validator = $validator;
     }
 
     /**
@@ -50,6 +60,12 @@ class AuthClient
     {
         if ($client->getPassword() !== $client->getRepeatPassword()) {
             return [false, 'Las contraseñas no coinciden'];
+        }
+
+        $valid = $this->validator->isValid($client->getDocumento(), $client->getUserSol());
+
+        if (!$valid) {
+            return [false, 'El usuario no coincide con el numero de documento proporcionado'];
         }
 
         $exist = $this->repository->get($client->getDocumento());

@@ -1,6 +1,8 @@
 <?php
 // DIC configuration
 
+use Peru\Http\ClientInterface;
+use Peru\Sunat\UserValidator;
 use Sufel\App\Controllers\ClientProfileController;
 use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\ClientProfileRepository;
@@ -11,6 +13,7 @@ use Sufel\App\Service\AuthClient;
 use Sufel\App\Service\ClientProfile;
 use Sufel\App\Service\CryptoService;
 use Sufel\App\Service\LinkGenerator;
+use Sufel\App\Service\UserValidateInterface;
 use Sufel\App\Utils\PdoErrorLogger;
 
 $container = $app->getContainer();
@@ -21,6 +24,18 @@ $container['logger'] = function ($c) {
     $logger =  new Katzgrau\KLogger\Logger($settings['path'], $settings['level'], ['extension' => 'log']);
 
     return $logger;
+};
+
+$container[ClientInterface::class] = function () {
+    return new \Peru\Http\ContextClient();
+};
+
+$container[UserValidator::class] = function ($c) {
+    return new UserValidator($c->get(ClientInterface::class));
+};
+
+$container[UserValidateInterface::class] = function ($c) {
+    return new \Sufel\App\Service\UserValidatorAdapter($c->get(UserValidator::class));
 };
 
 $container[CryptoService::class] = function ($c) {
@@ -48,7 +63,11 @@ $container[DocumentRepository::class] = function ($c) {
 };
 
 $container[AuthClient::class] = function ($c) {
-    return new AuthClient($c->get(ClienteRepository::class), $c->get(ClientProfileRepository::class));
+    return new AuthClient(
+        $c->get(ClienteRepository::class),
+        $c->get(ClientProfileRepository::class),
+        $c->get(UserValidateInterface::class)
+    );
 };
 
 $container[ClientProfile::class] = function ($c) {
