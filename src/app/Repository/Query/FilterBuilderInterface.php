@@ -23,6 +23,11 @@ interface FilterBuilderInterface
     public function getQueryPart(FilterViewModel $filter);
 
     /**
+     * @return array
+     */
+    public function getParams();
+
+    /**
      * @return bool
      */
     public function canContinue();

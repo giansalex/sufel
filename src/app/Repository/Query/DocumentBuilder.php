@@ -45,8 +45,8 @@ class DocumentBuilder implements FilterBuilderInterface
         $this->filter = $filter;
 
         $map = [
-            'tipo' => $filter->getTipoDoc(),
-            'serie' => $filter->getSerie(),
+            'tipo'        => $filter->getTipoDoc(),
+            'serie'       => $filter->getSerie(),
             'correlatvio' => $filter->getCorrelativo(),
         ];
 
@@ -63,6 +63,14 @@ class DocumentBuilder implements FilterBuilderInterface
             $this->filter->getSerie(),
             $this->filter->getCorrelativo(),
         ]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->joiner->getParams();
     }
 
     private function hasEmpty(array $items)

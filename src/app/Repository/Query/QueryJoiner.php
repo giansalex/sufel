@@ -14,9 +14,22 @@ namespace Sufel\App\Repository\Query;
 class QueryJoiner
 {
     /**
+     * @var array
+     */
+    private $params;
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
      * Une los campos y sus valores, luego une sus partes.
      *
-     * @param array $parts
+     * @param array  $parts
      * @param string $glue
      *
      * @return string
@@ -24,12 +37,15 @@ class QueryJoiner
     public function joinAll(array $parts, $glue = ' AND ')
     {
         $items = [];
+        $this->params = [];
         foreach ($parts as $column => $value) {
             if (empty($value)) {
                 continue;
             }
+            $key = ':'.$column;
+            $items[] = $column.' = '.$key;
 
-            $items[] = $column . "='" . $value . "'";
+            $this->params[$key] = $value;
         }
 
         return $this->joinParts($items, $glue);
@@ -38,7 +54,7 @@ class QueryJoiner
     /**
      * Junta los elmentos que forman parte de un query.
      *
-     * @param array $parts
+     * @param array  $parts
      * @param string $glue
      *
      * @return string

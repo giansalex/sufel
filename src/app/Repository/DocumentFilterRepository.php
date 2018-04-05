@@ -52,27 +52,30 @@ class DocumentFilterRepository
 
     public function getList(FilterViewModel $filter)
     {
-        $query = $this->getQuery($filter);
+        list($query, $params) = $this->getQueryWithParams($filter);
 
         $rows = $this->db
-            ->fetchAll($query);
+            ->fetchAll($query, $params);
 
         return $rows;
     }
 
-    private function getQuery(FilterViewModel $filter)
+    private function getQueryWithParams(FilterViewModel $filter)
     {
         $parts = [];
+        $params = [];
         foreach ($this->builders as $builder) {
             $parts[] = $builder->getQueryPart($filter);
+            $params = array_merge($params, $builder->getParams());
 
             if (!$builder->canContinue()) {
                 break;
             }
         }
 
-        $body = 'SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE ';
+        $query = 'SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE ';
+        $query.= $this->joiner->joinParts($parts);
 
-        return $body . $this->joiner->joinParts($parts);
+        return [$query, $params];
     }
 }

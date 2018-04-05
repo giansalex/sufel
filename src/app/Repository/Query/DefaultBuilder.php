@@ -18,6 +18,11 @@ class DefaultBuilder implements FilterBuilderInterface
     private $joiner;
 
     /**
+     * @var array
+     */
+    private $params;
+
+    /**
      * DefaultBuilder constructor.
      *
      * @param QueryJoiner $joiner
@@ -42,7 +47,11 @@ class DefaultBuilder implements FilterBuilderInterface
 
         $init = $filter->getFecInicio()->format('Y-m-d');
         $end = $filter->getFecFin()->format('Y-m-d');
-        $query2 = "fecha BEETWEN '" . $init . "' AND '" . $end . "'";
+        $query2 = "fecha BEETWEN :finit AND ':fend'";
+        $this->params = [
+            'finit' => $init,
+            'fend'  => $end,
+        ];
 
         return $this->joiner
             ->joinParts([$query, $query2]);
@@ -54,5 +63,13 @@ class DefaultBuilder implements FilterBuilderInterface
     public function canContinue()
     {
         return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return array_merge($this->joiner->getParams(), $this->getParams());
     }
 }
