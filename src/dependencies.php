@@ -1,4 +1,5 @@
 <?php
+
 // DIC configuration
 
 use Peru\Http\ClientInterface;
@@ -8,7 +9,9 @@ use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\ClientProfileRepository;
 use Sufel\App\Repository\CompanyRepository;
 use Sufel\App\Repository\DbConnection;
+use Sufel\App\Repository\DocumentFilterRepository;
 use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Repository\Query\QueryJoiner;
 use Sufel\App\Service\AuthClient;
 use Sufel\App\Service\ClientProfile;
 use Sufel\App\Service\CryptoService;
@@ -21,7 +24,7 @@ $container = $app->getContainer();
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
-    $logger =  new Katzgrau\KLogger\Logger($settings['path'], $settings['level'], ['extension' => 'log']);
+    $logger = new Katzgrau\KLogger\Logger($settings['path'], $settings['level'], ['extension' => 'log']);
 
     return $logger;
 };
@@ -60,6 +63,24 @@ $container[CompanyRepository::class] = function ($c) {
 
 $container[DocumentRepository::class] = function ($c) {
     return new DocumentRepository($c->get(DbConnection::class));
+};
+
+$container[QueryJoiner::class] = function ($c) {
+    return new QueryJoiner();
+};
+
+$container[DocumentFilterRepository::class] = function ($c) {
+    $joiner = $c->get(QueryJoiner::class);
+    $repo = new DocumentFilterRepository(
+        $c->get(DbConnection::class),
+        $joiner
+    );
+    $repo->setBuilders([
+        new \Sufel\App\Repository\Query\DocumentBuilder($joiner),
+        new \Sufel\App\Repository\Query\DefaultBuilder($joiner),
+    ]);
+
+    return $repo;
 };
 
 $container[AuthClient::class] = function ($c) {

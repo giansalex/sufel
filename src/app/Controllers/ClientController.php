@@ -11,8 +11,10 @@ namespace Sufel\App\Controllers;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
+use Sufel\App\Repository\DocumentFilterRepository;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Utils\Validator;
+use Sufel\App\ViewModels\FilterViewModel;
 
 /**
  * Class ClientController.
@@ -20,39 +22,32 @@ use Sufel\App\Utils\Validator;
 class ClientController
 {
     /**
-     * @var DocumentRepository
+     * @var ContainerInterface
      */
-    private $repository;
-
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private $container;
 
     /**
      * CompanyController constructor.
      *
      * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->repository = $container->get(DocumentRepository::class);
-        $this->rootDir = $container->get('settings')['upload_dir'];
+        $this->container = $container;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param Response               $response
-     * @param array                  $args
+     * @param Response $response
+     * @param array $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getList($request, $response, $args)
     {
-        $params = $request->getQueryParams();
+        $params = $request->getParsedBody();
         if (!Validator::existFields($params, ['start', 'end'])) {
             return $response->withStatus(400);
         }
@@ -62,17 +57,30 @@ class ClientController
         $jwt = $request->getAttribute('jwt');
         $document = $jwt->document;
 
-        $docs = $this->repository->getListByClient($document, $init, $end);
+        $filter = new FilterViewModel();
+        $filter
+            ->setClient($document)
+            ->setEmisor(isset($params['emisor']) ? $params['emisor'] : '')
+            ->setTipoDoc(isset($params['tipoDoc']) ? $params['tipoDoc'] : '')
+            ->setSerie(isset($params['serie']) ? $params['serie'] : '')
+            ->setCorrelativo(isset($params['correlativo']) ? $params['correlativo'] : '')
+            ->setFecInicio($init)
+            ->setFecFin($end);
+
+        $repository = $this->container->get(DocumentFilterRepository::class);
+        $docs = $repository->getList($filter);
 
         return $response->withJson($docs);
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param Response               $response
-     * @param array                  $args
+     * @param Response $response
+     * @param array $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getDocument($request, $response, $args)
     {
@@ -85,7 +93,8 @@ class ClientController
         $jwt = $request->getAttribute('jwt');
         $document = $jwt->document;
 
-        $doc = $this->repository->get($id);
+        $repository = $this->container->get(DocumentRepository::class);
+        $doc = $repository->get($id);
         if ($doc === null) {
             return $response->withStatus(404);
         }
@@ -99,7 +108,8 @@ class ClientController
         }
 
         $name = $doc['filename'];
-        $pathZip = $this->rootDir.DIRECTORY_SEPARATOR.$doc['emisor'].DIRECTORY_SEPARATOR.$name.'.zip';
+        $rootDir = $this->container->get('settings')['upload_dir'];
+        $pathZip = $rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
         $zip = new \ZipArchive();
         $zip->open($pathZip);
 
