@@ -141,7 +141,7 @@
       }
     },
     "/client/documents": {
-      "get": {
+      "post": {
         "tags": [
           "client"
         ],
@@ -153,20 +153,13 @@
         ],
         "parameters": [
           {
-            "name": "start",
-            "in": "query",
-            "description": "Inicio de Búsqueda",
-            "type": "string",
-            "format": "date",
-            "required": true
-          },
-          {
-            "name": "end",
-            "in": "query",
-            "description": "Fin de Búsqueda",
-            "type": "string",
-            "format": "date",
-            "required": true
+            "name": "body",
+            "in": "body",
+            "description": "Filtro de busqueda",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DocumentFilter"
+            }
           }
         ],
         "responses": {
@@ -606,6 +599,39 @@
         },
         "pdf": {
           "type": "string"
+        }
+      }
+    },
+    "DocumentFilter": {
+      "type": "object",
+      "required": [
+        "start",
+        "end"
+      ],
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date"
+        },
+        "end": {
+          "type": "string",
+          "format": "date"
+        },
+        "emisor": {
+          "type": "string",
+          "example": "20000000001"
+        },
+        "tipoDoc": {
+          "type": "string",
+          "example": "01"
+        },
+        "serie": {
+          "type": "string",
+          "example": "F001"
+        },
+        "correlativo": {
+          "type": "string",
+          "example": "123"
         }
       }
     }
