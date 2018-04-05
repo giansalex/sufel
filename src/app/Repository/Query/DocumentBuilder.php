@@ -47,7 +47,7 @@ class DocumentBuilder implements FilterBuilderInterface
         $map = [
             'tipo'        => $filter->getTipoDoc(),
             'serie'       => $filter->getSerie(),
-            'correlatvio' => $filter->getCorrelativo(),
+            'correlativo' => $filter->getCorrelativo(),
         ];
 
         return $this->joiner->joinAll($map);

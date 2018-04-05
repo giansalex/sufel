@@ -49,8 +49,8 @@ class DefaultBuilder implements FilterBuilderInterface
         $end = $filter->getFecFin()->format('Y-m-d');
         $query2 = "fecha BEETWEN :finit AND ':fend'";
         $this->params = [
-            'finit' => $init,
-            'fend'  => $end,
+            ':finit' => $init,
+            ':fend'  => $end,
         ];
 
         return $this->joiner
@@ -70,6 +70,6 @@ class DefaultBuilder implements FilterBuilderInterface
      */
     public function getParams()
     {
-        return array_merge($this->joiner->getParams(), $this->getParams());
+        return array_merge($this->joiner->getParams(), $this->params);
     }
 }

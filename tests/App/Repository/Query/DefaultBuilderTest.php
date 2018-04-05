@@ -37,6 +37,7 @@ class DefaultBuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->builder->getQueryPart($model);
 
         $this->assertNotEmpty($query);
+        $this->assertEquals(4, count($this->builder->getParams()));
         $this->assertTrue($this->builder->canContinue());
     }
 
@@ -50,6 +51,7 @@ class DefaultBuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->builder->getQueryPart($model);
 
         $this->assertNotEmpty($query);
+        $this->assertEquals(2, count($this->builder->getParams()));
         $this->assertTrue($this->builder->canContinue());
     }
 }

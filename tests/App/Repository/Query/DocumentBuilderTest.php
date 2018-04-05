@@ -34,6 +34,7 @@ class DocumentBuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->builder->getQueryPart($model);
 
         $this->assertNotEmpty($query);
+        $this->assertEquals(3, count($this->builder->getParams()));
         $this->assertFalse($this->builder->canContinue());
     }
 
@@ -46,6 +47,7 @@ class DocumentBuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->builder->getQueryPart($model);
 
         $this->assertNotEmpty($query);
+        $this->assertEquals(2, count($this->builder->getParams()));
         $this->assertTrue($this->builder->canContinue());
     }
 }
