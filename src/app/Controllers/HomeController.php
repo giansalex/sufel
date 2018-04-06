@@ -51,7 +51,9 @@ class HomeController
         $swaggerUrl = $gen->getBasePath() . $router->pathFor('swagger');
         $body = <<<HTML
 <h1>Welcome to SUFEL API</h1>
-<a href="http://petstore.swagger.io/?url=$swaggerUrl">Swagger API documentacion</a>
+<a href="http://petstore.swagger.io/?url=$swaggerUrl">Swagger API Full</a><br>
+<a href="http://petstore.swagger.io/?url=$swaggerUrl%3Ffor%3Dcompany">Swagger API for Company</a><br>
+<a href="http://petstore.swagger.io/?url=$swaggerUrl%3Ffor%3Dreceiver">Swagger API for Receiver</a>
 HTML;
 
         $response->getBody()->write($body);
@@ -69,7 +71,15 @@ HTML;
      */
     public function swagger($request, $response, $args)
     {
-        $filename = __DIR__ . '/../../data/swagger.json';
+        $type = $request->getQueryParams()['for'];
+
+        $name = 'swagger';
+        if ($type &&
+            in_array(strtolower($type),['company', 'receiver'])) {
+            $name .= '.'.strtolower($type);
+        }
+
+        $filename = __DIR__ . "/../../data/$name.json";
         if (!file_exists($filename)) {
             return $response->withStatus(404);
         }
