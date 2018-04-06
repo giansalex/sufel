@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Sufel API.",
-    "version": "2.0.0",
+    "version": "2.0",
     "title": "SUFEL",
     "contact": {
       "email": "giansalex@gmail.com"
@@ -50,7 +50,7 @@
             "description": "Informacion del documento.",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ClientCredential"
+              "$ref": "#/definitions/DocumentCredential"
             }
           }
         ],
@@ -82,9 +82,13 @@
           {
             "name": "type",
             "in": "path",
-            "description": "Filtro (posibles  opciones: info, xml, pdf)",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "info",
+              "xml",
+              "pdf"
+            ]
           }
         ],
         "responses": {
@@ -102,14 +106,14 @@
         ]
       }
     },
-    "/client/auth": {
+    "/client/login": {
       "post": {
         "tags": [
           "client"
         ],
         "summary": "Autentificacion por credenciales",
         "description": "Retorna el token si las credenciales son correctas",
-        "operationId": "authByClient",
+        "operationId": "loginClient",
         "consumes": [
           "application/json"
         ],
@@ -120,7 +124,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Informacion del documento.",
+            "description": "Informacion del login.",
             "required": true,
             "schema": {
               "$ref": "#/definitions/ClientCredential"
@@ -135,9 +139,90 @@
             }
           },
           "400": {
-            "description": "Parametros de entrada inválidos"
+            "description": "Parametros de entrada inválidos",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
           }
         }
+      }
+    },
+    "/client/register": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Registra un nuevo cliente",
+        "description": "Crea el cliente o actualiza si ya existe",
+        "operationId": "registerClient",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Info de registro del cliente.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClientRegister"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "/client/change-password": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Cambio de contraseña",
+        "description": "Actualiza la contraseña del cliente",
+        "operationId": "changPasswordClient",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Info de registro del cliente.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PasswordRenew"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa"
+          },
+          "400": {
+            "description": "Parametros de entrada inválidos",
+            "schema": {
+              "$ref": "#/definitions/ApiError"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/client/documents": {
@@ -168,6 +253,54 @@
             "schema": {
               "$ref": "#/definitions/Document"
             }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/client/documents/{id}/resource/{type}": {
+      "post": {
+        "tags": [
+          "client"
+        ],
+        "summary": "Información del documento.",
+        "description": "Retorna la información solicitada del documento asociado al cliente",
+        "operationId": "getDocumentByClient",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "info",
+              "xml",
+              "pdf"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "schema": {
+              "$ref": "#/definitions/Document"
+            }
+          },
+          "404": {
+            "description": "Paremtros enviado no tiene relación con informacion disponible"
           }
         },
         "security": [
@@ -267,6 +400,7 @@
           "company"
         ],
         "summary": "Cambia la contraseña de la Empresa",
+        "description": "Actualización de la contraseña",
         "operationId": "changePassword",
         "consumes": [
           "application/json"
@@ -278,17 +412,7 @@
             "description": "Passwords",
             "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "old": {
-                  "type": "string",
-                  "description": "Actual Contraseña"
-                },
-                "new": {
-                  "type": "string",
-                  "description": "Nueva Contraseña"
-                }
-              }
+              "$ref": "#/definitions/PasswordRenew"
             }
           }
         ],
@@ -299,7 +423,12 @@
           "400": {
             "description": "No se pudo cambiar la contraseña"
           }
-        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/company/documents": {
@@ -452,7 +581,7 @@
         }
       }
     },
-    "ClientCredential": {
+    "DocumentCredential": {
       "type": "object",
       "required": [
         "emisor",
@@ -520,6 +649,9 @@
     "Document": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "integer"
+        },
         "emisor": {
           "type": "string"
         },
@@ -632,6 +764,58 @@
         "correlativo": {
           "type": "string",
           "example": "123"
+        }
+      }
+    },
+    "PasswordRenew": {
+      "type": "object",
+      "properties": {
+        "old": {
+          "type": "string",
+          "description": "Actual Contraseña"
+        },
+        "new": {
+          "type": "string",
+          "description": "Nueva Contraseña"
+        }
+      }
+    },
+    "ClientCredential": {
+      "type": "object",
+      "properties": {
+        "documento": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "ClientRegister": {
+      "type": "object",
+      "properties": {
+        "documento": {
+          "type": "string"
+        },
+        "nombres": {
+          "type": "string"
+        },
+        "usuario_sol": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "repeat_password": {
+          "type": "string"
+        }
+      }
+    },
+    "ApiError": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
         }
       }
     }
