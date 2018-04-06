@@ -65,6 +65,14 @@ $container[DocumentRepository::class] = function ($c) {
     return new DocumentRepository($c->get(DbConnection::class));
 };
 
+$container[ClienteRepository::class] = function ($c) {
+    return new ClienteRepository($c);
+};
+
+$container[ClientProfileRepository::class] = function ($c) {
+    return new ClientProfileRepository($c);
+};
+
 $container[QueryJoiner::class] = function ($c) {
     return new QueryJoiner();
 };

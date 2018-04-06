@@ -26,8 +26,8 @@ $app->group('/api/client', function () {
     /* @var $this \Slim\App */
     $this->post('/documents', ClientController::class . ':getList');
     $this->get('/documents/{id}/resource/{type}', ClientController::class.':getDocument');
-    $this->post('/login', ClientSecureController::class . 'login');
-    $this->post('/register', ClientSecureController::class . 'register');
+    $this->post('/login', ClientSecureController::class . ':login');
+    $this->post('/register', ClientSecureController::class . ':register');
     $this->post('/change-password', ClientProfileController::class . ':changePassword');
 });
 
