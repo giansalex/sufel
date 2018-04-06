@@ -1,6 +1,6 @@
 <?php
 $ruc = '20000000001';
-$ruc2 = '20000000002';
+$ruc2 = '20484433359';
 $password = '123456';
 
 $password = password_hash($password, PASSWORD_BCRYPT);
