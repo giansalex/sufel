@@ -64,7 +64,7 @@ class SecureController
 
         $exp = strtotime('+5 hours');
         $data = [
-            'scope' => ['client'],
+            'scope' => ['document'],
             'doc' => $id,
             'exp' => $exp,
         ];
@@ -88,7 +88,7 @@ class SecureController
         $repo = $this->container->get(CompanyRepository::class);
         $valid = $repo->isAuthorized($params['ruc'], $params['password']);
         if (!$valid) {
-            return $response->withJson(['message' => 'credenciales inválidas'], 401);
+            return $response->withJson(['message' => 'credenciales inválidas'], 400);
         }
 
         $exp = strtotime('+2 days');

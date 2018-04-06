@@ -114,7 +114,7 @@ yVRHgMGiioIKVMwU6Lrtln607BNurLwED0OeoZ4wBgkBiB5vXofreXrfN2pHZ24=</ds:X509Certifi
         </cac:DigitalSignatureAttachment>
     </cac:Signature>
     <cac:AccountingSupplierParty>
-        <cbc:CustomerAssignedAccountID>20600995805</cbc:CustomerAssignedAccountID>
+        <cbc:CustomerAssignedAccountID>20000000001</cbc:CustomerAssignedAccountID>
         <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
         <cac:Party>
             <cac:PostalAddress>
@@ -134,7 +134,7 @@ yVRHgMGiioIKVMwU6Lrtln607BNurLwED0OeoZ4wBgkBiB5vXofreXrfN2pHZ24=</ds:X509Certifi
         </cac:Party>
     </cac:AccountingSupplierParty>
     <cac:AccountingCustomerParty>
-        <cbc:CustomerAssignedAccountID>20587896411</cbc:CustomerAssignedAccountID>
+        <cbc:CustomerAssignedAccountID>20484433359</cbc:CustomerAssignedAccountID>
         <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
         <cac:Party>
             <cac:PartyLegalEntity>

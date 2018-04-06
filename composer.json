@@ -1,14 +1,16 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
-    "keywords": ["microframework", "rest", "router", "psr7"],
-    "homepage": "http://github.com/slimphp/Slim-Skeleton",
+  "name": "giansalex/sufel",
+  "description": "A REST API para consulta de comprobantes electronicos",
+  "keywords": [
+    "rest",
+    "facturacion-electronica"
+  ],
+  "homepage": "http://github.com/giansalex/sufel",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
+          "name": "Giancarlos Salas",
+          "email": "giansalex@gmail.com"
         }
     ],
     "require": {
@@ -18,7 +20,8 @@
         "tuupola/slim-jwt-auth": "^2.3",
         "tuupola/cors-middleware": "^0.5.2",
         "ext-zip": "*",
-        "ext-pdo_mysql": "*"
+        "ext-pdo_mysql": "*",
+    "giansalex/peru-consult": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0",
@@ -39,5 +42,4 @@
         "test": "phpunit",
         "lint": "./vendor/bin/psalm"
 	}
-
 }

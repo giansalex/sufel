@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "Sufel API.",
+    "description": "Sufel API for Receivers.",
     "version": "2.0",
     "title": "SUFEL",
     "contact": {
@@ -18,10 +18,6 @@
     {
       "name": "document",
       "description": "Acceso para consulta por comprobante"
-    },
-    {
-      "name": "company",
-      "description": "Acceso para empresas"
     }
   ],
   "schemes": [
@@ -309,258 +305,9 @@
           }
         ]
       }
-    },
-    "/company": {
-      "post": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Crea nueva Empresa",
-        "description": "Autorización de nueva empresa.",
-        "operationId": "creteCompany",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Datos de la empresa.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Company"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa"
-          },
-          "400": {
-            "description": "Parametros de entrada inválidos"
-          },
-          "401": {
-            "description": "Token Inválido"
-          }
-        },
-        "security": [
-          {
-            "AdminToken": []
-          }
-        ]
-      }
-    },
-    "/company/auth": {
-      "post": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Autentificacion de Empresa",
-        "description": "Retorna el token si la empresa esta autorizada",
-        "operationId": "authCompany",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Credenciales de la empresa.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/CompanyCredential"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa",
-            "schema": {
-              "$ref": "#/definitions/AuthToken"
-            }
-          },
-          "400": {
-            "description": "Parametros de entrada inválidos"
-          },
-          "401": {
-            "description": "Empresa no autorizada"
-          }
-        }
-      }
-    },
-    "/company/change-password": {
-      "post": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Cambia la contraseña de la Empresa",
-        "description": "Actualización de la contraseña",
-        "operationId": "changePassword",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Passwords",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/PasswordRenew"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa"
-          },
-          "400": {
-            "description": "No se pudo cambiar la contraseña"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      }
-    },
-    "/company/documents": {
-      "get": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Lista los documentos del emisor",
-        "description": "Retorna lista de documentos segun el rando de fecha.",
-        "operationId": "getDocuments",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "start",
-            "in": "query",
-            "description": "Inicio Rango de Fecha.",
-            "type": "string",
-            "format": "date",
-            "required": true
-          },
-          {
-            "name": "end",
-            "in": "query",
-            "description": "Fin Rango de Fecha.",
-            "type": "string",
-            "format": "date",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/Document"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Agrega nuevo documento.",
-        "description": "Registra nuevo documento para consulta del cliente.",
-        "operationId": "addDocument",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Archivos del documento electrónico.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/FilesDocument"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa",
-            "schema": {
-              "$ref": "#/definitions/FilesDocument"
-            }
-          },
-          "400": {
-            "description": "Parametros de entrada inválidos"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "company"
-        ],
-        "summary": "Da de baja documento.",
-        "description": "Marca como anulado un documento.",
-        "operationId": "darBajaDocument",
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Información del documento electrónico.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/DocumentInfo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operación exitosa"
-          },
-          "400": {
-            "description": "No se pudo anular"
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      }
     }
   },
   "securityDefinitions": {
-    "AdminToken": {
-      "type": "apiKey",
-      "in": "query",
-      "name": "token",
-      "description": "Admin Token"
-    },
     "Bearer": {
       "type": "apiKey",
       "name": "Authorization",
@@ -608,41 +355,6 @@
         "total": {
           "type": "number",
           "format": "float"
-        }
-      }
-    },
-    "CompanyCredential": {
-      "type": "object",
-      "required": [
-        "ruc",
-        "password"
-      ],
-      "properties": {
-        "ruc": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "Company": {
-      "type": "object",
-      "required": [
-        "ruc",
-        "nombre",
-        "password"
-      ],
-      "properties": {
-        "ruc": {
-          "type": "string"
-        },
-        "nombre": {
-          "type": "string",
-          "example": "Company S.A.C"
-        },
-        "password": {
-          "type": "string"
         }
       }
     },
@@ -697,40 +409,6 @@
         "pdf": {
           "type": "string",
           "description": "Archivo Pdf en base64"
-        }
-      }
-    },
-    "DocumentInfo": {
-      "type": "object",
-      "required": [
-        "tipo",
-        "serie",
-        "correlativo"
-      ],
-      "properties": {
-        "tipo": {
-          "type": "string"
-        },
-        "serie": {
-          "type": "string"
-        },
-        "correlativo": {
-          "type": "string"
-        }
-      }
-    },
-    "FilesDocument": {
-      "type": "object",
-      "required": [
-        "xml",
-        "pdf"
-      ],
-      "properties": {
-        "xml": {
-          "type": "string"
-        },
-        "pdf": {
-          "type": "string"
         }
       }
     },

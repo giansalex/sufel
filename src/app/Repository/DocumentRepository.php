@@ -190,13 +190,24 @@ SQL;
     }
 
     /**
-     * Get All documents by company's ruc.
-     *
-     * @param string $ruc
+     * @param string $document
+     * @param \DateTime $init
+     * @param \DateTime $end
      * @return array
      */
-    public function getByRuc($ruc)
+    public function getListByClient($document, \DateTime $init, \DateTime $end)
     {
-        return $this->db->fetchAll('SELECT * FROM document WHERE emisor = ?', [$ruc]);
+        $params = [
+            $document,
+            $init->format('Y-m-d'),
+            $end->format('Y-m-d'),
+        ];
+        $sql = <<<SQL
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE cliente_doc = ? AND fecha >= ? AND fecha <= ?
+SQL;
+        $rows = $this->db
+            ->fetchAll($sql, $params);
+
+        return $rows;
     }
 }

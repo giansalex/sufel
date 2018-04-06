@@ -2,6 +2,7 @@
 
 namespace Tests\Functional;
 
+use Psr\Http\Message\ResponseInterface;
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -27,6 +28,11 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
      * @var bool
      */
     protected $withMiddleware = true;
+
+    /**
+     * @var callable
+     */
+    protected $onBeforeRun;
 
     /**
      * Process the application given a request method and URI
@@ -65,7 +71,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         // Use the application settings
-        $settings = require __DIR__ . '/../../src/settings.php';
+        $settings = require __DIR__ . '/../settings.php';
 
         // Instantiate the application
         $app = new App($settings);
@@ -81,8 +87,13 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
         // Register routes
         require __DIR__ . '/../../src/routes.php';
 
+        if ($this->onBeforeRun) {
+            call_user_func_array($this->onBeforeRun, [$app]);
+        }
+
         // Process the application
         $response = $app->process($request, $response);
+        $this->checkServerError($response);
 
         // Return the response
         return $response;
@@ -95,5 +106,28 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
     public function getObject($body)
     {
         return json_decode((string)$body);
+    }
+
+    private function checkServerError(ResponseInterface $response)
+    {
+        if ($response->getStatusCode() !== 500) {
+            return;
+        }
+
+        $content = (string)$response->getBody();
+
+        if ($this->isWindows()) {
+            $tmp = sys_get_temp_dir() . PATH_SEPARATOR . time() . '.html';
+            file_put_contents($tmp, $content);
+            exec('start ' . $tmp);
+            return;
+        }
+
+        echo $content;
+    }
+
+    private function isWindows()
+    {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
     }
 }

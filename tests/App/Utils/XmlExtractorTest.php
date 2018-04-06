@@ -51,7 +51,7 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
 
     public function testGetInvoiceNcr()
     {
-        $path = __DIR__ . '/../../Resources/20600995805-07-F001-211.xml';
+        $path = __DIR__ . '/../../Resources/20000000001-07-F001-211.xml';
         $ext = new XmlExtractor();
 
         $inv = $ext->toInvoice($this->loadFromFile($path));
