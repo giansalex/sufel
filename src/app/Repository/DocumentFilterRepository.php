@@ -73,7 +73,7 @@ class DocumentFilterRepository
             }
         }
 
-        $query = 'SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE ';
+        $query = 'SELECT id,emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE ';
         $query.= $this->joiner->joinParts($parts);
 
         return [$query, $params];

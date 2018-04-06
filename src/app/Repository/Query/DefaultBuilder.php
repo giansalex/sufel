@@ -47,7 +47,7 @@ class DefaultBuilder implements FilterBuilderInterface
 
         $init = $filter->getFecInicio()->format('Y-m-d');
         $end = $filter->getFecFin()->format('Y-m-d');
-        $query2 = "fecha BEETWEN :finit AND ':fend'";
+        $query2 = "fecha BETWEEN :finit AND :fend";
         $this->params = [
             ':finit' => $init,
             ':fend'  => $end,
