@@ -67,7 +67,8 @@ class ClientProfileRepository
     public function updateAccess($document)
     {
         $query = 'UPDATE client SET last_access = ? WHERE documento = ?';
+        $now = new \DateTime();
 
-        return $this->db->exec($query, [new \DateTime(), $document]);
+        return $this->db->exec($query, [$now->format('Y-m-d H:i:s'), $document]);
     }
 }
