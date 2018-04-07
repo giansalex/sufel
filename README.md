@@ -1,6 +1,7 @@
 # Sufel
 
 [![Travis-CI](https://travis-ci.org/giansalex/sufel.svg?branch=master)](https://travis-ci.org/giansalex/sufel)
+[![Coverage Status](https://coveralls.io/repos/github/giansalex/sufel/badge.svg?branch=master)](https://coveralls.io/github/giansalex/sufel?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/87a24796afc94e7ea79f3f5f99a95f7c)](https://www.codacy.com/app/giansalex/sufel?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=giansalex/sufel&amp;utm_campaign=Badge_Grade)  
 
 Api de consultas para receptores de Facturación Electrónica en Perú según normativa de Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT).
