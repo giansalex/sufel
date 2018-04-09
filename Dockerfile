@@ -2,7 +2,7 @@ FROM php:7.0-apache
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends zlib1g-dev git zip unzip && \
-    docker-php-ext-install pdo pdo_mysql zip opcache && \
+    docker-php-ext-install pdo_mysql zip opcache && \
     apt-get clean && \
     curl --silent --show-error -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
