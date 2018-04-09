@@ -26,3 +26,8 @@ script:
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls -v
+  - |
+    if [ -n "$TRAVIS_TAG" ]; then
+      chmod +x ./bin/deploy.sh
+      ./bin/deploy.sh;
+    fi
