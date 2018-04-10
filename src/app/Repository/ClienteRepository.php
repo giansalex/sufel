@@ -115,7 +115,7 @@ class ClienteRepository
     public function getCompanies($receptor)
     {
         $query = <<<SQL
-SELECT c.ruc, c.nombre FROM company
+SELECT c.ruc, c.nombre FROM company c
 WHERE c.ruc IN (SELECT DISTINCT(d.emisor) FROM document d WHERE d.cliente_doc = ?)
 SQL;
 

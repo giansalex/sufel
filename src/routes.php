@@ -29,6 +29,7 @@ $app->group('/api/client', function () {
     $this->post('/login', ClientSecureController::class . ':login');
     $this->post('/register', ClientSecureController::class . ':register');
     $this->post('/change-password', ClientProfileController::class . ':changePassword');
+    $this->get('/companies', ClientController::class . ':getCompanies');
 });
 
 $app->group('/api/document', function () {

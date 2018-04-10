@@ -110,7 +110,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 
     private function checkServerError(ResponseInterface $response)
     {
-        if ($response->getStatusCode() !== 500) {
+        if (!in_array($response->getStatusCode(), [500, 400])) {
             return;
         }
 

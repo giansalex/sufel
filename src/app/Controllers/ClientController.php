@@ -11,6 +11,7 @@ namespace Sufel\App\Controllers;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
+use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\DocumentFilterRepository;
 use Sufel\App\Repository\DocumentRepository;
 use Sufel\App\Utils\Validator;
@@ -34,6 +35,26 @@ class ClientController
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @param array $args
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function getCompanies($request, $response, $args)
+    {
+        $jwt = $request->getAttribute('jwt');
+        $document = $jwt->document;
+
+        $repository = $this->container->get(ClienteRepository::class);
+        $docs = $repository->getCompanies($document);
+
+        return $response->withJson($docs);
     }
 
     /**
