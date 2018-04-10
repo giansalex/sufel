@@ -104,4 +104,24 @@ class ClienteRepository
 
         return $client;
     }
+
+    /**
+     * Lista empresas que emitieron comprobante al receptor dado.
+     *
+     * @param string $receptor
+     *
+     * @return array
+     */
+    public function getCompanies($receptor)
+    {
+        $query = <<<SQL
+SELECT c.ruc, c.nombre FROM company
+WHERE c.ruc IN (SELECT DISTINCT(d.emisor) FROM document d WHERE d.cliente_doc = ?)
+SQL;
+
+        $rows = $this->db
+            ->fetchAll($query, [$receptor]);
+
+        return $rows;
+    }
 }
