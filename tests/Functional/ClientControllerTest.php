@@ -98,6 +98,24 @@ class ClientControllerTest extends BaseTestCase
         $this->assertNotEmpty((string)$response->getBody());
     }
 
+    public function testGetCompaniesNotAllowed()
+    {
+        $response = $this->runApp('POST', '/api/client/companies');
+
+        $this->assertEquals(405, $response->getStatusCode());
+    }
+
+    public function testGetCompanies()
+    {
+        $response = $this->runApp('GET', '/api/client/companies');
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $json = json_decode((string)$response->getBody());
+
+        $this->assertNotEmpty($json);
+        $this->assertTrue(is_array($json));
+    }
+
     private function addDocument()
     {
         $this->authCompany();
