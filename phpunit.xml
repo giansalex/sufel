@@ -14,7 +14,6 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src/app</directory>
             <exclude>
-                <directory>./src/app/Models</directory>
                 <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>
