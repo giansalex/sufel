@@ -8,7 +8,7 @@ function createDb($dbName)
             exit(-1);
         }
     };
-    $tablesSql = file_get_contents(__DIR__.'/../schema/schema.sql');
+    $tablesSql = file_get_contents(__DIR__ . '/../../schema/schema.sql');
     $pdo = new PDO('mysql:host=127.0.0.1;dbname=mysql', 'root', '');
     $result = $pdo->query("SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA d WHERE d.SCHEMA_NAME = '$dbName'");
     $result->execute();

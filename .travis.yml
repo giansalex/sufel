@@ -13,7 +13,7 @@ before_install:
 
 before_script:
   - mysql -u root sufel_dev < schema/schema.sql
-  - php bin/travis-ci.php
+  - php bin/bd/init-db.php
   - composer self-update
 
 install:
