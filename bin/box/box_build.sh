@@ -9,7 +9,7 @@ if [ -x "$pathBox" ] ; then
     box build
 else
     boxFile="box.phar"
-    php ./bin/box.php $boxFile
+    php ./bin/box/box.php $boxFile
     php -d phar.readonly=0 $boxFile build
 fi
 mkdir dist
