@@ -1,3 +1,4 @@
+#!/usr/bin/env sh
 ./box_build.sh
 ZIP_ASSET=sufel.phar.zip
 php zip.php ./$ZIP_ASSET ./dist
