@@ -8,7 +8,6 @@
 
 namespace Sufel\App\Repository;
 
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\Client;
 
 /**
@@ -20,23 +19,15 @@ class ClienteRepository
      * @var DbConnection
      */
     private $db;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
-     * CompanyRepository constructor.
+     * ClienteRepository constructor.
      *
-     * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param DbConnection $dbConnection
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(DbConnection $dbConnection)
     {
-        $this->db = $container->get(DbConnection::class);
-        $this->container = $container;
+        $this->db = $dbConnection;
     }
 
     /**
