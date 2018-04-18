@@ -8,7 +8,6 @@
 
 namespace Sufel\App\Repository;
 
-use Psr\Container\ContainerInterface;
 use Sufel\App\Utils\PdoErrorLogger;
 
 /**
@@ -20,39 +19,26 @@ class DbConnection
      * @var \PDO
      */
     private $con;
-
     /**
      * @var string
      */
-    private $dsn;
+    private $options;
 
     /**
-     * @var string
+     * @var PdoErrorLogger
      */
-    private $user;
-
-    /**
-     * @var string
-     */
-    private $password;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private $logger;
 
     /**
      * DbConnection constructor.
      *
-     * @param ContainerInterface $container
+     * @param array          $options
+     * @param PdoErrorLogger $logger
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(array $options, PdoErrorLogger $logger)
     {
-        $params = $container->get('settings')['db'];
-        $this->dsn = $params['dsn'];
-        $this->user = $params['user'];
-        $this->password = $params['password'];
-
-        $this->container = $container;
+        $this->options = $options;
+        $this->logger = $logger;
     }
 
     /**
@@ -66,10 +52,8 @@ class DbConnection
     {
         if (!$this->con) {
             try {
-                $this->con = new \PDO($this->dsn, $this->user, $this->password);
+                $this->con = new \PDO($this->options['dsn'], $this->options['user'], $this->options['password']);
             } catch (\PDOException $e) {
-                $this->container->get('logger')
-                    ->error($e->getMessage());
                 throw new \Exception('No se pudo conectar');
             }
         }
@@ -92,7 +76,7 @@ class DbConnection
         $stm = $con->prepare($query);
         $stm->execute($params);
         if ($stm->errorCode() !== '00000') {
-            $this->writeError($stm);
+            $this->log($stm);
             $stm = null;
 
             return [];
@@ -116,7 +100,7 @@ class DbConnection
         $state = $stm->execute($params);
 
         if ($stm->errorCode() !== '00000') {
-            $this->writeError($stm);
+            $this->log($stm);
             $state = false;
         }
         $stm = null;
@@ -124,10 +108,13 @@ class DbConnection
         return $state;
     }
 
-    private function writeError(\PDOStatement $statement)
+    /**
+     * Log error on statement.
+     *
+     * @param \PDOStatement $statement
+     */
+    public function log(\PDOStatement $statement)
     {
-        $this->container
-            ->get(PdoErrorLogger::class)
-            ->err($statement);
+        $this->logger->err($statement);
     }
 }

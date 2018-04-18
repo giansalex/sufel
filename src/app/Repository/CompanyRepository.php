@@ -8,9 +8,7 @@
 
 namespace Sufel\App\Repository;
 
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\Company;
-use Sufel\App\Utils\PdoErrorLogger;
 
 /**
  * Class CompanyRepository.
@@ -21,20 +19,15 @@ class CompanyRepository implements CompanyRepositoryInterface
      * @var DbConnection
      */
     private $db;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * CompanyRepository constructor.
      *
-     * @param ContainerInterface $container
+     * @param DbConnection $dbConnection
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(DbConnection $dbConnection)
     {
-        $this->db = $container->get(DbConnection::class);
-        $this->container = $container;
+        $this->db = $dbConnection;
     }
 
     /**
@@ -138,8 +131,6 @@ SQL;
 
     private function writeError(\PDOStatement $statement)
     {
-        $this->container
-            ->get(PdoErrorLogger::class)
-            ->err($statement);
+        $this->db->log($statement);
     }
 }
