@@ -8,10 +8,10 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
-use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Repository\DocumentRepositoryInterface;
+use Sufel\App\Repository\FileRepositoryInterface;
 
 /**
  * Class DocumentController.
@@ -19,27 +19,26 @@ use Sufel\App\Repository\DocumentRepository;
 class DocumentController
 {
     /**
-     * @var DocumentRepository
+     * @var DocumentRepositoryInterface
      */
-    private $repository;
+    private $documentRepository;
+    /**
+     * @var FileRepositoryInterface
+     */
+    private $fileRepository;
 
     /**
-     * @var string
-     */
-    private $rootDir;
-
-    /**
-     * CompanyController constructor.
+     * DocumentController constructor.
      *
-     * @param ContainerInterface $container
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param DocumentRepositoryInterface $documentRepository
+     * @param FileRepositoryInterface     $fileRepository
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->repository = $container->get(DocumentRepository::class);
-        $this->rootDir = $container->get('settings')['upload_dir'];
+    public function __construct(
+        DocumentRepositoryInterface $documentRepository,
+        FileRepositoryInterface $fileRepository
+    ) {
+        $this->documentRepository = $documentRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
@@ -59,7 +58,7 @@ class DocumentController
         $jwt = $request->getAttribute('jwt');
         $id = $jwt->doc;
 
-        $doc = $this->repository->get($id);
+        $doc = $this->documentRepository->get($id);
         if ($doc === null) {
             return $response->withStatus(404);
         }
@@ -67,20 +66,14 @@ class DocumentController
             return $response->withJson($doc);
         }
 
-        $name = $doc['filename'];
-        $pathZip = $this->rootDir.DIRECTORY_SEPARATOR.$doc['emisor'].DIRECTORY_SEPARATOR.$name.'.zip';
-        $zip = new \ZipArchive();
-        $zip->open($pathZip);
-
         $result = [];
         if ($type == 'xml') {
-            $result['file'] = $zip->getFromName($name.'.xml');
+            $result['file'] = $this->fileRepository->getFile($id, 'xml');
             $result['type'] = 'text/xml';
         } else {
-            $result['file'] = $zip->getFromName($name.'.pdf');
+            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
             $result['type'] = 'application/pdf';
         }
-        $zip->close();
 
         $response->getBody()->write($result['file']);
 

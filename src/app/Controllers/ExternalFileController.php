@@ -8,10 +8,10 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
-use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Repository\DocumentRepositoryInterface;
+use Sufel\App\Repository\FileRepositoryInterface;
 use Sufel\App\Service\CryptoService;
 
 /**
@@ -20,18 +20,33 @@ use Sufel\App\Service\CryptoService;
 class ExternalFileController
 {
     /**
-     * @var ContainerInterface
+     * @var CryptoService
      */
-    private $container;
+    private $crypto;
+    /**
+     * @var DocumentRepositoryInterface
+     */
+    private $documentRepository;
+    /**
+     * @var FileRepositoryInterface
+     */
+    private $fileRepository;
 
     /**
-     * CompanyController constructor.
+     * ExternalFileController constructor.
      *
-     * @param ContainerInterface $container
+     * @param CryptoService               $crypto
+     * @param DocumentRepositoryInterface $documentRepository
+     * @param FileRepositoryInterface     $fileRepository
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        CryptoService $crypto,
+        DocumentRepositoryInterface $documentRepository,
+        FileRepositoryInterface $fileRepository
+    ) {
+        $this->crypto = $crypto;
+        $this->documentRepository = $documentRepository;
+        $this->fileRepository = $fileRepository;
     }
 
     /**
@@ -52,40 +67,31 @@ class ExternalFileController
             return $response->withStatus(404);
         }
 
-        $cryp = $this->container->get(CryptoService::class);
-        $res = $cryp->decrypt($hash);
+        $res = $this->crypto->decrypt($hash);
         if ($res === false) {
             return $response->withStatus(404);
         }
         $obj = json_decode($res);
-        $repo = $this->container->get(DocumentRepository::class);
-        $doc = $repo->get($obj->id);
+        $id = $obj->id;
+        $doc = $this->documentRepository->get($id);
         if ($doc === null) {
             return $response->withStatus(404);
         }
 
-        $name = $doc['filename'];
-        $uploadDir = $this->container->get('settings')['upload_dir'];
-
-        $pathZip = $uploadDir.DIRECTORY_SEPARATOR.$doc['emisor'].DIRECTORY_SEPARATOR.$name.'.zip';
-        $zip = new \ZipArchive();
-        $zip->open($pathZip);
-
         $result = [];
         if ($type == 'xml') {
-            $result['file'] = $zip->getFromName($name.'.xml');
-            $result['type'] = 'application/xml';
+            $result['file'] = $this->fileRepository->getFile($id, 'xml');
+            $result['type'] = 'text/xml';
         } else {
-            $result['file'] = $zip->getFromName($name.'.pdf');
+            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
             $result['type'] = 'application/pdf';
         }
-        $zip->close();
 
         $response->getBody()->write($result['file']);
 
         return $response
             ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', "attachment; filename=\"$name.$type\";")
+            ->withHeader('Content-Disposition', "attachment; filename=\"{$doc['filename']}.$type\";")
             ->withHeader('Content-Length', strlen($result['file']))
             ->withoutHeader('Pragma')
             ->withoutHeader('Expires')

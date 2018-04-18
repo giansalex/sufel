@@ -13,7 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
 use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\DocumentFilterRepository;
-use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Repository\DocumentRepositoryInterface;
+use Sufel\App\Repository\FileRepositoryInterface;
 use Sufel\App\Utils\Validator;
 use Sufel\App\ViewModels\FilterViewModel;
 
@@ -39,10 +40,11 @@ class ClientController
 
     /**
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @param array $args
+     * @param Response               $response
+     * @param array                  $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -59,10 +61,11 @@ class ClientController
 
     /**
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @param array $args
+     * @param Response               $response
+     * @param array                  $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -96,10 +99,11 @@ class ClientController
 
     /**
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @param array $args
+     * @param Response               $response
+     * @param array                  $args
      *
      * @return \Psr\Http\Message\ResponseInterface
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -114,38 +118,28 @@ class ClientController
         $jwt = $request->getAttribute('jwt');
         $document = $jwt->document;
 
-        $repository = $this->container->get(DocumentRepository::class);
-        $doc = $repository->get($id);
+        $repository = $this->container->get(DocumentRepositoryInterface::class);
+        $doc = $repository->getFile($id);
         if ($doc === null) {
             return $response->withStatus(404);
         }
-
         if ($doc['cliente_doc'] !== $document) {
             return $response->withStatus(401);
         }
-
         if ($type == 'info') {
             return $response->withJson($doc);
         }
-
-        $name = $doc['filename'];
-        $rootDir = $this->container->get('settings')['upload_dir'];
-        $pathZip = $rootDir . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
-        $zip = new \ZipArchive();
-        $zip->open($pathZip);
+        $fileRepo = $this->container->get(FileRepositoryInterface::class);
 
         $result = [];
         if ($type == 'xml') {
-            $result['file'] = $zip->getFromName($name.'.xml');
+            $result['file'] = $fileRepo->getFile($id, 'xml');
             $result['type'] = 'text/xml';
         } else {
-            $result['file'] = $zip->getFromName($name.'.pdf');
+            $result['file'] = $fileRepo->getFile($id, 'pdf');
             $result['type'] = 'application/pdf';
         }
-        $zip->close();
-
         $response->getBody()->write($result['file']);
-
         return $response
             ->withHeader('Content-Type', $result['type'])
             ->withHeader('Content-Disposition', 'attachment')
