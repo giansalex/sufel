@@ -14,7 +14,7 @@ use Sufel\App\Models\Client;
 /**
  * Class ClientProfileRepository.
  */
-class ClientProfileRepository
+class ClientProfileRepository implements ClientProfileRepositoryInterface
 {
     /**
      * @var DbConnection

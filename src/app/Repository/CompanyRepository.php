@@ -7,6 +7,7 @@
  */
 
 namespace Sufel\App\Repository;
+
 use Psr\Container\ContainerInterface;
 use Sufel\App\Models\Company;
 use Sufel\App\Utils\PdoErrorLogger;
@@ -15,7 +16,7 @@ use Sufel\App\Utils\PdoErrorLogger;
  * Class CompanyRepository
  * @package Sufel\App\Repository
  */
-class CompanyRepository
+class CompanyRepository implements CompanyRepositoryInterface
 {
     /**
      * @var DbConnection

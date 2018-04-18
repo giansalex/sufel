@@ -14,7 +14,7 @@ use Sufel\App\Models\Invoice;
  * Class DocumentRepository
  * @package Sufel\App\Repository
  */
-class DocumentRepository
+class DocumentRepository implements DocumentRepositoryInterface
 {
     /**
      * @var DbConnection

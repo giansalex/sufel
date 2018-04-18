@@ -16,7 +16,7 @@ use Sufel\App\ViewModels\FilterViewModel;
  * Class DocumentFilterRepository
  * @package Sufel\App\Repository
  */
-class DocumentFilterRepository
+class DocumentFilterRepository implements DocumentFilterRepositoryInterface
 {
     /**
      * @var DbConnection
@@ -50,6 +50,12 @@ class DocumentFilterRepository
         $this->joiner = $joiner;
     }
 
+    /**
+     * List documents by client.
+     *
+     * @param FilterViewModel $filter
+     * @return array
+     */
     public function getList(FilterViewModel $filter)
     {
         list($query, $params) = $this->getQueryWithParams($filter);
