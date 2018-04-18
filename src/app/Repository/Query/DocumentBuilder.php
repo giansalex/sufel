@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giansalex
  * Date: 04/04/2018
- * Time: 21:41
+ * Time: 21:41.
  */
 
 namespace Sufel\App\Repository\Query;
@@ -11,8 +11,7 @@ namespace Sufel\App\Repository\Query;
 use Sufel\App\ViewModels\FilterViewModel;
 
 /**
- * Class DocumentBuilder
- * @package Sufel\App\Repository\Query
+ * Class DocumentBuilder.
  */
 class DocumentBuilder implements FilterBuilderInterface
 {
@@ -28,6 +27,7 @@ class DocumentBuilder implements FilterBuilderInterface
 
     /**
      * DocumentBuilder constructor.
+     *
      * @param QueryJoiner $joiner
      */
     public function __construct(QueryJoiner $joiner)
@@ -45,8 +45,8 @@ class DocumentBuilder implements FilterBuilderInterface
         $this->filter = $filter;
 
         $map = [
-            'tipo'        => $filter->getTipoDoc(),
-            'serie'       => $filter->getSerie(),
+            'tipo' => $filter->getTipoDoc(),
+            'serie' => $filter->getSerie(),
             'correlativo' => $filter->getCorrelativo(),
         ];
 

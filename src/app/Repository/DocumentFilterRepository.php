@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giansalex
  * Date: 04/04/2018
- * Time: 22:16
+ * Time: 22:16.
  */
 
 namespace Sufel\App\Repository;
@@ -13,8 +13,7 @@ use Sufel\App\Repository\Query\QueryJoiner;
 use Sufel\App\ViewModels\FilterViewModel;
 
 /**
- * Class DocumentFilterRepository
- * @package Sufel\App\Repository
+ * Class DocumentFilterRepository.
  */
 class DocumentFilterRepository implements DocumentFilterRepositoryInterface
 {
@@ -41,8 +40,9 @@ class DocumentFilterRepository implements DocumentFilterRepositoryInterface
 
     /**
      * DocumentFilterRepository constructor.
+     *
      * @param DbConnection $db
-     * @param QueryJoiner $joiner
+     * @param QueryJoiner  $joiner
      */
     public function __construct(DbConnection $db, QueryJoiner $joiner)
     {
@@ -54,6 +54,7 @@ class DocumentFilterRepository implements DocumentFilterRepositoryInterface
      * List documents by client.
      *
      * @param FilterViewModel $filter
+     *
      * @return array
      */
     public function getList(FilterViewModel $filter)
@@ -80,7 +81,7 @@ class DocumentFilterRepository implements DocumentFilterRepositoryInterface
         }
 
         $query = 'SELECT id,emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE ';
-        $query.= $this->joiner->joinParts($parts);
+        $query .= $this->joiner->joinParts($parts);
 
         return [$query, $params];
     }

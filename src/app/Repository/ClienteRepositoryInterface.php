@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: LPALQUILER-11
  * Date: 18/04/2018
- * Time: 10:02
+ * Time: 10:02.
  */
 
 namespace Sufel\App\Repository;
@@ -11,7 +11,7 @@ namespace Sufel\App\Repository;
 use Sufel\App\Models\Client;
 
 /**
- * Interface ClienteRepositoryInterface
+ * Interface ClienteRepositoryInterface.
  */
 interface ClienteRepositoryInterface
 {
@@ -23,6 +23,7 @@ interface ClienteRepositoryInterface
      * @return bool
      */
     public function add(Client $client);
+
     /**
      * Update existing client.
      *
@@ -31,12 +32,14 @@ interface ClienteRepositoryInterface
      * @return bool
      */
     public function update(Client $client);
+
     /**
      * @param string $document
      *
      * @return Client
      */
     public function get($document);
+
     /**
      * Lista empresas que emitieron comprobante al receptor dado.
      *
@@ -45,5 +48,4 @@ interface ClienteRepositoryInterface
      * @return array
      */
     public function getCompanies($receptor);
-
 }

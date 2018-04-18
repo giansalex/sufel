@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Administrador
  * Date: 28/08/2017
- * Time: 05:57 PM
+ * Time: 05:57 PM.
  */
 
 namespace Sufel\App\Repository;
@@ -12,8 +12,7 @@ use Psr\Container\ContainerInterface;
 use Sufel\App\Utils\PdoErrorLogger;
 
 /**
- * Class DbConnection
- * @package Sufel\App\Repository
+ * Class DbConnection.
  */
 class DbConnection
 {
@@ -43,6 +42,7 @@ class DbConnection
 
     /**
      * DbConnection constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -57,7 +57,9 @@ class DbConnection
 
     /**
      * Return connection.
+     *
      * @return \PDO
+     *
      * @throws \Exception
      */
     public function getConnection()
@@ -78,9 +80,10 @@ class DbConnection
     /**
      * Fetch all rows.
      *
-     * @param string $query
+     * @param string     $query
      * @param array|null $params
-     * @param int|null $fetch_style
+     * @param int|null   $fetch_style
+     *
      * @return array
      */
     public function fetchAll($query, $params = null, $fetch_style = \PDO::FETCH_ASSOC)
@@ -91,6 +94,7 @@ class DbConnection
         if ($stm->errorCode() !== '00000') {
             $this->writeError($stm);
             $stm = null;
+
             return [];
         }
         $all = $stm->fetchAll($fetch_style);
@@ -102,6 +106,7 @@ class DbConnection
     /**
      * @param $query
      * @param array|null $params
+     *
      * @return bool
      */
     public function exec($query, $params = null)

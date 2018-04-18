@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Administrador
  * Date: 28/08/2017
- * Time: 05:55 PM
+ * Time: 05:55 PM.
  */
 
 namespace Sufel\App\Repository;
@@ -13,8 +13,7 @@ use Sufel\App\Models\Company;
 use Sufel\App\Utils\PdoErrorLogger;
 
 /**
- * Class CompanyRepository
- * @package Sufel\App\Repository
+ * Class CompanyRepository.
  */
 class CompanyRepository implements CompanyRepositoryInterface
 {
@@ -29,6 +28,7 @@ class CompanyRepository implements CompanyRepositoryInterface
 
     /**
      * CompanyRepository constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -42,6 +42,7 @@ class CompanyRepository implements CompanyRepositoryInterface
      *
      * @param string $ruc
      * @param string $password
+     *
      * @return bool
      */
     public function isAuthorized($ruc, $password)
@@ -51,13 +52,14 @@ class CompanyRepository implements CompanyRepositoryInterface
         $stm->execute([$ruc]);
 
         if ($stm->errorCode() !== '00000') {
-           $this->writeError($stm);
-           return FALSE;
+            $this->writeError($stm);
+
+            return false;
         }
 
         $obj = $stm->fetchObject();
-        if ($obj === FALSE) {
-            return FALSE;
+        if ($obj === false) {
+            return false;
         }
 
         return password_verify($password, $obj->password) && $obj->enable;
@@ -67,6 +69,7 @@ class CompanyRepository implements CompanyRepositoryInterface
      * Exist company.
      *
      * @param string $ruc
+     *
      * @return bool
      */
     public function exist($ruc)
@@ -84,6 +87,7 @@ class CompanyRepository implements CompanyRepositoryInterface
      * Create new company.
      *
      * @param Company $company
+     *
      * @return bool
      */
     public function create(Company $company)
@@ -108,6 +112,7 @@ SQL;
      * @param string $ruc
      * @param string $new
      * @param string $old
+     *
      * @return bool
      */
     public function changePassword($ruc, $new, $old)
@@ -119,7 +124,8 @@ SQL;
 
         if ($stm->errorCode() !== '00000') {
             $this->writeError($stm);
-            return FALSE;
+
+            return false;
         }
 
         if (!password_verify($old, $pass)) {

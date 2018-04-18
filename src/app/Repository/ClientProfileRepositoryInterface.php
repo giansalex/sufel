@@ -3,13 +3,13 @@
  * Created by PhpStorm.
  * User: LPALQUILER-11
  * Date: 18/04/2018
- * Time: 10:05
+ * Time: 10:05.
  */
 
 namespace Sufel\App\Repository;
 
 /**
- * Interface ClientProfileRepositoryInterface
+ * Interface ClientProfileRepositoryInterface.
  */
 interface ClientProfileRepositoryInterface
 {
@@ -25,6 +25,7 @@ interface ClientProfileRepositoryInterface
      * Update client last access.
      *
      * @param string $document
+     *
      * @return bool
      */
     public function updateAccess($document);

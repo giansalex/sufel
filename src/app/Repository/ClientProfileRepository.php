@@ -62,6 +62,7 @@ class ClientProfileRepository implements ClientProfileRepositoryInterface
      * Update client last access.
      *
      * @param string $document
+     *
      * @return bool
      */
     public function updateAccess($document)
