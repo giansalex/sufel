@@ -14,10 +14,10 @@ namespace Sufel\App\Service;
 interface RouterBuilderInterface
 {
     /**
-     * @param string $hash
-     * @param string $type
+     * @param string $name
+     * @param array $args
      *
      * @return string
      */
-    public function getFullPath($hash, $type);
+    public function getFullPath($name, array $args);
 }

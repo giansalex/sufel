@@ -48,8 +48,8 @@ class LinkGenerator
     {
         $hash = urlencode($this->crypto->encrypt(json_encode($data)));
 
-        $xmlLink = $this->router->getFullPath($hash, 'xml');
-        $pdfLink = $this->router->getFullPath($hash, 'pdf');
+        $xmlLink = $this->router->getFullPath('file_download', ['hash' => $hash, 'type' => 'xml']);
+        $pdfLink = $this->router->getFullPath('file_download', ['hash' => $hash, 'type' => 'pdf']);
 
         return [
           'xml' => $xmlLink,
