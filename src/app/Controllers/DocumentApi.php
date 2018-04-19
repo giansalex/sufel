@@ -8,16 +8,17 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Slim\Http\Response;
+use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileRepositoryInterface;
 
 /**
- * Class DocumentController.
+ * Class DocumentApi.
  */
-class DocumentController
+class DocumentApi implements DocumentApiInterface
 {
+    use ResponseTrait;
+
     /**
      * @var DocumentRepositoryInterface
      */
@@ -28,7 +29,7 @@ class DocumentController
     private $fileRepository;
 
     /**
-     * DocumentController constructor.
+     * DocumentApi constructor.
      *
      * @param DocumentRepositoryInterface $documentRepository
      * @param FileRepositoryInterface     $fileRepository
@@ -42,28 +43,25 @@ class DocumentController
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param Response               $response
-     * @param array                  $args
+     * Get asset document by id.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param int|string $id
+     * @param string     $type info, xml, pdf
+     *
+     * @return ApiResult
      */
-    public function getDocument($request, $response, $args)
+    public function getDocument($id, $type)
     {
-        $type = $args['type'];
         if (!in_array($type, ['info', 'xml', 'pdf'])) {
-            return $response->withStatus(404);
+            return $this->response(404);
         }
-
-        $jwt = $request->getAttribute('jwt');
-        $id = $jwt->doc;
 
         $doc = $this->documentRepository->get($id);
         if ($doc === null) {
-            return $response->withStatus(404);
+            return $this->response(404);
         }
         if ($type == 'info') {
-            return $response->withJson($doc);
+            return $this->ok($doc);
         }
 
         $result = [];
@@ -75,14 +73,12 @@ class DocumentController
             $result['type'] = 'application/pdf';
         }
 
-        $response->getBody()->write($result['file']);
+        $headers = [
+            'Content-Type' => $result['type'],
+            'Content-Disposition' => 'attachment',
+            'Content-Length' => strlen($result['file']),
+        ];
 
-        return $response
-            ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', 'attachment')
-            ->withHeader('Content-Length', strlen($result['file']))
-            ->withoutHeader('Pragma')
-            ->withoutHeader('Expires')
-            ->withoutHeader('Cache-Control');
+        return $this->response(200, $result, $headers);
     }
 }
