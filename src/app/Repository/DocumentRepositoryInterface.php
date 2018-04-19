@@ -10,6 +10,7 @@ namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
+use Sufel\App\ViewModels\DocumentLogin;
 
 /**
  * Interface DocumentRepositoryInterface.
@@ -19,11 +20,11 @@ interface DocumentRepositoryInterface
     /**
      * Return document's id or FALSE on failure.
      *
-     * @param array $info
+     * @param DocumentLogin $info
      *
      * @return bool|int
      */
-    public function isAuthorized($info);
+    public function isAuthorized(DocumentLogin $info);
 
     /**
      * Return true if document exist.

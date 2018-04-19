@@ -10,6 +10,7 @@ namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
+use Sufel\App\ViewModels\DocumentLogin;
 
 /**
  * Class DocumentRepository.
@@ -38,15 +39,15 @@ class DocumentRepository implements DocumentRepositoryInterface
      *
      * @return bool|int
      */
-    public function isAuthorized($info)
+    public function isAuthorized(DocumentLogin $info)
     {
         $params = [
-          $info['emisor'],
-          $info['tipo'],
-          $info['serie'],
-          $info['correlativo'],
-          (new \DateTime($info['fecha']))->format('Y-m-d'),
-          $info['total'],
+          $info->getEmisor(),
+          $info->getTipo(),
+          $info->getSerie(),
+          $info->getCorrelativo(),
+          $info->getFecha()->format('Y-m-d'),
+          $info->getTotal(),
         ];
         $sql = <<<SQL
 SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?

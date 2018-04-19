@@ -29,7 +29,7 @@ class ClientSecureApi implements ClientSecureApiInterface
     protected $container;
 
     /**
-     * SecureController constructor.
+     * SecureApi constructor.
      *
      * @param ContainerInterface $container
      */
