@@ -13,7 +13,7 @@ use Sufel\App\Models\Client;
 /**
  * Class ClienteRepository.
  */
-class ClienteRepository
+class ClienteRepository implements ClienteRepositoryInterface
 {
     /**
      * @var DbConnection

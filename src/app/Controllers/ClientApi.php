@@ -8,10 +8,9 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\ApiResult;
-use Sufel\App\Repository\ClienteRepository;
-use Sufel\App\Repository\DocumentFilterRepository;
+use Sufel\App\Repository\ClienteRepositoryInterface;
+use Sufel\App\Repository\DocumentFilterRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileRepositoryInterface;
 use Sufel\App\ViewModels\FilterViewModel;
@@ -22,20 +21,41 @@ use Sufel\App\ViewModels\FilterViewModel;
 class ClientApi implements ClientApiInterface
 {
     use ResponseTrait;
-
     /**
-     * @var ContainerInterface
+     * @var ClienteRepositoryInterface
      */
-    private $container;
+    private $clienteRepository;
+    /**
+     * @var DocumentFilterRepositoryInterface
+     */
+    private $documentFilterRepository;
+    /**
+     * @var FileRepositoryInterface
+     */
+    private $fileRepository;
+    /**
+     * @var DocumentRepositoryInterface
+     */
+    private $documentRepository;
 
     /**
      * ClientApi constructor.
      *
-     * @param ContainerInterface $container
+     * @param ClienteRepositoryInterface        $clienteRepository
+     * @param DocumentFilterRepositoryInterface $documentFilterRepository
+     * @param DocumentRepositoryInterface       $documentRepository
+     * @param FileRepositoryInterface           $fileRepository
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        ClienteRepositoryInterface $clienteRepository,
+        DocumentFilterRepositoryInterface $documentFilterRepository,
+        DocumentRepositoryInterface $documentRepository,
+        FileRepositoryInterface $fileRepository
+    ) {
+        $this->clienteRepository = $clienteRepository;
+        $this->documentFilterRepository = $documentFilterRepository;
+        $this->fileRepository = $fileRepository;
+        $this->documentRepository = $documentRepository;
     }
 
     /**
@@ -47,8 +67,7 @@ class ClientApi implements ClientApiInterface
      */
     public function getCompanies($document)
     {
-        $repository = $this->container->get(ClienteRepository::class);
-        $docs = $repository->getCompanies($document);
+        $docs = $this->clienteRepository->getCompanies($document);
 
         return $this->ok($docs);
     }
@@ -62,8 +81,7 @@ class ClientApi implements ClientApiInterface
      */
     public function getList(FilterViewModel $filter)
     {
-        $repository = $this->container->get(DocumentFilterRepository::class);
-        $docs = $repository->getList($filter);
+        $docs = $this->documentFilterRepository->getList($filter);
 
         return $this->ok($docs);
     }
@@ -73,7 +91,7 @@ class ClientApi implements ClientApiInterface
      *
      * @param string     $document client identiy document
      * @param int|string $id
-     * @param string     $type info, xml, pdf
+     * @param string     $type     info, xml, pdf
      *
      * @return ApiResult
      */
@@ -83,8 +101,7 @@ class ClientApi implements ClientApiInterface
             return $this->response(404);
         }
 
-        $repository = $this->container->get(DocumentRepositoryInterface::class);
-        $doc = $repository->get($id);
+        $doc = $this->documentRepository->get($id);
         if ($doc === null) {
             return $this->response(404);
         }
@@ -95,7 +112,7 @@ class ClientApi implements ClientApiInterface
             return $this->ok($doc);
         }
 
-        $fileRepo = $this->container->get(FileRepositoryInterface::class);
+        $fileRepo = $this->fileRepository;
 
         $result = [];
         if ($type == 'xml') {
