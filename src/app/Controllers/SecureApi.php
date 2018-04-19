@@ -9,9 +9,8 @@
 namespace Sufel\App\Controllers;
 
 use Firebase\JWT\JWT;
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\ApiResult;
-use Sufel\App\Repository\CompanyRepository;
+use Sufel\App\Repository\CompanyRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\ViewModels\DocumentLogin;
 
@@ -26,18 +25,30 @@ class SecureApi implements SecureApiInterface
      * @var string
      */
     private $secret;
-
-    protected $container;
+    /**
+     * @var DocumentRepositoryInterface
+     */
+    private $documentRepository;
+    /**
+     * @var CompanyRepositoryInterface
+     */
+    private $companyRepository;
 
     /**
      * SecureApi constructor.
      *
-     * @param ContainerInterface $container
+     * @param string $secret
+     * @param DocumentRepositoryInterface $documentRepository
+     * @param CompanyRepositoryInterface  $companyRepository
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->secret = $container['settings']['jwt']['secret'];
-        $this->container = $container;
+    public function __construct(
+        $secret,
+        DocumentRepositoryInterface $documentRepository,
+        CompanyRepositoryInterface $companyRepository
+    ) {
+        $this->secret = $secret;
+        $this->documentRepository = $documentRepository;
+        $this->companyRepository = $companyRepository;
     }
 
     /**
@@ -49,8 +60,7 @@ class SecureApi implements SecureApiInterface
      */
     public function client(DocumentLogin $login)
     {
-        $repo = $this->container->get(DocumentRepositoryInterface::class);
-        $id = $repo->isAuthorized($login);
+        $id = $this->documentRepository->isAuthorized($login);
         if ($id === false) {
             return $this->response(404, ['message' => 'documento no encontrado']);
         }
@@ -77,8 +87,7 @@ class SecureApi implements SecureApiInterface
      */
     public function company($ruc, $password)
     {
-        $repo = $this->container->get(CompanyRepository::class);
-        $valid = $repo->isAuthorized($ruc, $password);
+        $valid = $this->companyRepository->isAuthorized($ruc, $password);
 
         if (!$valid) {
             return $this->response(400, ['message' => 'credenciales inválidas']);
