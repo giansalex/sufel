@@ -14,12 +14,6 @@ namespace Sufel\App\Models;
 class ApiResult
 {
     /**
-     * Success action.
-     *
-     * @var bool
-     */
-    private $success;
-    /**
      * Http code result.
      *
      * @var int
@@ -34,29 +28,9 @@ class ApiResult
     /**
      * Data Result or message error.
      *
-     * @var mixed
+     * @var array
      */
     private $data;
-
-    /**
-     * @return bool
-     */
-    public function isSuccess()
-    {
-        return $this->success;
-    }
-
-    /**
-     * @param bool $success
-     *
-     * @return $this
-     */
-    public function setSuccess($success)
-    {
-        $this->success = $success;
-
-        return $this;
-    }
 
     /**
      * @return int
@@ -99,7 +73,7 @@ class ApiResult
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getData()
     {
@@ -107,7 +81,7 @@ class ApiResult
     }
 
     /**
-     * @param mixed $data
+     * @param array $data
      *
      * @return $this
      */
