@@ -8,13 +8,12 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Models\Company;
 use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
-use Sufel\App\Repository\CompanyRepository;
-use Sufel\App\Repository\DocumentRepository;
+use Sufel\App\Repository\CompanyRepositoryInterface;
+use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Service\LinkGenerator;
 use Sufel\App\Utils\XmlExtractor;
 
@@ -24,20 +23,41 @@ use Sufel\App\Utils\XmlExtractor;
 class CompanyApi implements CompanyApiInterface
 {
     use ResponseTrait;
-
     /**
-     * @var ContainerInterface
+     * @var CompanyRepositoryInterface
      */
-    private $container;
+    private $companyRepository;
+    /**
+     * @var DocumentRepositoryInterface
+     */
+    private $documentRepository;
+    /**
+     * @var LinkGenerator
+     */
+    private $generator;
+    /**
+     * @var string
+     */
+    private $uploadDir;
 
     /**
      * CompanyApi constructor.
      *
-     * @param ContainerInterface $container
+     * @param CompanyRepositoryInterface  $companyRepository
+     * @param DocumentRepositoryInterface $documentRepository
+     * @param LinkGenerator               $generator
+     * @param string                      $uploadDir
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        CompanyRepositoryInterface $companyRepository,
+        DocumentRepositoryInterface $documentRepository,
+        LinkGenerator $generator,
+        $uploadDir
+    ) {
+        $this->companyRepository = $companyRepository;
+        $this->documentRepository = $documentRepository;
+        $this->generator = $generator;
+        $this->uploadDir = $uploadDir;
     }
 
     /**
@@ -51,7 +71,7 @@ class CompanyApi implements CompanyApiInterface
      */
     public function createCompany($ruc, $nombre, $password)
     {
-        $repo = $this->container->get(CompanyRepository::class);
+        $repo = $this->companyRepository;
         if ($repo->exist($ruc)) {
             return $this->response(400, ['message' => 'Esta empresa ya esta registrada']);
         }
@@ -83,7 +103,7 @@ class CompanyApi implements CompanyApiInterface
             return $this->response(400, ['message' => 'el ruc del emisor no coincide con el XML']);
         }
 
-        $repo = $this->container->get(DocumentRepository::class);
+        $repo = $this->documentRepository;
         if ($repo->exist($inv)) {
             return $this->response(400, ['message' => 'documento ya existe']);
         }
@@ -100,7 +120,7 @@ class CompanyApi implements CompanyApiInterface
             return $this->response(500);
         }
 
-        $rootDir = $this->container->get('settings')['upload_dir'].DIRECTORY_SEPARATOR.$inv->getEmisor();
+        $rootDir = $this->uploadDir.DIRECTORY_SEPARATOR.$inv->getEmisor();
         if (!is_dir($rootDir)) {
             $oldmask = umask(0);
             mkdir($rootDir, 0777, true);
@@ -114,8 +134,7 @@ class CompanyApi implements CompanyApiInterface
         $zip->addFromString($name.'.pdf', $pdf);
         $zip->close();
 
-        $gen = $this->container->get(LinkGenerator::class);
-        $links = $gen->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
+        $links = $this->generator->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
 
         return $this->ok($links);
     }
@@ -131,8 +150,7 @@ class CompanyApi implements CompanyApiInterface
      */
     public function changePassword($ruc, $new, $old)
     {
-        $repo = $this->container->get(CompanyRepository::class);
-        $result = $repo->changePassword($ruc, $new, $old);
+        $result = $this->companyRepository->changePassword($ruc, $new, $old);
         if (!$result) {
             return $this->response(400, ['message' => 'No se pudo cambiar la contraseña']);
         }
@@ -158,8 +176,7 @@ class CompanyApi implements CompanyApiInterface
             ->setSerie($serie)
             ->setCorrelativo($correlativo);
 
-        $repo = $this->container->get(DocumentRepository::class);
-        $result = $repo->anular($inv);
+        $result = $this->documentRepository->anular($inv);
         if (!$result) {
             return $this->response(400, ['message' => 'No se pudo anular el documento']);
         }
@@ -178,8 +195,7 @@ class CompanyApi implements CompanyApiInterface
      */
     public function getInvoices($ruc, \DateTime $start, \DateTime $end)
     {
-        $repo = $this->container->get(DocumentRepository::class);
-        $result = $repo->getList($ruc, $start, $end);
+        $result = $this->documentRepository->getList($ruc, $start, $end);
 
         return $this->ok($result);
     }

@@ -9,7 +9,6 @@
 namespace Sufel\App\Controllers;
 
 use Firebase\JWT\JWT;
-use Psr\Container\ContainerInterface;
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Service\AuthClient;
 use Sufel\App\ViewModels\ClientRegister;
@@ -25,18 +24,21 @@ class ClientSecureApi implements ClientSecureApiInterface
      * @var string
      */
     private $secret;
-
-    protected $container;
+    /**
+     * @var AuthClient
+     */
+    private $authClient;
 
     /**
-     * SecureApi constructor.
+     * ClientSecureApi constructor.
      *
-     * @param ContainerInterface $container
+     * @param $secret
+     * @param AuthClient $authClient
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct($secret, AuthClient $authClient)
     {
-        $this->secret = $container['settings']['jwt']['secret'];
-        $this->container = $container;
+        $this->secret = $secret;
+        $this->authClient = $authClient;
     }
 
     /**
@@ -49,8 +51,7 @@ class ClientSecureApi implements ClientSecureApiInterface
      */
     public function login($document, $password)
     {
-        $service = $this->container->get(AuthClient::class);
-        list($success) = $service->login($document, $password);
+        list($success) = $this->authClient->login($document, $password);
         if ($success === false) {
             return $this->response(400, ['message' => 'credenciales inválidas']);
         }
@@ -76,8 +77,7 @@ class ClientSecureApi implements ClientSecureApiInterface
      */
     public function register(ClientRegister $client)
     {
-        $service = $this->container->get(AuthClient::class);
-        list($success, $message) = $service->register($client);
+        list($success, $message) = $this->authClient->register($client);
         if ($success === false) {
             return $this->response(400, ['message' => empty($message) ? 'No se pudo registrar' : $message]);
         }
