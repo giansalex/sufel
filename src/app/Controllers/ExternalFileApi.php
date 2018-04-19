@@ -8,17 +8,18 @@
 
 namespace Sufel\App\Controllers;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Slim\Http\Response;
+use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileRepositoryInterface;
 use Sufel\App\Service\CryptoService;
 
 /**
- * Class ExternalFileController.
+ * Class ExternalFileApi.
  */
-class ExternalFileController
+class ExternalFileApi implements ExternalFileApiInterface
 {
+    use ResponseTrait;
+
     /**
      * @var CryptoService
      */
@@ -33,7 +34,7 @@ class ExternalFileController
     private $fileRepository;
 
     /**
-     * ExternalFileController constructor.
+     * ExternalFileApi constructor.
      *
      * @param CryptoService               $crypto
      * @param DocumentRepositoryInterface $documentRepository
@@ -50,32 +51,28 @@ class ExternalFileController
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param Response               $response
-     * @param array                  $args
+     * Download file from hash.
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @param string $hash
+     * @param string $type xml or pdf
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return ApiResult
      */
-    public function download($request, $response, $args)
+    public function download($hash, $type)
     {
-        $hash = $args['hash'];
-        $type = $args['type'];
         if (!in_array($type, ['xml', 'pdf'])) {
-            return $response->withStatus(404);
+            return $this->response(404);
         }
 
         $res = $this->crypto->decrypt($hash);
         if ($res === false) {
-            return $response->withStatus(404);
+            return $this->response(404);
         }
         $obj = json_decode($res);
         $id = $obj->id;
         $doc = $this->documentRepository->get($id);
         if ($doc === null) {
-            return $response->withStatus(404);
+            return $this->response(404);
         }
 
         $result = [];
@@ -87,14 +84,12 @@ class ExternalFileController
             $result['type'] = 'application/pdf';
         }
 
-        $response->getBody()->write($result['file']);
+        $headers = [
+            'Content-Type' => $result['type'],
+            'Content-Disposition' => "attachment; filename=\"{$doc['filename']}.$type\";",
+            'Content-Length' => strlen($result['file']),
+        ];
 
-        return $response
-            ->withHeader('Content-Type', $result['type'])
-            ->withHeader('Content-Disposition', "attachment; filename=\"{$doc['filename']}.$type\";")
-            ->withHeader('Content-Length', strlen($result['file']))
-            ->withoutHeader('Pragma')
-            ->withoutHeader('Expires')
-            ->withoutHeader('Cache-Control');
+        return $this->response(200, $result, $headers);
     }
 }
