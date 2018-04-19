@@ -29,7 +29,7 @@ class ClientApi implements ClientApiInterface
     private $container;
 
     /**
-     * CompanyController constructor.
+     * ClientApi constructor.
      *
      * @param ContainerInterface $container
      */
