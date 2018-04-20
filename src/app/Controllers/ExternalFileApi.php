@@ -10,7 +10,7 @@ namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\DocumentRepositoryInterface;
-use Sufel\App\Repository\FileRepositoryInterface;
+use Sufel\App\Repository\FileReaderInterface;
 use Sufel\App\Service\CryptoService;
 
 /**
@@ -29,7 +29,7 @@ class ExternalFileApi implements ExternalFileApiInterface
      */
     private $documentRepository;
     /**
-     * @var FileRepositoryInterface
+     * @var FileReaderInterface
      */
     private $fileRepository;
 
@@ -38,12 +38,12 @@ class ExternalFileApi implements ExternalFileApiInterface
      *
      * @param CryptoService               $crypto
      * @param DocumentRepositoryInterface $documentRepository
-     * @param FileRepositoryInterface     $fileRepository
+     * @param FileReaderInterface $fileRepository
      */
     public function __construct(
         CryptoService $crypto,
         DocumentRepositoryInterface $documentRepository,
-        FileRepositoryInterface $fileRepository
+        FileReaderInterface $fileRepository
     ) {
         $this->crypto = $crypto;
         $this->documentRepository = $documentRepository;

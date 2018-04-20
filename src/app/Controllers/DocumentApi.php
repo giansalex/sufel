@@ -10,7 +10,7 @@ namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\DocumentRepositoryInterface;
-use Sufel\App\Repository\FileRepositoryInterface;
+use Sufel\App\Repository\FileReaderInterface;
 
 /**
  * Class DocumentApi.
@@ -24,7 +24,7 @@ class DocumentApi implements DocumentApiInterface
      */
     private $documentRepository;
     /**
-     * @var FileRepositoryInterface
+     * @var FileReaderInterface
      */
     private $fileRepository;
 
@@ -32,11 +32,11 @@ class DocumentApi implements DocumentApiInterface
      * DocumentApi constructor.
      *
      * @param DocumentRepositoryInterface $documentRepository
-     * @param FileRepositoryInterface     $fileRepository
+     * @param FileReaderInterface $fileRepository
      */
     public function __construct(
         DocumentRepositoryInterface $documentRepository,
-        FileRepositoryInterface $fileRepository
+        FileReaderInterface $fileRepository
     ) {
         $this->documentRepository = $documentRepository;
         $this->fileRepository = $fileRepository;

@@ -14,6 +14,7 @@ use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
 use Sufel\App\Repository\CompanyRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
+use Sufel\App\Repository\FileWriterInterface;
 use Sufel\App\Service\LinkGenerator;
 use Sufel\App\Utils\XmlExtractor;
 
@@ -36,9 +37,9 @@ class CompanyApi implements CompanyApiInterface
      */
     private $generator;
     /**
-     * @var string
+     * @var FileWriterInterface
      */
-    private $uploadDir;
+    private $fileWriter;
 
     /**
      * CompanyApi constructor.
@@ -46,18 +47,18 @@ class CompanyApi implements CompanyApiInterface
      * @param CompanyRepositoryInterface  $companyRepository
      * @param DocumentRepositoryInterface $documentRepository
      * @param LinkGenerator               $generator
-     * @param string                      $uploadDir
+     * @param FileWriterInterface $fileWriter
      */
     public function __construct(
         CompanyRepositoryInterface $companyRepository,
         DocumentRepositoryInterface $documentRepository,
         LinkGenerator $generator,
-        $uploadDir
+        FileWriterInterface $fileWriter
     ) {
         $this->companyRepository = $companyRepository;
         $this->documentRepository = $documentRepository;
         $this->generator = $generator;
-        $this->uploadDir = $uploadDir;
+        $this->fileWriter = $fileWriter;
     }
 
     /**
@@ -108,11 +109,11 @@ class CompanyApi implements CompanyApiInterface
             return $this->response(400, ['message' => 'documento ya existe']);
         }
 
-        $name = join('-', [$inv->getEmisor(), $inv->getTipo(), $inv->getSerie(), $inv->getCorrelativo()]);
         $pdf = base64_decode($pdf);
+        $name = join('-', [$inv->getEmisor(), $inv->getTipo(), $inv->getSerie(), $inv->getCorrelativo()]);
 
-        $doc = new Document();
-        $doc->setInvoice($inv)
+        $doc = (new Document())
+            ->setInvoice($inv)
             ->setFilename($name);
         $idSave = $repo->add($doc);
 
@@ -120,20 +121,10 @@ class CompanyApi implements CompanyApiInterface
             return $this->response(500);
         }
 
-        $rootDir = $this->uploadDir.DIRECTORY_SEPARATOR.$inv->getEmisor();
-        if (!is_dir($rootDir)) {
-            $oldmask = umask(0);
-            mkdir($rootDir, 0777, true);
-            umask($oldmask);
-        }
-
-        $path = $rootDir.DIRECTORY_SEPARATOR.$name.'.zip';
-        $zip = new \ZipArchive();
-        $zip->open($path, \ZipArchive::CREATE);
-        $zip->addFromString($name.'.xml', $xml);
-        $zip->addFromString($name.'.pdf', $pdf);
-        $zip->close();
-
+        $this->fileWriter->writeFiles($idSave, [
+            'xml' => $xml,
+            'pdf' => $pdf,
+        ]);
         $links = $this->generator->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
 
         return $this->ok($links);

@@ -12,7 +12,7 @@ use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\ClienteRepositoryInterface;
 use Sufel\App\Repository\DocumentFilterRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
-use Sufel\App\Repository\FileRepositoryInterface;
+use Sufel\App\Repository\FileReaderInterface;
 use Sufel\App\ViewModels\FilterViewModel;
 
 /**
@@ -30,7 +30,7 @@ class ClientApi implements ClientApiInterface
      */
     private $documentFilterRepository;
     /**
-     * @var FileRepositoryInterface
+     * @var FileReaderInterface
      */
     private $fileRepository;
     /**
@@ -44,13 +44,13 @@ class ClientApi implements ClientApiInterface
      * @param ClienteRepositoryInterface        $clienteRepository
      * @param DocumentFilterRepositoryInterface $documentFilterRepository
      * @param DocumentRepositoryInterface       $documentRepository
-     * @param FileRepositoryInterface           $fileRepository
+     * @param FileReaderInterface $fileRepository
      */
     public function __construct(
         ClienteRepositoryInterface $clienteRepository,
         DocumentFilterRepositoryInterface $documentFilterRepository,
         DocumentRepositoryInterface $documentRepository,
-        FileRepositoryInterface $fileRepository
+        FileReaderInterface $fileRepository
     ) {
         $this->clienteRepository = $clienteRepository;
         $this->documentFilterRepository = $documentFilterRepository;

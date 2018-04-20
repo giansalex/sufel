@@ -11,9 +11,11 @@ namespace Sufel\App\Repository;
 /**
  * Interface FileRepositoryInterface.
  */
-interface FileRepositoryInterface
+interface FileReaderInterface
 {
     /**
+     * Get file in specify format.
+     *
      * @param string|int $id
      * @param string     $type Options: xml|pdf|cdr
      *
