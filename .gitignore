@@ -1,9 +1,5 @@
 /build/
 /vendor/
-/logs/*
-!/logs/README.md
 /.idea
-/box.phar
-/public/upload/
-!/public/upload/.htaccess
 /.php_cs.cache
+/composer.lock
