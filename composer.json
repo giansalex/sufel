@@ -1,8 +1,8 @@
 {
   "name": "giansalex/sufel",
-  "description": "A REST API para consulta de comprobantes electronicos",
+  "description": "Libreria para consulta de comprobantes electronicos",
   "keywords": [
-    "rest",
+    "sufel",
     "facturacion-electronica"
   ],
   "homepage": "http://github.com/giansalex/sufel",
@@ -38,7 +38,6 @@
         }
     },
 	"scripts": {
-        "start": "php -S 0.0.0.0:8080 -t public public/index.php",
         "test": "phpunit",
         "lint": "./vendor/bin/psalm"
 	}
