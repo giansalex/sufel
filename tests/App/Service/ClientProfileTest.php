@@ -8,13 +8,12 @@
 
 namespace Tests\App\Service;
 
-use Sufel\App\Models\Client;
-use Sufel\App\Repository\ClienteRepositoryInterface;
-use Sufel\App\Repository\ClientProfileRepositoryInterface;
 use Sufel\App\Service\ClientProfile;
 
 class ClientProfileTest extends \PHPUnit_Framework_TestCase
 {
+    use ClientProfileTrait;
+
     /**
      * @var ClientProfile
      */
@@ -47,30 +46,5 @@ class ClientProfileTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($result);
         $this->assertEmpty($message);
-    }
-
-    private function getClientRepository()
-    {
-        $stub = $this->getMockBuilder(ClienteRepositoryInterface::class)->getMock();
-        $stub->method('get')
-            ->willReturn(
-                (new Client())
-                    ->setPlainPassword('123456')
-                    ->setDocument('20123456789')
-                    ->setNames('DEMO SAC')
-            );
-
-        /** @var $stub ClienteRepositoryInterface */
-        return $stub;
-    }
-
-    private function getClientProfileRepository()
-    {
-        $stub = $this->getMockBuilder(ClientProfileRepositoryInterface::class)->getMock();
-        $stub->method('updatePassword')
-            ->willReturn(true);
-
-        /** @var $stub ClientProfileRepositoryInterface */
-        return $stub;
     }
 }
