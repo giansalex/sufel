@@ -15,14 +15,16 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "ext-zip": "*",
-        "ext-pdo_mysql": "*",
       "giansalex/peru-consult": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0",
         "vimeo/psalm": "^0.3.64"
     },
+  "suggest": {
+    "ext-zip": "For File Storage",
+    "ext-pdo_mysql": "For storage invoice information"
+  },
     "autoload": {
         "psr-4": {
             "Sufel\\App\\": "src/app/"
