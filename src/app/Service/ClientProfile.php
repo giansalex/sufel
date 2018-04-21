@@ -9,7 +9,9 @@
 namespace Sufel\App\Service;
 
 use Sufel\App\Repository\ClienteRepository;
+use Sufel\App\Repository\ClienteRepositoryInterface;
 use Sufel\App\Repository\ClientProfileRepository;
+use Sufel\App\Repository\ClientProfileRepositoryInterface;
 
 /**
  * Class ClientProfile.
@@ -28,10 +30,12 @@ class ClientProfile
     /**
      * AuthClient constructor.
      *
-     * @param ClienteRepository $clienteRepository
-     * @param ClientProfileRepository $profileRepository
+     * @param ClienteRepositoryInterface $clienteRepository
+     * @param ClientProfileRepositoryInterface $profileRepository
      */
-    public function __construct(ClienteRepository $clienteRepository, ClientProfileRepository $profileRepository)
+    public function __construct(
+        ClienteRepositoryInterface $clienteRepository,
+        ClientProfileRepositoryInterface $profileRepository)
     {
         $this->client = $clienteRepository;
         $this->profile = $profileRepository;

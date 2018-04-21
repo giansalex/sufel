@@ -4,15 +4,20 @@
 [![Coverage Status](https://coveralls.io/repos/github/giansalex/sufel/badge.svg?branch=master)](https://coveralls.io/github/giansalex/sufel?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/87a24796afc94e7ea79f3f5f99a95f7c)](https://www.codacy.com/app/giansalex/sufel?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=giansalex/sufel&amp;utm_campaign=Badge_Grade)  
 
-Api de consultas para receptores de Facturación Electrónica en Perú según normativa de Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT).
+Sufel es una libreria que implementa los procesos de almacenamiento de comprobantes electronicos, y posterior acceso a estos por parte de los receptores de dichos comprobantes, en el marco de 
+la facturación electrónica en Perú, y exigido por [SUNAT](http://orientacion.sunat.gob.pe/index.php/empresas-menu/comprobantes-de-pago-empresas/comprobantes-de-pago-electronicos-empresas/see-desde-los-sistemas-del-contribuyente/4-efectos-de-ser-emisor-electronico) a los emisores electrónicos.
+> 6.Definir una forma de autenticación que garantice que solo el adquirente o usuario puede acceder a la información.
 
 ## Características
-- Publicar el xml y pdf .
-- Es Multi-Empresa
+- Recepcionamiento de xml y pdf.
+- Multi-Empresa
 - Consulta individual de comprobantes empleando datos como el ruc del emisor, tipo, serie, correlativo, fecha y total del comprobante.
 - Descarga del comrobante en formato xml y pdf.
-- Permite que el receptor pueda registrarse (actualmente solo para receptores con RUC)
+- Acceso al receptor para registrarse (actualmente solo para receptores con RUC)
 - Consulta de todos los comprobantes de un receptor registrado
+
+## API REST
+Empleando Slim Framework, [Sufel Rest](https://github.com/giansalex/sufel-rest).
 
 ## UI Client
 Una implementación basada en Angular 5 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  

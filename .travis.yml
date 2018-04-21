@@ -12,8 +12,8 @@ before_install:
   - mysql -e 'CREATE DATABASE sufel_dev DEFAULT CHARACTER SET utf8;'
 
 before_script:
-  - mysql -u root sufel_dev < schema/schema.sql
-  - php bin/db/init-db.php
+  - mysql -u root sufel_dev < data/schema/schema.sql
+#  - php bin/db/init-db.php
   - composer self-update
 
 install:
@@ -26,8 +26,3 @@ script:
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls -v
-  - |
-    if [ -n "$TRAVIS_TAG" ]; then
-      chmod +x ./bin/box/deploy.sh
-      ./bin/deploy.sh;
-    fi

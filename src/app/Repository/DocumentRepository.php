@@ -3,18 +3,19 @@
  * Created by PhpStorm.
  * User: Administrador
  * Date: 28/08/2017
- * Time: 06:07 PM
+ * Time: 06:07 PM.
  */
 
 namespace Sufel\App\Repository;
+
 use Sufel\App\Models\Document;
 use Sufel\App\Models\Invoice;
+use Sufel\App\ViewModels\DocumentLogin;
 
 /**
- * Class DocumentRepository
- * @package Sufel\App\Repository
+ * Class DocumentRepository.
  */
-class DocumentRepository
+class DocumentRepository implements DocumentRepositoryInterface
 {
     /**
      * @var DbConnection
@@ -23,6 +24,7 @@ class DocumentRepository
 
     /**
      * CompanyRepository constructor.
+     *
      * @param DbConnection $dbConnection
      */
     public function __construct(DbConnection $dbConnection)
@@ -34,17 +36,18 @@ class DocumentRepository
      * Return document's id or FALSE on failure.
      *
      * @param array $info
+     *
      * @return bool|int
      */
-    public function isAuthorized($info)
+    public function isAuthorized(DocumentLogin $info)
     {
         $params = [
-          $info['emisor'],
-          $info['tipo'],
-          $info['serie'],
-          $info['correlativo'],
-          (new \DateTime($info['fecha']))->format('Y-m-d'),
-          $info['total'],
+          $info->getEmisor(),
+          $info->getTipo(),
+          $info->getSerie(),
+          $info->getCorrelativo(),
+          $info->getFecha()->format('Y-m-d'),
+          $info->getTotal(),
         ];
         $sql = <<<SQL
 SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ? AND fecha = ? AND total = ?
@@ -63,6 +66,7 @@ SQL;
      * Return true if document exist.
      *
      * @param Invoice $invoice
+     *
      * @return bool
      */
     public function exist(Invoice $invoice)
@@ -71,7 +75,7 @@ SQL;
             $invoice->getEmisor(),
             $invoice->getTipo(),
             $invoice->getSerie(),
-            $invoice->getCorrelativo()
+            $invoice->getCorrelativo(),
         ];
         $sql = <<<SQL
 SELECT COUNT(id) FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
@@ -90,6 +94,7 @@ SQL;
      * Add a new document.
      *
      * @param Document $document
+     *
      * @return bool|string
      */
     public function add(Document $document)
@@ -115,7 +120,7 @@ SQL;
         $stm = $con->prepare($sql);
         $success = $stm->execute($arguments);
         if (!$success) {
-            return FALSE;
+            return false;
         }
 
         return $con->lastInsertId();
@@ -125,6 +130,7 @@ SQL;
      * Get Document By id.
      *
      * @param int $id
+     *
      * @return array
      */
     public function get($id)
@@ -150,7 +156,9 @@ SQL;
 
     /**
      * Marca un documento como anulado.
+     *
      * @param Invoice $invoice
+     *
      * @return bool
      */
     public function anular(Invoice $invoice)
@@ -164,6 +172,7 @@ SQL;
         $sql = <<<SQL
 UPDATE document SET baja = 1 WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
 SQL;
+
         return $this->db->exec($sql, $params);
     }
 
@@ -171,6 +180,7 @@ SQL;
      * @param $ruc
      * @param \DateTime $init
      * @param \DateTime $end
+     *
      * @return array
      */
     public function getList($ruc, \DateTime $init, \DateTime $end)
@@ -182,28 +192,6 @@ SQL;
         ];
         $sql = <<<SQL
 SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
-SQL;
-        $rows = $this->db
-            ->fetchAll($sql, $params);
-
-        return $rows;
-    }
-
-    /**
-     * @param string $document
-     * @param \DateTime $init
-     * @param \DateTime $end
-     * @return array
-     */
-    public function getListByClient($document, \DateTime $init, \DateTime $end)
-    {
-        $params = [
-            $document,
-            $init->format('Y-m-d'),
-            $end->format('Y-m-d'),
-        ];
-        $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE cliente_doc = ? AND fecha >= ? AND fecha <= ?
 SQL;
         $rows = $this->db
             ->fetchAll($sql, $params);
