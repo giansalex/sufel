@@ -14,7 +14,7 @@ use Sufel\App\Service\ClientProfile;
 /**
  * Class ClientProfileApi.
  */
-class ClientProfileApi
+class ClientProfileApi implements ClientProfileApiInterface
 {
     use ResponseTrait;
 
