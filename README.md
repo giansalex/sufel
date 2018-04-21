@@ -8,6 +8,12 @@ Sufel es una libreria que implementa los procesos de almacenamiento de comproban
 la facturación electrónica en Perú, y exigido por [SUNAT](http://orientacion.sunat.gob.pe/index.php/empresas-menu/comprobantes-de-pago-empresas/comprobantes-de-pago-electronicos-empresas/see-desde-los-sistemas-del-contribuyente/4-efectos-de-ser-emisor-electronico) a los emisores electrónicos.
 > 6.Definir una forma de autenticación que garantice que solo el adquirente o usuario puede acceder a la información.
 
+## Install
+From [packagist](https://packagist.org/packages/giansalex/sufel).
+```bash
+composer require giansalex/sufel
+```
+
 ## Características
 - Recepcionamiento de xml y pdf.
 - Multi-Empresa
