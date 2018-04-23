@@ -21,9 +21,8 @@ interface ClientProfileApiInterface
      * @param string $document
      * @param string $old
      * @param string $new
-     * @param string $repeat
      *
      * @return ApiResult
      */
-    public function changePassword($document, $old, $new, $repeat);
+    public function changePassword($document, $old, $new);
 }

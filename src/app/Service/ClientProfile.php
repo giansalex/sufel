@@ -47,16 +47,11 @@ class ClientProfile
      * @param string $document
      * @param string $old
      * @param string $new
-     * @param string $repeatNew
      *
      * @return array
      */
-    public function changePassword($document, $old, $new, $repeatNew)
+    public function changePassword($document, $old, $new)
     {
-        if ($new !== $repeatNew) {
-            return [false, 'Las contraseñas no coinciden'];
-        }
-
         $client = $this->client->get($document);
 
         if (!password_verify($old, $client->getPassword())) {
