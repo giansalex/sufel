@@ -29,17 +29,17 @@ class ClientProfileApiTest extends \PHPUnit_Framework_TestCase
 
     public function testchangePasswordSuccess()
     {
-        $result = $this->api->changePassword('20123456789', '123456', '123456', '123456');
+        $result = $this->api->changePassword('20123456789', '123456', '123456');
 
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertNotEmpty($result->getData()['message']);
     }
 
-    public function testchangePasswordInvalid()
+    public function testchangePasswordValid()
     {
-        $result = $this->api->changePassword('20123456789', '123456', '123456', '123');
+        $result = $this->api->changePassword('20123456789', '123456',  '123666');
 
-        $this->assertEquals(400, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
         $this->assertNotEmpty($result->getData()['message']);
     }
 }
