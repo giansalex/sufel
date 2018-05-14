@@ -26,7 +26,7 @@ composer require giansalex/sufel
 Empleando Slim Framework, [Sufel Rest](https://github.com/giansalex/sufel-rest).
 
 ## UI Client
-Una implementación basada en Angular 5 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  
+Una implementación basada en Angular 6 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  
 
 ## API Docs
 - [Swagger Docs Full](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.json)  
