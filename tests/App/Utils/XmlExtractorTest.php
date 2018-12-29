@@ -33,6 +33,22 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(11, strlen($inv->getEmisor()));
     }
 
+    public function testGetInvoiceFac21()
+    {
+        $path = __DIR__ . '/../../Resources/20123456789-01-F001-123.xml';
+        $inv = (new XmlExtractor())->toInvoice($this->loadFromFile($path));
+
+        var_dump($inv);
+        $this->assertEquals('01', $inv->getTipo());
+        $this->assertStringStartsWith('F', $inv->getSerie());
+        $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
+        $this->assertTrue((new \DateTime($inv->getFecha()))->getTimestamp() < time());
+        $this->assertTrue(is_float($inv->getTotal()));
+        $this->assertEquals('6', $inv->getClientTipo());
+        $this->assertEquals(11, strlen($inv->getClientDoc()));
+        $this->assertEquals(11, strlen($inv->getEmisor()));
+    }
+
     public function testGetInvoiceBol()
     {
         $path = __DIR__ . '/../../Resources/20600995805-03-B001-1.xml';
