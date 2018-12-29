@@ -65,17 +65,31 @@ class XmlExtractor
      */
     private function getInvoice()
     {
+        $ubl = $this->getFirst('cbc:UBLVersionID');
         $doc = $this->getFirst('cbc:ID');
         $arr = explode('-', $doc);
         $inv = new Invoice();
         $inv->setTipo($this->getFirst('cbc:InvoiceTypeCode'))
-        ->setSerie($arr[0])
-        ->setCorrelativo($arr[1])
-        ->setFecha($this->getFirst('cbc:IssueDate'))
-        ->setEmisor($this->getFirst('cac:AccountingSupplierParty/cbc:CustomerAssignedAccountID'))
-        ->setClientTipo($this->getFirst('cac:AccountingCustomerParty/cbc:AdditionalAccountID'))
-        ->setClientDoc($this->getFirst('cac:AccountingCustomerParty/cbc:CustomerAssignedAccountID'))
-        ->setClientName($this->getFirst('cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName'));
+            ->setSerie($arr[0])
+            ->setCorrelativo($arr[1])
+            ->setFecha($this->getFirst('cbc:IssueDate'));
+
+        switch ($ubl) {
+            case '2.0':
+                $inv->setEmisor($this->getFirst('cac:AccountingSupplierParty/cbc:CustomerAssignedAccountID'))
+                    ->setClientTipo($this->getFirst('cac:AccountingCustomerParty/cbc:AdditionalAccountID'))
+                    ->setClientDoc($this->getFirst('cac:AccountingCustomerParty/cbc:CustomerAssignedAccountID'))
+                    ->setClientName($this->getFirst('cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName'));
+                break;
+            case '2.1':
+                $inv->setEmisor($this->getFirst('cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification/cbc:ID'))
+                    ->setClientTipo($this->getFirst('cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID/@schemeID'))
+                    ->setClientDoc($this->getFirst('cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID'))
+                    ->setClientName($this->getFirst('cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName'));
+                break;
+            default:
+                throw new \Exception("UBL version $ubl no soportada.");
+        }
 
         return $inv;
     }
