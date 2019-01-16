@@ -105,8 +105,12 @@ class CompanyApi implements CompanyApiInterface
         }
 
         $repo = $this->documentRepository;
-        if ($repo->exist($inv)) {
-            return $this->response(400, ['message' => 'documento ya existe']);
+        $existId = $repo->getId($inv);
+        if ($existId !== false) {
+
+            $links = $this->generator->getLinks(['id' => $existId, 'ruc' => $inv->getEmisor()]);
+
+            return $this->ok($links);
         }
 
         $pdf = base64_decode($pdf);

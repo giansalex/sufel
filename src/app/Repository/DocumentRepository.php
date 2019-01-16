@@ -63,13 +63,13 @@ SQL;
     }
 
     /**
-     * Return true if document exist.
+     * Return id if document exist.
      *
      * @param Invoice $invoice
      *
-     * @return bool
+     * @return integer|bool Id or FALSE
      */
-    public function exist(Invoice $invoice)
+    public function getId(Invoice $invoice)
     {
         $params = [
             $invoice->getEmisor(),
@@ -78,7 +78,7 @@ SQL;
             $invoice->getCorrelativo(),
         ];
         $sql = <<<SQL
-SELECT COUNT(id) FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
+SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
 SQL;
 
         $con = $this->db->getConnection();

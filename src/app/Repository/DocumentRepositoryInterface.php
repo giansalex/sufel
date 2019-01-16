@@ -27,13 +27,13 @@ interface DocumentRepositoryInterface
     public function isAuthorized(DocumentLogin $info);
 
     /**
-     * Return true if document exist.
+     * Return id if document exist.
      *
      * @param Invoice $invoice
      *
-     * @return bool
+     * @return integer|bool Id or FALSE
      */
-    public function exist(Invoice $invoice);
+    public function getId(Invoice $invoice);
 
     /**
      * Add a new document.
