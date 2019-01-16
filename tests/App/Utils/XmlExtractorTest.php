@@ -38,7 +38,6 @@ class XmlExtractorTest extends \PHPUnit_Framework_TestCase
         $path = __DIR__ . '/../../Resources/20123456789-01-F001-123.xml';
         $inv = (new XmlExtractor())->toInvoice($this->loadFromFile($path));
 
-        var_dump($inv);
         $this->assertEquals('01', $inv->getTipo());
         $this->assertStringStartsWith('F', $inv->getSerie());
         $this->assertLessThanOrEqual(8, strlen($inv->getCorrelativo()));
