@@ -8,6 +8,7 @@
 
 namespace Sufel\App\Repository;
 
+use Psr\Log\LoggerInterface;
 use Sufel\App\Utils\PdoErrorLogger;
 
 /**
@@ -25,20 +26,26 @@ class DbConnection
     private $options;
 
     /**
-     * @var PdoErrorLogger
+     * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var PdoErrorLogger
+     */
+    private $pdoLogger;
 
     /**
      * DbConnection constructor.
      *
-     * @param array          $options
-     * @param PdoErrorLogger $logger
+     * @param array $options
+     * @param LoggerInterface $logger
+     * @param PdoErrorLogger $pdoLogger
      */
-    public function __construct(array $options, PdoErrorLogger $logger)
+    public function __construct(array $options, LoggerInterface $logger, PdoErrorLogger $pdoLogger)
     {
         $this->options = $options;
         $this->logger = $logger;
+        $this->pdoLogger = $pdoLogger;
     }
 
     /**
@@ -54,6 +61,7 @@ class DbConnection
             try {
                 $this->con = new \PDO($this->options['dsn'], $this->options['user'], $this->options['password']);
             } catch (\PDOException $e) {
+                $this->logger->error($e->getMessage());
                 throw new \Exception('No se pudo conectar');
             }
         }
@@ -115,6 +123,6 @@ class DbConnection
      */
     public function log(\PDOStatement $statement)
     {
-        $this->logger->err($statement);
+        $this->pdoLogger->err($statement);
     }
 }
