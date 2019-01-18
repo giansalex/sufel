@@ -1,1 +1,0 @@
-ALTER TABLE document ADD baja BIT NULL;
