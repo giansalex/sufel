@@ -9,7 +9,6 @@
 namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
-use Sufel\App\Models\Invoice;
 use Sufel\App\ViewModels\DocumentLogin;
 
 /**
@@ -29,11 +28,11 @@ interface DocumentRepositoryInterface
     /**
      * Return id if document exist.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return integer|bool Id or FALSE
      */
-    public function getId(Invoice $invoice);
+    public function getId(Document $document);
 
     /**
      * Add a new document.
@@ -56,11 +55,11 @@ interface DocumentRepositoryInterface
     /**
      * Marca un documento como anulado.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return bool
      */
-    public function anular(Invoice $invoice);
+    public function anular(Document $document);
 
     /**
      * @param $ruc

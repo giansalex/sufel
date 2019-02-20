@@ -11,7 +11,6 @@ namespace Sufel\App\Controllers;
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Models\Company;
 use Sufel\App\Models\Document;
-use Sufel\App\Models\Invoice;
 use Sufel\App\Repository\CompanyRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileWriterInterface;
@@ -165,7 +164,7 @@ class CompanyApi implements CompanyApiInterface
      */
     public function anularDocument($ruc, $tipo, $serie, $correlativo)
     {
-        $inv = new Invoice();
+        $inv = new Document();
         $inv->setEmisor($ruc)
             ->setTipo($tipo)
             ->setSerie($serie)
@@ -198,7 +197,7 @@ class CompanyApi implements CompanyApiInterface
     /**
      * @param $xml
      *
-     * @return \Sufel\App\Models\Invoice
+     * @return Document
      */
     private function getInvoice($xml)
     {

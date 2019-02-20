@@ -9,7 +9,6 @@
 namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
-use Sufel\App\Models\Invoice;
 use Sufel\App\ViewModels\DocumentLogin;
 
 /**
@@ -65,17 +64,17 @@ SQL;
     /**
      * Return id if document exist.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return integer|bool Id or FALSE
      */
-    public function getId(Invoice $invoice)
+    public function getId(Document $document)
     {
         $params = [
-            $invoice->getEmisor(),
-            $invoice->getTipo(),
-            $invoice->getSerie(),
-            $invoice->getCorrelativo(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
         ];
         $sql = <<<SQL
 SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
@@ -99,17 +98,16 @@ SQL;
      */
     public function add(Document $document)
     {
-        $inv = $document->getInvoice();
         $arguments = [
-            $inv->getEmisor(),
-            $inv->getTipo(),
-            $inv->getSerie(),
-            $inv->getCorrelativo(),
-            $inv->getFecha(),
-            $inv->getTotal(),
-            $inv->getClientTipo(),
-            $inv->getClientDoc(),
-            $inv->getClientName(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
+            $document->getFecha(),
+            $document->getTotal(),
+            $document->getClientTipo(),
+            $document->getClientDoc(),
+            $document->getClientName(),
             $document->getFilename(),
         ];
         $sql = <<<SQL
@@ -157,17 +155,17 @@ SQL;
     /**
      * Marca un documento como anulado.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return bool
      */
-    public function anular(Invoice $invoice)
+    public function anular(Document $document)
     {
         $params = [
-            $invoice->getEmisor(),
-            $invoice->getTipo(),
-            $invoice->getSerie(),
-            $invoice->getCorrelativo(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
         ];
         $sql = <<<SQL
 UPDATE document SET baja = 1 WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
