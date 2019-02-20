@@ -9,7 +9,7 @@
 namespace Sufel\App\Repository;
 
 /**
- * Interface FileRepositoryInterface.
+ * Interface FileReaderInterface.
  */
 interface FileReaderInterface
 {
