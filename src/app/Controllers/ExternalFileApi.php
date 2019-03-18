@@ -9,6 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
+use Sufel\App\Models\Document;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileReaderInterface;
 use Sufel\App\Service\CryptoService;
@@ -75,14 +76,13 @@ class ExternalFileApi implements ExternalFileApiInterface
             return $this->response(404);
         }
 
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $this->fileRepository->getFile($id, 'xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
-            $result['type'] = 'application/pdf';
-        }
+        $filter = $this->convertToDocument($doc);
+        $storageId = $this->documentRepository->getStorageId($filter);
+
+        $result = [
+            'file' => $this->fileRepository->read($storageId, $type),
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf'
+        ];
 
         $headers = [
             'Content-Type' => $result['type'],
@@ -91,5 +91,16 @@ class ExternalFileApi implements ExternalFileApiInterface
         ];
 
         return $this->response(200, $result, $headers);
+    }
+
+    private function convertToDocument(array $data)
+    {
+        $doc = new Document();
+        $doc->setEmisor($data['emisor'])
+            ->setTipo($data['tipo'])
+            ->setSerie($data['serie'])
+            ->setCorrelativo($doc['correlativo']);
+
+        return $doc;
     }
 }

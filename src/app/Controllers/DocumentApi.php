@@ -9,6 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
+use Sufel\App\Models\Document;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileReaderInterface;
 
@@ -63,15 +64,13 @@ class DocumentApi implements DocumentApiInterface
         if ($type == 'info') {
             return $this->ok($doc);
         }
+        $filter = $this->convertToDocument($doc);
+        $storageId = $this->documentRepository->getStorageId($filter);
 
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $this->fileRepository->getFile($id, 'xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
-            $result['type'] = 'application/pdf';
-        }
+        $result = [
+            'file' => $this->fileRepository->read($storageId, $type),
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf'
+        ];
 
         $headers = [
             'Content-Type' => $result['type'],
@@ -80,5 +79,16 @@ class DocumentApi implements DocumentApiInterface
         ];
 
         return $this->response(200, $result, $headers);
+    }
+
+    private function convertToDocument(array $data)
+    {
+        $doc = new Document();
+        $doc->setEmisor($data['emisor'])
+            ->setTipo($data['tipo'])
+            ->setSerie($data['serie'])
+            ->setCorrelativo($doc['correlativo']);
+
+        return $doc;
     }
 }
