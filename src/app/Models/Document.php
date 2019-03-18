@@ -72,11 +72,6 @@ class Document
     private $baja;
 
     /**
-     * @var string
-     */
-    private $filename;
-
-    /**
      * @var \DateTime
      */
     private $last;
@@ -277,26 +272,6 @@ class Document
     public function setBaja($baja)
     {
         $this->baja = $baja;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
-     * @param string $filename
-     *
-     * @return Document
-     */
-    public function setFilename($filename)
-    {
-        $this->filename = $filename;
 
         return $this;
     }

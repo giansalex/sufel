@@ -129,11 +129,10 @@ SQL;
             $document->getClientTipo(),
             $document->getClientDoc(),
             $document->getClientName(),
-            $document->getFilename(),
         ];
         $sql = <<<SQL
-INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename)
-VALUES(?,?,?,?,?,?,?,?,?,?)
+INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre)
+VALUES(?,?,?,?,?,?,?,?,?)
 SQL;
         $con = $this->db->getConnection();
         $stm = $con->prepare($sql);
@@ -166,7 +165,7 @@ SQL;
     public function get($id)
     {
         $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja 
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,baja 
 FROM document WHERE id = ? LIMIT 1
 SQL;
         $rows = $this->db
@@ -221,7 +220,7 @@ SQL;
             $end->format('Y-m-d'),
         ];
         $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
 SQL;
         $rows = $this->db
             ->fetchAll($sql, $params);
