@@ -74,7 +74,7 @@ trait ClientApiTrait
     {
         $stub = $this->getMockBuilder(FileReaderInterface::class)->getMock();
 
-        $stub->method('getFile')->willReturn('--any-content-file');
+        $stub->method('read')->willReturn('--any-content-file');
 
         /**@var $stub FileReaderInterface */
         return $stub;
