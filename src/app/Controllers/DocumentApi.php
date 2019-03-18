@@ -9,7 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
-use Sufel\App\Models\Document;
+use Sufel\App\Models\DocumentConverter;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileReaderInterface;
 
@@ -28,19 +28,23 @@ class DocumentApi implements DocumentApiInterface
      * @var FileReaderInterface
      */
     private $fileRepository;
+    /**
+     * @var DocumentConverter
+     */
+    private $documentConverter;
 
     /**
      * DocumentApi constructor.
      *
      * @param DocumentRepositoryInterface $documentRepository
      * @param FileReaderInterface $fileRepository
+     * @param DocumentConverter $documentConverter
      */
-    public function __construct(
-        DocumentRepositoryInterface $documentRepository,
-        FileReaderInterface $fileRepository
-    ) {
+    public function __construct(DocumentRepositoryInterface $documentRepository, FileReaderInterface $fileRepository, DocumentConverter $documentConverter)
+    {
         $this->documentRepository = $documentRepository;
         $this->fileRepository = $fileRepository;
+        $this->documentConverter = $documentConverter;
     }
 
     /**
@@ -64,12 +68,12 @@ class DocumentApi implements DocumentApiInterface
         if ($type == 'info') {
             return $this->ok($doc);
         }
-        $filter = $this->convertToDocument($doc);
+        $filter = $this->documentConverter->convertToDoc($doc);
         $storageId = $this->documentRepository->getStorageId($filter);
 
         $result = [
             'file' => $this->fileRepository->read($storageId, $type),
-            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf'
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf',
         ];
 
         $headers = [
@@ -79,16 +83,5 @@ class DocumentApi implements DocumentApiInterface
         ];
 
         return $this->response(200, $result, $headers);
-    }
-
-    private function convertToDocument(array $data)
-    {
-        $doc = new Document();
-        $doc->setEmisor($data['emisor'])
-            ->setTipo($data['tipo'])
-            ->setSerie($data['serie'])
-            ->setCorrelativo($doc['correlativo']);
-
-        return $doc;
     }
 }
