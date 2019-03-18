@@ -16,10 +16,10 @@ interface FileReaderInterface
     /**
      * Get file in specify format.
      *
-     * @param string|int $id
-     * @param string     $type Options: xml|pdf|cdr
+     * @param string $id
+     * @param string $type Options: xml,pdf,cdr,etc.
      *
      * @return string
      */
-    public function getFile($id, $type);
+    public function read($id, $type);
 }
