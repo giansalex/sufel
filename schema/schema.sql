@@ -7,28 +7,28 @@
 -- Empresas autorizadas a enviar sus comprobantes para consulta de sus clientes
 CREATE TABLE company
 (
-  ruc CHAR(11) PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
+  ruc      CHAR(11) PRIMARY KEY,
+  nombre   VARCHAR(100) NOT NULL,
   password VARCHAR(100) NOT NULL,
-  enable BIT NOT NULL
+  enable   BOOLEAN      NULL
 )ENGINE = INNODB;
 
 -- Comprobantes electronicos enviados por las empresas autorizadas
 CREATE TABLE document
 (
-  id INTEGER AUTO_INCREMENT NOT NULL,
-  emisor CHAR(11) NOT NULL,
-  tipo VARCHAR(3) NOT NULL,
-  serie VARCHAR(5) NOT NULL,
-  correlativo VARCHAR(10) NOT NULL,
-  fecha DATE NOT NULL,
-  total FLOAT(10, 2) NOT NULL,
-  cliente_tipo VARCHAR(2) NOT NULL,
-  cliente_doc VARCHAR(15) NOT NULL,
-  cliente_nombre VARCHAR(100) NULL,
-  last DATETIME NULL,
-  filename VARCHAR(40) NOT NULL,
-  baja BIT NULL,
+  id             INTEGER AUTO_INCREMENT NOT NULL,
+  emisor         CHAR(11)               NOT NULL,
+  tipo           VARCHAR(3)             NOT NULL,
+  serie          VARCHAR(5)             NOT NULL,
+  correlativo    VARCHAR(10)            NOT NULL,
+  fecha          DATE                   NOT NULL,
+  total          FLOAT(10, 2)           NOT NULL,
+  cliente_tipo   VARCHAR(2)             NOT NULL,
+  cliente_doc    VARCHAR(15)            NOT NULL,
+  cliente_nombre VARCHAR(100)           NULL,
+  last           DATETIME               NULL,
+  storage_id     VARCHAR(50),
+  baja           BOOLEAN                NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (emisor) REFERENCES company(ruc)
 )ENGINE = INNODB;
