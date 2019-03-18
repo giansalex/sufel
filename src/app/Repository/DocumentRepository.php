@@ -89,6 +89,27 @@ SQL;
         return $count > 0;
     }
 
+    public function getStorageId(Document $document)
+    {
+        $params = [
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
+        ];
+        $sql = <<<SQL
+SELECT storage_id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
+SQL;
+
+        $con = $this->db->getConnection();
+        $stm = $con->prepare($sql);
+        $stm->execute($params);
+        $count = $stm->fetchColumn();
+        $stm = null;
+
+        return $count > 0;
+    }
+
     /**
      * Add a new document.
      *
@@ -122,6 +143,17 @@ SQL;
         }
 
         return $con->lastInsertId();
+    }
+
+    public function setStorageId($id, $storageId)
+    {
+        $params = [$storageId, $id];
+
+        $sql = <<<SQL
+UPDATE document SET storage_id = ? WHERE id = ?
+SQL;
+
+        return $this->db->exec($sql, $params);
     }
 
     /**

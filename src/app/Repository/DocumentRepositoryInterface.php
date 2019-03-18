@@ -35,6 +35,15 @@ interface DocumentRepositoryInterface
     public function getId(Document $document);
 
     /**
+     * Return storage ID if document exist.
+     *
+     * @param Document $document
+     *
+     * @return integer|bool Id or FALSE
+     */
+    public function getStorageId(Document $document);
+
+    /**
      * Add a new document.
      *
      * @param Document $document
@@ -42,6 +51,14 @@ interface DocumentRepositoryInterface
      * @return bool|string
      */
     public function add(Document $document);
+
+    /**
+     * @param integer $id
+     * @param string $storageId
+     *
+     * @return bool
+     */
+    public function setStorageId($id, $storageId);
 
     /**
      * Get Document By id.
