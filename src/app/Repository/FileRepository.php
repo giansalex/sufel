@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: LPALQUILER-11
  * Date: 18/04/2018
- * Time: 10:53
+ * Time: 10:53.
  */
 
 namespace Sufel\App\Repository;
@@ -11,8 +11,7 @@ namespace Sufel\App\Repository;
 use Sufel\App\Models\Document;
 
 /**
- * Class FileRepository
- * @package Sufel\App\Repository
+ * Class FileRepository.
  */
 class FileRepository implements FileReaderInterface, FileWriterInterface
 {
@@ -20,6 +19,7 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
 
     /**
      * FileRepository constructor.
+     *
      * @param $uploadDirectory
      */
     public function __construct($uploadDirectory)
@@ -58,7 +58,7 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
             $document->getEmisor(),
             $document->getTipo(),
             $document->getSerie(),
-            $document->getCorrelativo()
+            $document->getCorrelativo(),
         ]);
 
         $this->createDirectory($document);
@@ -102,6 +102,7 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
 
     /**
      * @param $id
+     *
      * @return string
      */
     private function getPathZip($id)
