@@ -8,9 +8,9 @@
 
 namespace Sufel\App\Controllers;
 
-use Firebase\JWT\JWT;
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Service\AuthClient;
+use Sufel\App\Service\TokenServiceInterface;
 use Sufel\App\ViewModels\ClientRegister;
 
 /**
@@ -28,17 +28,23 @@ class ClientSecureApi implements ClientSecureApiInterface
      * @var AuthClient
      */
     private $authClient;
+    /**
+     * @var TokenServiceInterface
+     */
+    private $tokenService;
 
     /**
      * ClientSecureApi constructor.
      *
-     * @param $secret
+     * @param string $secret
      * @param AuthClient $authClient
+     * @param TokenServiceInterface $tokenService
      */
-    public function __construct($secret, AuthClient $authClient)
+    public function __construct($secret, AuthClient $authClient, TokenServiceInterface $tokenService)
     {
         $this->secret = $secret;
         $this->authClient = $authClient;
+        $this->tokenService = $tokenService;
     }
 
     /**
@@ -63,7 +69,7 @@ class ClientSecureApi implements ClientSecureApiInterface
             'exp' => $exp,
         ];
 
-        $token = JWT::encode($data, $this->secret);
+        $token = $this->tokenService->create($data, $this->secret);
 
         return $this->ok(['token' => $token, 'expire' => $exp]);
     }

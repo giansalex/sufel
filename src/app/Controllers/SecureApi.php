@@ -8,10 +8,10 @@
 
 namespace Sufel\App\Controllers;
 
-use Firebase\JWT\JWT;
 use Sufel\App\Models\ApiResult;
 use Sufel\App\Repository\CompanyRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
+use Sufel\App\Service\TokenServiceInterface;
 use Sufel\App\ViewModels\DocumentLogin;
 
 /**
@@ -33,22 +33,29 @@ class SecureApi implements SecureApiInterface
      * @var CompanyRepositoryInterface
      */
     private $companyRepository;
+    /**
+     * @var TokenServiceInterface
+     */
+    private $tokenService;
 
     /**
      * SecureApi constructor.
      *
      * @param string $secret
      * @param DocumentRepositoryInterface $documentRepository
-     * @param CompanyRepositoryInterface  $companyRepository
+     * @param CompanyRepositoryInterface $companyRepository
+     * @param TokenServiceInterface $tokenService
      */
     public function __construct(
         $secret,
         DocumentRepositoryInterface $documentRepository,
-        CompanyRepositoryInterface $companyRepository
+        CompanyRepositoryInterface $companyRepository,
+        TokenServiceInterface $tokenService
     ) {
         $this->secret = $secret;
         $this->documentRepository = $documentRepository;
         $this->companyRepository = $companyRepository;
+        $this->tokenService = $tokenService;
     }
 
     /**
@@ -72,7 +79,7 @@ class SecureApi implements SecureApiInterface
             'exp' => $exp,
         ];
 
-        $token = JWT::encode($data, $this->secret);
+        $token = $this->tokenService->create($data, $this->secret);
 
         return $this->ok(['token' => $token, 'expire' => $exp]);
     }
@@ -100,7 +107,7 @@ class SecureApi implements SecureApiInterface
             'exp' => $exp,
         ];
 
-        $token = JWT::encode($data, $this->secret);
+        $token = $this->tokenService->create($data, $this->secret);
 
         return $this->ok(['token' => $token, 'expire' => $exp]);
     }
