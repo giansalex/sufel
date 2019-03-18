@@ -15,6 +15,9 @@
     ],
     "require": {
         "php": ">=5.5.0",
+      "ext-dom": "*",
+      "ext-json": "*",
+      "ext-zip": "*",
       "giansalex/peru-consult": "^2.0"
     },
     "require-dev": {
