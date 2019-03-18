@@ -97,38 +97,43 @@ class CompanyApi implements CompanyApiInterface
     public function addDocument($ruc, $xml, $pdf)
     {
         $xml = base64_decode($xml);
-        $inv = $this->getInvoice($xml);
+        $doc = $this->getInvoice($xml);
 
-        if (empty($inv->getEmisor()) || $ruc != trim($inv->getEmisor())) {
+        if (empty($doc->getEmisor()) || $ruc != trim($doc->getEmisor())) {
             return $this->response(400, ['message' => 'el ruc del emisor no coincide con el XML']);
         }
 
         $repo = $this->documentRepository;
-        $existId = $repo->getId($inv);
-        if ($existId !== false) {
+        $storageId = $repo->getStorageId($doc);
+        if ($storageId !== false) {
 
-            $links = $this->generator->getLinks(['id' => $existId, 'ruc' => $inv->getEmisor()]);
+            $links = $this->generator->getLinks([
+                'id' => $storageId,
+                'ruc' => $doc->getEmisor(),
+                'exp' => strtotime('+24 hours')
+            ]);
 
             return $this->ok($links);
         }
 
         $pdf = base64_decode($pdf);
-        $name = join('-', [$inv->getEmisor(), $inv->getTipo(), $inv->getSerie(), $inv->getCorrelativo()]);
+        $saveId = $repo->add($doc);
 
-        $doc = (new Document())
-            ->setInvoice($inv)
-            ->setFilename($name);
-        $idSave = $repo->add($doc);
-
-        if ($idSave === false) {
+        if ($saveId === false) {
             return $this->response(500);
         }
 
-        $this->fileWriter->writeFiles($idSave, [
+        $storageId = $this->fileWriter->save($doc, [
             'xml' => $xml,
             'pdf' => $pdf,
         ]);
-        $links = $this->generator->getLinks(['id' => $idSave, 'ruc' => $inv->getEmisor()]);
+        $repo->setStorageId($saveId, $storageId);
+
+        $links = $this->generator->getLinks([
+            'id' => $storageId,
+            'ruc' => $doc->getEmisor(),
+            'exp' => strtotime('+24 hours')
+        ]);
 
         return $this->ok($links);
     }
