@@ -48,12 +48,12 @@ interface DocumentRepositoryInterface
      *
      * @param Document $document
      *
-     * @return string|bool
+     * @return int|bool
      */
     public function add(Document $document);
 
     /**
-     * @param integer $id
+     * @param int $id
      * @param string $storageId
      *
      * @return bool

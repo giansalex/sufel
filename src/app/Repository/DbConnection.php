@@ -21,7 +21,7 @@ class DbConnection
      */
     private $con;
     /**
-     * @var string
+     * @var array
      */
     private $options;
 

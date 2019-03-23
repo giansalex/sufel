@@ -119,7 +119,7 @@ SQL;
      *
      * @param Document $document
      *
-     * @return string|bool
+     * @return int|bool
      */
     public function add(Document $document)
     {
@@ -145,7 +145,7 @@ SQL;
             return false;
         }
 
-        return $con->lastInsertId();
+        return intval($con->lastInsertId());
     }
 
     /**
