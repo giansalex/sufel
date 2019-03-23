@@ -7,7 +7,14 @@ php:
 
 install:
   - composer install --prefer-source --no-interaction --dev
+  - curl -L https://github.com/phan/phan/releases/download/1.2.7/phan.phar -o phan.phar;
   - composer require php-coveralls/php-coveralls
+
+before_script:
+  - |
+    if [ $(phpenv version-name) = "7.1" ]; then
+    php phan.phar
+    fi
 
 script:
   - mkdir -p build/logs
