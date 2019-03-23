@@ -9,6 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
+use Sufel\App\Models\DocumentConverter;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileReaderInterface;
 
@@ -27,19 +28,23 @@ class DocumentApi implements DocumentApiInterface
      * @var FileReaderInterface
      */
     private $fileRepository;
+    /**
+     * @var DocumentConverter
+     */
+    private $documentConverter;
 
     /**
      * DocumentApi constructor.
      *
      * @param DocumentRepositoryInterface $documentRepository
      * @param FileReaderInterface $fileRepository
+     * @param DocumentConverter $documentConverter
      */
-    public function __construct(
-        DocumentRepositoryInterface $documentRepository,
-        FileReaderInterface $fileRepository
-    ) {
+    public function __construct(DocumentRepositoryInterface $documentRepository, FileReaderInterface $fileRepository, DocumentConverter $documentConverter)
+    {
         $this->documentRepository = $documentRepository;
         $this->fileRepository = $fileRepository;
+        $this->documentConverter = $documentConverter;
     }
 
     /**
@@ -63,15 +68,13 @@ class DocumentApi implements DocumentApiInterface
         if ($type == 'info') {
             return $this->ok($doc);
         }
+        $filter = $this->documentConverter->convertToDoc($doc);
+        $storageId = $this->documentRepository->getStorageId($filter);
 
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $this->fileRepository->getFile($id, 'xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
-            $result['type'] = 'application/pdf';
-        }
+        $result = [
+            'file' => $this->fileRepository->read($storageId, $type),
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf',
+        ];
 
         $headers = [
             'Content-Type' => $result['type'],

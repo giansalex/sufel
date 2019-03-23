@@ -9,6 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
+use Sufel\App\Models\DocumentConverter;
 use Sufel\App\Repository\DocumentRepositoryInterface;
 use Sufel\App\Repository\FileReaderInterface;
 use Sufel\App\Service\CryptoService;
@@ -32,6 +33,10 @@ class ExternalFileApi implements ExternalFileApiInterface
      * @var FileReaderInterface
      */
     private $fileRepository;
+    /**
+     * @var DocumentConverter
+     */
+    private $documentConverter;
 
     /**
      * ExternalFileApi constructor.
@@ -39,15 +44,14 @@ class ExternalFileApi implements ExternalFileApiInterface
      * @param CryptoService               $crypto
      * @param DocumentRepositoryInterface $documentRepository
      * @param FileReaderInterface $fileRepository
+     * @param DocumentConverter $documentConverter
      */
-    public function __construct(
-        CryptoService $crypto,
-        DocumentRepositoryInterface $documentRepository,
-        FileReaderInterface $fileRepository
-    ) {
+    public function __construct(CryptoService $crypto, DocumentRepositoryInterface $documentRepository, FileReaderInterface $fileRepository, DocumentConverter $documentConverter)
+    {
         $this->crypto = $crypto;
         $this->documentRepository = $documentRepository;
         $this->fileRepository = $fileRepository;
+        $this->documentConverter = $documentConverter;
     }
 
     /**
@@ -75,14 +79,13 @@ class ExternalFileApi implements ExternalFileApiInterface
             return $this->response(404);
         }
 
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $this->fileRepository->getFile($id, 'xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $this->fileRepository->getFile($id, 'pdf');
-            $result['type'] = 'application/pdf';
-        }
+        $filter = $this->documentConverter->convertToDoc($doc);
+        $storageId = $this->documentRepository->getStorageId($filter);
+
+        $result = [
+            'file' => $this->fileRepository->read($storageId, $type),
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf',
+        ];
 
         $headers = [
             'Content-Type' => $result['type'],

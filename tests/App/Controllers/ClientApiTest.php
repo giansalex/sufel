@@ -9,6 +9,7 @@
 namespace Tests\App\Controllers;
 
 use Sufel\App\Controllers\ClientApi;
+use Sufel\App\Models\DocumentConverter;
 use Sufel\App\ViewModels\FilterViewModel;
 
 class ClientApiTest extends \PHPUnit_Framework_TestCase
@@ -24,8 +25,9 @@ class ClientApiTest extends \PHPUnit_Framework_TestCase
         $this->api = new ClientApi(
             $this->getClientRepository(),
             $this->getDocumentFilterRepository(),
+            $this->getFileReader(),
             $this->getDocumentRepository(),
-            $this->getFileReader()
+            new DocumentConverter()
         );
     }
 

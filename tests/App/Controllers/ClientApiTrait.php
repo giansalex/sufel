@@ -61,9 +61,13 @@ trait ClientApiTrait
             'emisor' => '20123456781',
             'tipo' => '01',
             'serie' => 'F001',
+            'total' => 10,
+            'cliente_tipo' => '6',
             'cliente_doc' => '20123456789',
+            'cliente_nombre' => 'CLIENTE',
             'correlativo' => '123',
             'fecha' => '2018-04-10',
+            'baja' => false
         ]);
 
         /**@var $stub DocumentRepositoryInterface */
@@ -74,7 +78,7 @@ trait ClientApiTrait
     {
         $stub = $this->getMockBuilder(FileReaderInterface::class)->getMock();
 
-        $stub->method('getFile')->willReturn('--any-content-file');
+        $stub->method('read')->willReturn('--any-content-file');
 
         /**@var $stub FileReaderInterface */
         return $stub;

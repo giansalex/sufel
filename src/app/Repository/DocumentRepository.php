@@ -9,7 +9,6 @@
 namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
-use Sufel\App\Models\Invoice;
 use Sufel\App\ViewModels\DocumentLogin;
 
 /**
@@ -65,20 +64,41 @@ SQL;
     /**
      * Return id if document exist.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return integer|bool Id or FALSE
      */
-    public function getId(Invoice $invoice)
+    public function getId(Document $document)
     {
         $params = [
-            $invoice->getEmisor(),
-            $invoice->getTipo(),
-            $invoice->getSerie(),
-            $invoice->getCorrelativo(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
         ];
         $sql = <<<SQL
 SELECT id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
+SQL;
+
+        $con = $this->db->getConnection();
+        $stm = $con->prepare($sql);
+        $stm->execute($params);
+        $count = $stm->fetchColumn();
+        $stm = null;
+
+        return $count > 0;
+    }
+
+    public function getStorageId(Document $document)
+    {
+        $params = [
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
+        ];
+        $sql = <<<SQL
+SELECT storage_id FROM document WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
 SQL;
 
         $con = $this->db->getConnection();
@@ -99,22 +119,20 @@ SQL;
      */
     public function add(Document $document)
     {
-        $inv = $document->getInvoice();
         $arguments = [
-            $inv->getEmisor(),
-            $inv->getTipo(),
-            $inv->getSerie(),
-            $inv->getCorrelativo(),
-            $inv->getFecha(),
-            $inv->getTotal(),
-            $inv->getClientTipo(),
-            $inv->getClientDoc(),
-            $inv->getClientName(),
-            $document->getFilename(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
+            $document->getFecha(),
+            $document->getTotal(),
+            $document->getClientTipo(),
+            $document->getClientDoc(),
+            $document->getClientName(),
         ];
         $sql = <<<SQL
-INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename)
-VALUES(?,?,?,?,?,?,?,?,?,?)
+INSERT INTO document(emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre)
+VALUES(?,?,?,?,?,?,?,?,?)
 SQL;
         $con = $this->db->getConnection();
         $stm = $con->prepare($sql);
@@ -124,6 +142,17 @@ SQL;
         }
 
         return $con->lastInsertId();
+    }
+
+    public function setStorageId($id, $storageId)
+    {
+        $params = [$storageId, $id];
+
+        $sql = <<<SQL
+UPDATE document SET storage_id = ? WHERE id = ?
+SQL;
+
+        return $this->db->exec($sql, $params);
     }
 
     /**
@@ -136,7 +165,7 @@ SQL;
     public function get($id)
     {
         $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja 
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,baja 
 FROM document WHERE id = ? LIMIT 1
 SQL;
         $rows = $this->db
@@ -157,17 +186,17 @@ SQL;
     /**
      * Marca un documento como anulado.
      *
-     * @param Invoice $invoice
+     * @param Document $document
      *
      * @return bool
      */
-    public function anular(Invoice $invoice)
+    public function anular(Document $document)
     {
         $params = [
-            $invoice->getEmisor(),
-            $invoice->getTipo(),
-            $invoice->getSerie(),
-            $invoice->getCorrelativo(),
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
         ];
         $sql = <<<SQL
 UPDATE document SET baja = 1 WHERE emisor = ? AND tipo = ? AND serie = ? AND correlativo = ?
@@ -191,7 +220,7 @@ SQL;
             $end->format('Y-m-d'),
         ];
         $sql = <<<SQL
-SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,filename,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
+SELECT emisor,tipo,serie,correlativo,fecha,total,cliente_tipo,cliente_doc,cliente_nombre,baja FROM document WHERE emisor = ? AND fecha >= ? AND fecha <= ?
 SQL;
         $rows = $this->db
             ->fetchAll($sql, $params);

@@ -8,6 +8,8 @@
 
 namespace Sufel\App\Repository;
 
+use Sufel\App\Models\Document;
+
 /**
  * Interface FileWriterInterface.
  */
@@ -16,8 +18,10 @@ interface FileWriterInterface
     /**
      * Save files (xml, pdf).
      *
-     * @param string|int $id
+     * @param Document $document
      * @param array $files
+     *
+     * @return string
      */
-    public function writeFiles($id, array $files);
+    public function save(Document $document, array $files);
 }

@@ -3,81 +3,110 @@
  * Created by PhpStorm.
  * User: LPALQUILER-11
  * Date: 18/04/2018
- * Time: 10:53
+ * Time: 10:53.
  */
 
 namespace Sufel\App\Repository;
 
+use Sufel\App\Models\Document;
+
 /**
- * Class FileRepository
- * @package Sufel\App\Repository
+ * Class FileRepository.
  */
 class FileRepository implements FileReaderInterface, FileWriterInterface
 {
-    /**
-     * @var DocumentRepositoryInterface
-     */
-    private $repository;
     private $uploadDirectory;
 
     /**
      * FileRepository constructor.
+     *
      * @param $uploadDirectory
-     * @param DocumentRepositoryInterface $repository
      */
-    public function __construct($uploadDirectory, DocumentRepositoryInterface $repository)
+    public function __construct($uploadDirectory)
     {
-        $this->repository = $repository;
         $this->uploadDirectory = $uploadDirectory;
     }
 
     /**
-     * @param string|int $id
+     * @param string $id
      * @param string $type Options: xml|pdf|cdr
      *
      * @return string
      */
-    public function getFile($id, $type)
+    public function read($id, $type)
     {
-        $doc = $this->repository->get($id);
-
-        $name = $doc['filename'];
-        $pathZip = $this->uploadDirectory . DIRECTORY_SEPARATOR . $doc['emisor'] . DIRECTORY_SEPARATOR . $name . '.zip';
+        $pathZip = $this->getPathZip($id);
+        $parts = explode(DIRECTORY_SEPARATOR, $id);
 
         $zip = new \ZipArchive();
         $zip->open($pathZip);
-        $result = $zip->getFromName($name.'.'.$type);
+        $result = $zip->getFromName($parts[1] . '.' . $type);
         $zip->close();
 
         return $result;
     }
 
     /**
-     * @param string|int $id
+     * @param Document $document
      * @param array $files
+     *
+     * @return string
      */
-    public function writeFiles($id, array $files)
+    public function save(Document $document, array $files)
     {
-        $document = $this->repository->get($id);
         $name = join('-', [
-            $document['emisor'],
-            $document['tipo'],
-            $document['serie'],
-            $document['correlativo']
+            $document->getEmisor(),
+            $document->getTipo(),
+            $document->getSerie(),
+            $document->getCorrelativo(),
         ]);
 
-        $rootDir = $this->uploadDirectory . DIRECTORY_SEPARATOR . $document['emisor'];
+        $this->createDirectory($document);
+
+        $id = $document->getEmisor() . DIRECTORY_SEPARATOR . $name;
+        $path = $this->getPathZip($id);
+        $this->saveCompress($files, $path, $name);
+
+        return $id;
+    }
+
+    /**
+     * @param Document $document
+     */
+    private function createDirectory(Document $document)
+    {
+        $rootDir = $this->uploadDirectory . DIRECTORY_SEPARATOR . $document->getEmisor();
         if (!is_dir($rootDir)) {
             $oldmask = umask(0);
             mkdir($rootDir, 0777, true);
             umask($oldmask);
         }
+    }
 
-        $path = $rootDir . DIRECTORY_SEPARATOR . $name . '.zip';
+    /**
+     * @param array $files
+     * @param $path
+     * @param $name
+     */
+    private function saveCompress(array $files, $path, $name)
+    {
         $zip = new \ZipArchive();
         $zip->open($path, \ZipArchive::CREATE);
-        $zip->addFromString($name . '.xml', $files['xml']);
-        $zip->addFromString($name . '.pdf', $files['pdf']);
+
+        foreach ($files as $type => $content) {
+            $zip->addFromString($name . '.' . $type, $content);
+        }
+
         $zip->close();
+    }
+
+    /**
+     * @param $id
+     *
+     * @return string
+     */
+    private function getPathZip($id)
+    {
+        return $this->uploadDirectory . DIRECTORY_SEPARATOR . $id . '.zip';
     }
 }

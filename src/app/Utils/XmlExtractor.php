@@ -8,7 +8,7 @@
 
 namespace Sufel\App\Utils;
 
-use Sufel\App\Models\Invoice;
+use Sufel\App\Models\Document;
 
 /**
  * Class XmlExtractor
@@ -33,7 +33,7 @@ class XmlExtractor
 
     /**
      * @param \DOMDocument $doc
-     * @return Invoice
+     * @return Document
      */
     public function toInvoice(\DOMDocument $doc)
     {
@@ -61,14 +61,14 @@ class XmlExtractor
     }
 
     /**
-     * @return Invoice
+     * @return Document
      */
     private function getInvoice()
     {
         $ubl = $this->getFirst('cbc:UBLVersionID');
         $doc = $this->getFirst('cbc:ID');
         $arr = explode('-', $doc);
-        $inv = new Invoice();
+        $inv = new Document();
         $inv->setTipo($this->getFirst('cbc:InvoiceTypeCode'))
             ->setSerie($arr[0])
             ->setCorrelativo($arr[1])

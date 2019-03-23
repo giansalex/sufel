@@ -9,6 +9,7 @@
 namespace Sufel\App\Controllers;
 
 use Sufel\App\Models\ApiResult;
+use Sufel\App\Models\DocumentConverter;
 use Sufel\App\Repository\ClienteRepositoryInterface;
 use Sufel\App\Repository\DocumentFilterRepositoryInterface;
 use Sufel\App\Repository\DocumentRepositoryInterface;
@@ -37,25 +38,27 @@ class ClientApi implements ClientApiInterface
      * @var DocumentRepositoryInterface
      */
     private $documentRepository;
+    /**
+     * @var DocumentConverter
+     */
+    private $documentConverter;
 
     /**
      * ClientApi constructor.
      *
      * @param ClienteRepositoryInterface        $clienteRepository
      * @param DocumentFilterRepositoryInterface $documentFilterRepository
-     * @param DocumentRepositoryInterface       $documentRepository
      * @param FileReaderInterface $fileRepository
+     * @param DocumentRepositoryInterface $documentRepository
+     * @param DocumentConverter $documentConverter
      */
-    public function __construct(
-        ClienteRepositoryInterface $clienteRepository,
-        DocumentFilterRepositoryInterface $documentFilterRepository,
-        DocumentRepositoryInterface $documentRepository,
-        FileReaderInterface $fileRepository
-    ) {
+    public function __construct(ClienteRepositoryInterface $clienteRepository, DocumentFilterRepositoryInterface $documentFilterRepository, FileReaderInterface $fileRepository, DocumentRepositoryInterface $documentRepository, DocumentConverter $documentConverter)
+    {
         $this->clienteRepository = $clienteRepository;
         $this->documentFilterRepository = $documentFilterRepository;
         $this->fileRepository = $fileRepository;
         $this->documentRepository = $documentRepository;
+        $this->documentConverter = $documentConverter;
     }
 
     /**
@@ -89,7 +92,7 @@ class ClientApi implements ClientApiInterface
     /**
      * Get asset document by id.
      *
-     * @param string     $document client identiy document
+     * @param string $document client identity document
      * @param int|string $id
      * @param string     $type     info, xml, pdf
      *
@@ -112,16 +115,13 @@ class ClientApi implements ClientApiInterface
             return $this->ok($doc);
         }
 
-        $fileRepo = $this->fileRepository;
+        $filter = $this->documentConverter->convertToDoc($doc);
+        $storageId = $this->documentRepository->getStorageId($filter);
 
-        $result = [];
-        if ($type == 'xml') {
-            $result['file'] = $fileRepo->getFile($id, 'xml');
-            $result['type'] = 'text/xml';
-        } else {
-            $result['file'] = $fileRepo->getFile($id, 'pdf');
-            $result['type'] = 'application/pdf';
-        }
+        $result = [
+            'file' => $this->fileRepository->read($storageId, $type),
+            'type' => $type === 'xml' ? 'text/xml' : 'application/pdf',
+        ];
 
         $headers = [
             'Content-Type' => $result['type'],

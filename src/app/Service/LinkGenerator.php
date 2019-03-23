@@ -40,9 +40,6 @@ class LinkGenerator
      * @param array $data
      *
      * @return array
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getLinks(array $data)
     {
