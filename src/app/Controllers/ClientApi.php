@@ -29,7 +29,7 @@ class ClientApi implements ClientApiInterface
     /**
      * @var DocumentFilterRepositoryInterface
      */
-    private $documentFilterRepository;
+    private $documentFilter;
     /**
      * @var FileReaderInterface
      */
@@ -47,15 +47,15 @@ class ClientApi implements ClientApiInterface
      * ClientApi constructor.
      *
      * @param ClienteRepositoryInterface        $clienteRepository
-     * @param DocumentFilterRepositoryInterface $documentFilterRepository
+     * @param DocumentFilterRepositoryInterface $documentFilter
      * @param FileReaderInterface $fileRepository
      * @param DocumentRepositoryInterface $documentRepository
      * @param DocumentConverter $documentConverter
      */
-    public function __construct(ClienteRepositoryInterface $clienteRepository, DocumentFilterRepositoryInterface $documentFilterRepository, FileReaderInterface $fileRepository, DocumentRepositoryInterface $documentRepository, DocumentConverter $documentConverter)
+    public function __construct(ClienteRepositoryInterface $clienteRepository, DocumentFilterRepositoryInterface $documentFilter, FileReaderInterface $fileRepository, DocumentRepositoryInterface $documentRepository, DocumentConverter $documentConverter)
     {
         $this->clienteRepository = $clienteRepository;
-        $this->documentFilterRepository = $documentFilterRepository;
+        $this->documentFilter = $documentFilter;
         $this->fileRepository = $fileRepository;
         $this->documentRepository = $documentRepository;
         $this->documentConverter = $documentConverter;
@@ -84,7 +84,7 @@ class ClientApi implements ClientApiInterface
      */
     public function getList(FilterViewModel $filter)
     {
-        $docs = $this->documentFilterRepository->getList($filter);
+        $docs = $this->documentFilter->getList($filter);
 
         return $this->ok($docs);
     }
