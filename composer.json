@@ -17,7 +17,7 @@
         "php": ">=5.5.0",
       "ext-dom": "*",
       "ext-json": "*",
-      "ext-pdo_mysql": "*",
+      "ext-pdo": "*",
       "giansalex/peru-consult": "^2.0"
     },
     "require-dev": {
