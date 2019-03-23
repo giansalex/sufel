@@ -18,7 +18,8 @@
       "ext-dom": "*",
       "ext-json": "*",
       "ext-pdo": "*",
-      "giansalex/peru-consult": "^2.0"
+      "giansalex/peru-consult": "^2.0",
+      "psr/log": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0",
