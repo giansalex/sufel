@@ -83,10 +83,10 @@ SQL;
         $con = $this->db->getConnection();
         $stm = $con->prepare($sql);
         $stm->execute($params);
-        $count = $stm->fetchColumn();
+        $id = $stm->fetchColumn();
         $stm = null;
 
-        return $count > 0;
+        return $id;
     }
 
     public function getStorageId(Document $document)
@@ -104,10 +104,10 @@ SQL;
         $con = $this->db->getConnection();
         $stm = $con->prepare($sql);
         $stm->execute($params);
-        $count = $stm->fetchColumn();
+        $id = $stm->fetchColumn();
         $stm = null;
 
-        return $count > 0;
+        return $id;
     }
 
     /**
