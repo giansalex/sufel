@@ -11,12 +11,17 @@ install:
   - composer require php-coveralls/php-coveralls
 
 before_script:
+  - phpenv config-rm xdebug.ini
+  - |
+    if [ $(phpenv version-name) = "7.1" ]; then
+    pecl install ast;
+    fi
+
+script:
   - |
     if [ $(phpenv version-name) = "7.1" ]; then
     php phan.phar
     fi
-
-script:
   - mkdir -p build/logs
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
