@@ -36,7 +36,7 @@ interface ClienteRepositoryInterface
     /**
      * @param string $document
      *
-     * @return Client
+     * @return Client|null
      */
     public function get($document);
 

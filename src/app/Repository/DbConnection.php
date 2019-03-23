@@ -57,7 +57,7 @@ class DbConnection
      */
     public function getConnection()
     {
-        if (!$this->con) {
+        if (empty($this->con)) {
             try {
                 $this->con = new \PDO($this->options['dsn'], $this->options['user'], $this->options['password']);
             } catch (\PDOException $e) {
@@ -74,7 +74,7 @@ class DbConnection
      *
      * @param string     $query
      * @param array|null $params
-     * @param int|null   $fetch_style
+     * @param int $fetch_style
      *
      * @return array
      */

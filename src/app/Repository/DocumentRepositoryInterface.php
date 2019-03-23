@@ -21,7 +21,7 @@ interface DocumentRepositoryInterface
      *
      * @param DocumentLogin $info
      *
-     * @return bool|int
+     * @return int|bool
      */
     public function isAuthorized(DocumentLogin $info);
 
@@ -30,7 +30,7 @@ interface DocumentRepositoryInterface
      *
      * @param Document $document
      *
-     * @return integer|bool Id or FALSE
+     * @return int|bool
      */
     public function getId(Document $document);
 
@@ -39,7 +39,7 @@ interface DocumentRepositoryInterface
      *
      * @param Document $document
      *
-     * @return integer|bool Id or FALSE
+     * @return string|bool
      */
     public function getStorageId(Document $document);
 
@@ -48,7 +48,7 @@ interface DocumentRepositoryInterface
      *
      * @param Document $document
      *
-     * @return bool|string
+     * @return string|bool
      */
     public function add(Document $document);
 
@@ -65,7 +65,7 @@ interface DocumentRepositoryInterface
      *
      * @param int $id
      *
-     * @return array
+     * @return array|null
      */
     public function get($id);
 

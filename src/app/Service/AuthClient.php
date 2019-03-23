@@ -9,9 +9,7 @@
 namespace Sufel\App\Service;
 
 use Sufel\App\Models\Client;
-use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\ClienteRepositoryInterface;
-use Sufel\App\Repository\ClientProfileRepository;
 use Sufel\App\Repository\ClientProfileRepositoryInterface;
 use Sufel\App\ViewModels\ClientRegister;
 
@@ -21,11 +19,11 @@ use Sufel\App\ViewModels\ClientRegister;
 class AuthClient
 {
     /**
-     * @var ClienteRepository
+     * @var ClienteRepositoryInterface
      */
     private $repository;
     /**
-     * @var ClientProfileRepository
+     * @var ClientProfileRepositoryInterface
      */
     private $profile;
     /**
@@ -76,9 +74,9 @@ class AuthClient
             ->setNames($client->getNombres())
             ->setPlainPassword($client->getPassword());
 
-        $success = $exist
-            ? $this->repository->update($newClient)
-            : $this->repository->add($newClient);
+        $success = is_null($exist)
+            ? $this->repository->add($newClient)
+            : $this->repository->update($newClient);
 
         return [$success, ''];
     }
@@ -87,7 +85,7 @@ class AuthClient
      * Login client.
      *
      * @param string $document
-     * @param $password
+     * @param string $password
      *
      * @return array
      */
@@ -95,7 +93,7 @@ class AuthClient
     {
         $exist = $this->repository->get($document);
 
-        if (empty($exist)) {
+        if (is_null($exist)) {
             return [false, 'Cliente no se encuentra registrado'];
         }
 

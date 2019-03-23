@@ -34,9 +34,9 @@ class DocumentRepository implements DocumentRepositoryInterface
     /**
      * Return document's id or FALSE on failure.
      *
-     * @param array $info
+     * @param DocumentLogin $info
      *
-     * @return bool|int
+     * @return int|bool
      */
     public function isAuthorized(DocumentLogin $info)
     {
@@ -66,7 +66,7 @@ SQL;
      *
      * @param Document $document
      *
-     * @return integer|bool Id or FALSE
+     * @return int|bool
      */
     public function getId(Document $document)
     {
@@ -89,6 +89,10 @@ SQL;
         return $id;
     }
 
+    /**
+     * @param Document $document
+     * @return string|false
+     */
     public function getStorageId(Document $document)
     {
         $params = [
@@ -115,7 +119,7 @@ SQL;
      *
      * @param Document $document
      *
-     * @return bool|string
+     * @return string|bool
      */
     public function add(Document $document)
     {
@@ -144,6 +148,11 @@ SQL;
         return $con->lastInsertId();
     }
 
+    /**
+     * @param int $id
+     * @param string $storageId
+     * @return bool
+     */
     public function setStorageId($id, $storageId)
     {
         $params = [$storageId, $id];
@@ -160,7 +169,7 @@ SQL;
      *
      * @param int $id
      *
-     * @return array
+     * @return array|null
      */
     public function get($id)
     {
@@ -206,7 +215,7 @@ SQL;
     }
 
     /**
-     * @param $ruc
+     * @param string $ruc
      * @param \DateTime $init
      * @param \DateTime $end
      *

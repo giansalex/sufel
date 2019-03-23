@@ -15,12 +15,15 @@ use Sufel\App\Models\Document;
  */
 class FileRepository implements FileReaderInterface, FileWriterInterface
 {
+    /**
+     * @var string
+     */
     private $uploadDirectory;
 
     /**
      * FileRepository constructor.
      *
-     * @param $uploadDirectory
+     * @param string $uploadDirectory
      */
     public function __construct($uploadDirectory)
     {
@@ -85,8 +88,8 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
 
     /**
      * @param array $files
-     * @param $path
-     * @param $name
+     * @param string $path
+     * @param string $name
      */
     private function saveCompress(array $files, $path, $name)
     {

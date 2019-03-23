@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Giansalex
  * Date: 27/08/2017
- * Time: 19:40
+ * Time: 19:40.
  */
 
 namespace Sufel\App\Utils;
@@ -11,8 +11,7 @@ namespace Sufel\App\Utils;
 use Sufel\App\Models\Document;
 
 /**
- * Class XmlExtractor
- * @package Sufel\App\Utils
+ * Class XmlExtractor.
  */
 class XmlExtractor
 {
@@ -33,6 +32,7 @@ class XmlExtractor
 
     /**
      * @param \DOMDocument $doc
+     *
      * @return Document
      */
     public function toInvoice(\DOMDocument $doc)
@@ -42,7 +42,7 @@ class XmlExtractor
         }
         $docName = $doc->documentElement->nodeName;
 
-        $this->rootNs = '/'. self::ROOT_PREFIX . ':' . $docName;
+        $this->rootNs = '/' . self::ROOT_PREFIX . ':' . $docName;
         $this->xpath = new \DOMXPath($doc);
         $this->xpath->registerNamespace(self::ROOT_PREFIX, $doc->documentElement->namespaceURI);
 
@@ -97,14 +97,14 @@ class XmlExtractor
     /***
      * Obtiene el primer valor del nodo.
      *
-     * @param string $query Relativo al root namespace
+     * @param string $query
      * @return null|string
      */
     private function getFirst($query)
     {
         $nodes = $this->xpath->query($this->rootNs . '/' . $query);
-        if ($nodes->length > 0) {
-            return $nodes->item(0)->nodeValue;
+        if ($nodes->length > 0 && ($node = $nodes->item(0))) {
+            return $node->nodeValue;
         }
 
         return null;

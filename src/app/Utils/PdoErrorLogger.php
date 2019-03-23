@@ -30,6 +30,9 @@ class PdoErrorLogger
         $this->logger = $logger;
     }
 
+    /**
+     * @param \PDOStatement $statement
+     */
     public function err(\PDOStatement $statement)
     {
         $this->logger

@@ -8,9 +8,7 @@
 
 namespace Sufel\App\Service;
 
-use Sufel\App\Repository\ClienteRepository;
 use Sufel\App\Repository\ClienteRepositoryInterface;
-use Sufel\App\Repository\ClientProfileRepository;
 use Sufel\App\Repository\ClientProfileRepositoryInterface;
 
 /**
@@ -19,11 +17,11 @@ use Sufel\App\Repository\ClientProfileRepositoryInterface;
 class ClientProfile
 {
     /**
-     * @var ClienteRepository
+     * @var ClienteRepositoryInterface
      */
     private $client;
     /**
-     * @var ClientProfileRepository
+     * @var ClientProfileRepositoryInterface
      */
     private $profile;
 
@@ -53,6 +51,10 @@ class ClientProfile
     public function changePassword($document, $old, $new)
     {
         $client = $this->client->get($document);
+
+        if (is_null($client)) {
+            return [false, 'Usuario no fue encontrado'];
+        }
 
         if (!password_verify($old, $client->getPassword())) {
             return [false, 'La contraseña original no es la correcta'];

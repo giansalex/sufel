@@ -93,7 +93,7 @@ class ClientApi implements ClientApiInterface
      * Get asset document by id.
      *
      * @param string $document client identity document
-     * @param int|string $id
+     * @param int $id
      * @param string     $type     info, xml, pdf
      *
      * @return ApiResult
