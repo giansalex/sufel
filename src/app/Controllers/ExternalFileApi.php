@@ -89,7 +89,7 @@ class ExternalFileApi implements ExternalFileApiInterface
 
         $headers = [
             'Content-Type' => $result['type'],
-            'Content-Disposition' => "attachment; filename=\"{$doc['filename']}.$type\";",
+            'Content-Disposition' => 'attachment',
             'Content-Length' => strlen($result['file']),
         ];
 
