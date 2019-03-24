@@ -11,9 +11,9 @@ namespace Sufel\App\Controllers;
 use Sufel\App\Models\ApiResult;
 
 /**
- * Trait responseTrait.
+ * Trait ResponseTrait.
  */
-trait responseTrait
+trait ResponseTrait
 {
     /**
      * @param array $data
