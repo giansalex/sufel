@@ -27,15 +27,3 @@ Empleando Slim Framework, [Sufel Rest](https://github.com/giansalex/sufel-rest).
 
 ## UI Client
 Una implementación basada en Angular 6 [SUFEL Angular](https://github.com/giansalex/sufel-angular)  
-
-## API Docs
-- [Swagger Docs Full](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.json)  
-- [Swagger for Company](http://editor.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.company.json)
-- [Swagger for Consult](http://editor.swagger.io/?url=https://raw.githubusercontent.com/giansalex/sufel/master/src/data/swagger.receiver.json)
-## Docker
-
-Disponible en [Docker Hub](https://hub.docker.com/r/giansalex/sufel/)
-
-```bash
-docker pull giansalex/sufel
-```
