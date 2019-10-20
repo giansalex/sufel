@@ -8,6 +8,7 @@
 
 namespace Sufel\App\Repository;
 
+use Exception;
 use Sufel\App\Models\Document;
 use ZipArchive;
 
@@ -36,10 +37,14 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
      * @param string $type Options: xml|pdf|cdr
      *
      * @return string
+     * @throws Exception
      */
     public function read($id, $type)
     {
         $pathZip = $this->getPathZip($id);
+        if (!file_exists($pathZip)) {
+            throw new Exception('Zip que contiene los comprobantes no existe. Path: '.$pathZip);
+        }
 
         $parts = explode(DIRECTORY_SEPARATOR, $id);
 
