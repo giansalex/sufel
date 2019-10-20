@@ -9,6 +9,7 @@
 namespace Sufel\App\Repository;
 
 use Sufel\App\Models\Document;
+use ZipArchive;
 
 /**
  * Class FileRepository.
@@ -39,9 +40,10 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
     public function read($id, $type)
     {
         $pathZip = $this->getPathZip($id);
+
         $parts = explode(DIRECTORY_SEPARATOR, $id);
 
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $zip->open($pathZip);
         $result = $zip->getFromName($parts[1] . '.' . $type);
         $zip->close();
@@ -93,8 +95,8 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
      */
     private function saveCompress(array $files, $path, $name)
     {
-        $zip = new \ZipArchive();
-        $zip->open($path, \ZipArchive::CREATE);
+        $zip = new ZipArchive();
+        $zip->open($path, ZipArchive::CREATE);
 
         foreach ($files as $type => $content) {
             $zip->addFromString($name . '.' . $type, $content);
@@ -110,6 +112,6 @@ class FileRepository implements FileReaderInterface, FileWriterInterface
      */
     private function getPathZip($id)
     {
-        return $this->uploadDirectory . DIRECTORY_SEPARATOR . $id . '.zip';
+        return $this->uploadDirectory.DIRECTORY_SEPARATOR.$id.'.zip';
     }
 }
