@@ -22,7 +22,7 @@ CREATE TABLE document
   serie          VARCHAR(5)             NOT NULL,
   correlativo    VARCHAR(10)            NOT NULL,
   fecha          DATE                   NOT NULL,
-  total          FLOAT(10, 2)           NOT NULL,
+  total          DOUBLE(10, 2)           NOT NULL,
   cliente_tipo   VARCHAR(2)             NOT NULL,
   cliente_doc    VARCHAR(15)            NOT NULL,
   cliente_nombre VARCHAR(100)           NULL,
@@ -44,5 +44,3 @@ CREATE TABLE client
   last_access DATETIME     NULL,
   PRIMARY KEY (documento)
 )ENGINE = INNODB;
-
-SET @@global.sql_mode= '';
